@@ -190,7 +190,7 @@ const App = () => {
           {activeTab === 'upload'    && <FileUpload onUploadSuccess={handleUploadSuccess} />}
           {activeTab === 'preview'   && data && <PreviewView data={data} />}
           {activeTab === 'eda'       && data && <EDAView data={data.eda} />}
-          {activeTab === 'insights'  && data && <InsightsView />}
+          {activeTab === 'insights'  && data && <InsightsView onNavigate={setActiveTab} />}
           {activeTab === 'ml'        && data && <MLView data={data} />}
           {activeTab === 'dashboard' && data && <DashboardView data={data.eda} />}
           {activeTab === 'chat'      && data && <ChatView data={data} />}

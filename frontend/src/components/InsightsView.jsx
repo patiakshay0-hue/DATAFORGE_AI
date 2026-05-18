@@ -36,7 +36,7 @@ const typeConfig = {
   }
 }
 
-const InsightsView = ({ data }) => {
+const InsightsView = ({ data, onNavigate }) => {
   const [insights, setInsights] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -156,7 +156,10 @@ const InsightsView = ({ data }) => {
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
               Ask natural language questions like <em>"Which region has the highest sales?"</em> and get instant, cited answers powered by an LLM.
             </p>
-            <button className="mt-2 px-6 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-semibold text-sm transition-colors">
+            <button
+              onClick={() => onNavigate?.('chat')}
+              className="mt-2 px-6 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-semibold text-sm transition-colors"
+            >
               Unlock LLM Engine →
             </button>
           </div>
