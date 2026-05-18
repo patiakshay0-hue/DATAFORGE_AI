@@ -38,7 +38,7 @@ const App = () => {
     setExporting(true)
     setExportError(null)
     try {
-      const res = await fetch('http://localhost:8000/export')
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/export`)
       if (!res.ok) {
         const err = await res.json()
         throw new Error(err.detail || 'Export failed')

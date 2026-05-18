@@ -46,7 +46,7 @@ const InsightsView = ({ data }) => {
       setLoading(true)
       setError(null)
       try {
-        const response = await axios.get('http://localhost:8000/insights')
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/insights`)
         setInsights(response.data)
       } catch (err) {
         setError('Could not load insights. Make sure the backend is running on port 8000.')

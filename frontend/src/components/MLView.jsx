@@ -78,7 +78,7 @@ const MLView = ({ data }) => {
     setLoadingSuggestion(true)
     setSuggestion(null)
     try {
-      const res = await axios.post('http://localhost:8000/suggest', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/suggest`, {
         target_column: targetColumn || null,
       })
       setSuggestion(res.data)
@@ -117,7 +117,7 @@ const MLView = ({ data }) => {
     const iv = setInterval(() => { i++; if (i < steps.length) setTrainingStep(steps[i]) }, 900)
 
     try {
-      const res = await axios.post('http://localhost:8000/train', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/train`, {
         models: [...selectedModels],
         target_column: targetColumn || null,
       })

@@ -181,7 +181,7 @@ const ChatView = ({ data }) => {
   useEffect(() => {
     const checkKey = async () => {
       try {
-        const res = await fetch('http://localhost:8000/chat/status')
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/chat/status`)
         const json = await res.json()
         setApiStatus(json)
       } catch {
@@ -215,7 +215,7 @@ const ChatView = ({ data }) => {
     ])
 
     try {
-      const res = await fetch('http://localhost:8000/chat', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
