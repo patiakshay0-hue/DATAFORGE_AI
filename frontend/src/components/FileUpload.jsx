@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Upload, AlertCircle, Loader2, FileSpreadsheet, FileJson, Table2 } from 'lucide-react'
+import { useTheme } from '../ThemeContext'
 
 const formats = [
-  { ext: 'CSV', icon: Table2, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  { ext: 'XLSX', icon: FileSpreadsheet, color: 'text-sky-400', bg: 'bg-sky-500/10' },
-  { ext: 'JSON', icon: FileJson, color: 'text-violet-400', bg: 'bg-violet-500/10' },
+  { ext: 'CSV',  icon: Table2,        color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  { ext: 'XLSX', icon: FileSpreadsheet,color: 'text-sky-400',    bg: 'bg-sky-500/10'     },
+  { ext: 'JSON', icon: FileJson,       color: 'text-violet-400', bg: 'bg-violet-500/10'  },
 ]
 
 const FileUpload = ({ onUploadSuccess }) => {
+  const { isDark } = useTheme()
   const [dragActive, setDragActive] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [progress, setProgress] = useState(0)
+  const [loading,    setLoading]    = useState(false)
+  const [error,      setError]      = useState(null)
+  const [progress,   setProgress]   = useState(0)
 
   const handleDrag = (e) => {
     e.preventDefault(); e.stopPropagation()
@@ -42,93 +44,90 @@ const FileUpload = ({ onUploadSuccess }) => {
     }
   }
 
-  return (
-    <div className="max-w-3xl mx-auto py-10 space-y-8">
-      {/* Hero text */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-500/10 border border-sky-500/20 rounded-full text-sky-400 text-xs font-semibold uppercase tracking-widest mb-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-          Automated Analysis Engine
-        </div>
-        <h2 className="text-3xl font-black text-white">Upload Your Dataset</h2>
-        <p className="text-slate-400 max-w-lg mx-auto text-sm leading-relaxed">
-          Drop any CSV, Excel, or JSON file and our engine will automatically clean, analyze, and generate insights in seconds.
-        </p>
-      </div>
+  const dropBorderColor = dragActive
+    ? '#0ea5e9'
+    : isDark ? '#1e293b' : '#e2e8f0'
 
-      {/* Drop Zone */}
-      <label
-        className={`relative flex flex-col items-center justify-center p-16 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-300 ${
-          dragActive
-            ? 'border-sky-500 bg-sky-500/5 scale-[1.01]'
-            : 'border-slate-700 bg-slate-900/50 hover:border-slate-600 hover:bg-slate-900'
-        }`}
+  const dropBg = dragActive
+    ? isDark ? 'rgba(14,165,233,0.08)' : 'rgba(14,165,233,0.04)'
+    : 'var(--df-card)'
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Drop zone */}
+      <div
         onDragEnter={handleDrag} onDragLeave={handleDrag}
-        onDragOver={handleDrag} onDrop={handleDrop}
+        onDragOver={handleDrag}  onDrop={handleDrop}
+        className="relative rounded-2xl border-2 border-dashed transition-all duration-200 cursor-pointer"
+        style={{ borderColor: dropBorderColor, background: dropBg }}
+        onClick={() => !loading && document.getElementById('file-input').click()}
       >
         <input
-          type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          id="file-input" type="file"
           accept=".csv,.xlsx,.xls,.json"
-          onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])}
-          disabled={loading}
+          className="hidden"
+          onChange={e => e.target.files?.[0] && processFile(e.target.files[0])}
         />
-
-        {loading ? (
-          <div className="flex flex-col items-center gap-5 pointer-events-none">
-            <div className="relative w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-2 border-sky-500/20" />
-              <div className="absolute inset-0 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
-              <Loader2 className="absolute inset-0 m-auto text-sky-400 w-6 h-6 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '2s' }} />
-            </div>
-            <div className="text-center">
-              <p className="text-white font-semibold">Processing your dataset…</p>
-              <p className="text-slate-500 text-sm mt-1">Running EDA & schema detection</p>
-            </div>
-            <div className="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-sky-500 rounded-full transition-all duration-300"
-                style={{ width: `${progress || 60}%` }}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-5 pointer-events-none">
-            <div className={`w-18 h-18 p-5 rounded-2xl border transition-all duration-300 ${
-              dragActive ? 'bg-sky-500/20 border-sky-500/40' : 'bg-slate-800 border-slate-700'
-            }`}>
-              <Upload size={32} className={dragActive ? 'text-sky-400' : 'text-slate-500'} />
-            </div>
-            <div className="text-center">
-              <p className="text-white font-semibold text-lg">
-                {dragActive ? 'Drop it here!' : 'Drag & drop your file'}
+        <div className="py-16 px-8 flex flex-col items-center text-center">
+          {loading ? (
+            <>
+              <Loader2 size={40} className="text-sky-400 animate-spin mb-4" />
+              <p className="font-semibold mb-3" style={{ color: 'var(--df-t1)' }}>Uploading & analyzing…</p>
+              <div className="w-48 h-1.5 rounded-full overflow-hidden" style={{ background: isDark ? '#1e293b' : '#e2e8f0' }}>
+                <div className="h-full bg-sky-500 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }} />
+              </div>
+              <p className="text-xs mt-2" style={{ color: 'var(--df-t3)' }}>{progress}%</p>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-5">
+                <Upload size={28} className="text-sky-400" />
+              </div>
+              <p className="text-xl font-bold mb-2" style={{ color: 'var(--df-t1)' }}>
+                Drop your dataset here
               </p>
-              <p className="text-slate-500 text-sm mt-1">or click to browse your computer</p>
-            </div>
-          </div>
-        )}
-      </label>
+              <p className="text-sm mb-1" style={{ color: 'var(--df-t2)' }}>
+                or <span className="text-sky-400 font-semibold cursor-pointer hover:text-sky-300">browse files</span>
+              </p>
+              <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
+                Supports CSV, XLSX, and JSON up to 50 MB
+              </p>
+            </>
+          )}
+        </div>
+      </div>
 
       {/* Error */}
       {error && (
-        <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400">
-          <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium">{error}</p>
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30">
+          <AlertCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
+          <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
 
       {/* Supported formats */}
-      <div className="grid grid-cols-3 gap-4">
-        {formats.map(({ ext, icon: Icon, color, bg }) => (
-          <div key={ext} className="flex items-center gap-3 p-4 bg-slate-900 border border-slate-800 rounded-xl">
-            <div className={`p-2.5 rounded-lg ${bg}`}>
-              <Icon size={18} className={color} />
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--df-t3)' }}>
+          Supported Formats
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          {formats.map(({ ext, icon: Icon, color, bg }) => (
+            <div key={ext}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
+                isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'
+              }`}
+              style={{ background: 'var(--df-card)' }}>
+              <div className={`p-2 rounded-lg ${bg}`}>
+                <Icon size={16} className={color} />
+              </div>
+              <div>
+                <p className="text-sm font-bold" style={{ color: 'var(--df-t1)' }}>{ext}</p>
+                <p className="text-[10px]" style={{ color: 'var(--df-t3)' }}>Supported</p>
+              </div>
             </div>
-            <div>
-              <p className="text-white text-sm font-semibold">{ext}</p>
-              <p className="text-slate-600 text-xs">Supported</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )

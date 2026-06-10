@@ -1,9 +1,8 @@
 @import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @theme {
-  --color-primary-50: #f0f9ff;
+  --color-primary-50:  #f0f9ff;
   --color-primary-100: #e0f2fe;
   --color-primary-200: #bae6fd;
   --color-primary-300: #7dd3fc;
@@ -14,68 +13,110 @@
   --color-primary-800: #075985;
   --color-primary-900: #0c4a6e;
   --color-primary-950: #082f49;
-
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
+/* ── Design tokens — Dark (default) ──────────────────────────────────────── */
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #080d18;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --df-bg:            #080d18;
+  --df-sidebar:       linear-gradient(180deg, #0d1523 0%, #080d18 100%);
+  --df-sidebar-solid: #0d1523;
+  --df-card:          #0d1523;
+  --df-header:        rgba(8, 13, 24, 0.88);
+  --df-border:        #1e293b;
+  --df-border-m:      rgba(30, 41, 59, 0.8);
+  --df-t1:            #ffffff;
+  --df-t2:            #94a3b8;
+  --df-t3:            #64748b;
+  --df-t4:            #334155;
+  --df-chart-grid:    #1e293b;
+  --df-chart-axis:    #475569;
+  --df-input-bg:      rgba(13, 21, 35, 0.8);
+  --df-input-border:  #334155;
+  --df-row-hover:     rgba(30, 41, 59, 0.35);
+  --df-shadow:        0 4px 32px rgba(0, 0, 0, 0.45);
+  --df-tooltip-bg:    #1e293b;
+  --df-tooltip-bdr:   #334155;
+
+  color-scheme: dark;
+  background-color: var(--df-bg);
+  color: var(--df-t1);
+}
+
+/* ── Design tokens — Light ────────────────────────────────────────────────── */
+[data-theme="light"] {
+  --df-bg:            #f1f5f9;
+  --df-sidebar:       linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --df-sidebar-solid: #ffffff;
+  --df-card:          #ffffff;
+  --df-header:        rgba(248, 250, 252, 0.94);
+  --df-border:        #e2e8f0;
+  --df-border-m:      rgba(226, 232, 240, 0.8);
+  --df-t1:            #0f172a;
+  --df-t2:            #475569;
+  --df-t3:            #94a3b8;
+  --df-t4:            #cbd5e1;
+  --df-chart-grid:    #f1f5f9;
+  --df-chart-axis:    #94a3b8;
+  --df-input-bg:      #f8fafc;
+  --df-input-border:  #cbd5e1;
+  --df-row-hover:     rgba(241, 245, 249, 0.9);
+  --df-shadow:        0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+  --df-tooltip-bg:    #ffffff;
+  --df-tooltip-bdr:   #e2e8f0;
+
+  color-scheme: light;
+  background-color: var(--df-bg);
+  color: var(--df-t1);
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  width: 100%;
-  background-color: #080d18;
+  margin: 0; padding: 0;
+  min-height: 100vh; width: 100%;
+  background-color: var(--df-bg);
 }
 
-#root {
-  width: 100%;
-  min-height: 100vh;
+#root { width: 100%; min-height: 100vh; }
+
+/* ── Smooth theme transitions (color props only) ──────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow, fill, stroke;
+  transition-duration: 220ms;
+  transition-timing-function: ease;
+}
+/* Restore animations that should not be slowed */
+.animate-spin, .animate-pulse, .animate-bounce {
+  transition: none !important;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+/* ── Custom scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--df-bg); }
+::-webkit-scrollbar-thumb { background: var(--df-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--df-t3); }
 
-/* Glass morphism */
+/* ── Recharts custom tooltip ──────────────────────────────────────────────── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: var(--df-tooltip-bg) !important;
+  border: 1px solid var(--df-tooltip-bdr) !important;
+  border-radius: 12px !important;
+  color: var(--df-t1) !important;
+  box-shadow: var(--df-shadow) !important;
+}
+
+/* ── Glass morphism ───────────────────────────────────────────────────────── */
 .glass {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Glow effects */
-.glow-blue { box-shadow: 0 0 40px rgba(14, 165, 233, 0.15); }
-.glow-purple { box-shadow: 0 0 40px rgba(139, 92, 246, 0.15); }
-
-/* Animated gradient border */
-.gradient-border {
-  position: relative;
-  background: linear-gradient(#111827, #111827) padding-box,
-              linear-gradient(135deg, #0ea5e9, #8b5cf6) border-box;
-  border: 1px solid transparent;
-}
-
-/* Chart tooltip dark */
-.recharts-tooltip-wrapper .recharts-default-tooltip {
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  border-radius: 12px !important;
 }

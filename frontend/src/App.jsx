@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import {
   FileUp, BarChart3, Brain, LayoutDashboard,
-  FileText, Database, Lightbulb, ChevronRight,
-  Cpu, Shield, Zap, MessageSquare, Loader2, Download
+  Database, Lightbulb, ChevronRight,
+  Cpu, Shield, Zap, MessageSquare, Loader2, Download,
+  Sun, Moon
 } from 'lucide-react'
+import { useTheme } from './ThemeContext'
 import FileUpload    from './components/FileUpload'
 import EDAView       from './components/EDAView'
 import DashboardView from './components/DashboardView'
@@ -13,20 +15,21 @@ import InsightsView  from './components/InsightsView'
 import ChatView      from './components/ChatView'
 
 const TABS = [
-  { id: 'upload',    label: 'Upload Data',   icon: FileUp,        alwaysOn: true },
-  { id: 'preview',   label: 'Data Preview',  icon: Database },
-  { id: 'eda',       label: 'Automated EDA', icon: BarChart3 },
-  { id: 'insights',  label: 'AI Insights',   icon: Lightbulb },
-  { id: 'ml',        label: 'ML Models',     icon: Brain },
-  { id: 'dashboard', label: 'Dashboard',     icon: LayoutDashboard },
-  { id: 'chat',      label: 'Chat with Data',icon: MessageSquare,  pro: true },
+  { id: 'upload',    label: 'Upload Data',    icon: FileUp,          alwaysOn: true },
+  { id: 'preview',   label: 'Data Preview',   icon: Database },
+  { id: 'eda',       label: 'Automated EDA',  icon: BarChart3 },
+  { id: 'insights',  label: 'AI Insights',    icon: Lightbulb },
+  { id: 'ml',        label: 'ML Models',      icon: Brain },
+  { id: 'dashboard', label: 'Dashboard',      icon: LayoutDashboard },
+  { id: 'chat',      label: 'Chat with Data', icon: MessageSquare, pro: true },
 ]
 
 const App = () => {
-  const [activeTab,    setActiveTab]    = useState('upload')
-  const [data,         setData]         = useState(null)
-  const [exporting,    setExporting]    = useState(false)
-  const [exportError,  setExportError]  = useState(null)
+  const { isDark, toggleTheme } = useTheme()
+  const [activeTab,   setActiveTab]   = useState('upload')
+  const [data,        setData]        = useState(null)
+  const [exporting,   setExporting]   = useState(false)
+  const [exportError, setExportError] = useState(null)
 
   const handleUploadSuccess = (response) => {
     setData(response)
@@ -61,29 +64,37 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#080d18' }}>
+    <div className="min-h-screen flex" style={{ background: 'var(--df-bg)' }}>
 
-      {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <aside className="w-64 shrink-0 flex flex-col border-r border-slate-800/80"
-        style={{ background: 'linear-gradient(180deg, #0d1523 0%, #080d18 100%)' }}>
-
+      {/* ── Sidebar ───────────────────────────────────────────────────────── */}
+      <aside
+        className="w-64 shrink-0 flex flex-col"
+        style={{ background: 'var(--df-sidebar)', borderRight: '1px solid var(--df-border)' }}
+      >
         {/* Logo */}
-        <div className="px-6 py-7 border-b border-slate-800/60">
+        <div className="px-6 py-7" style={{ borderBottom: '1px solid var(--df-border)' }}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
               <Cpu size={18} className="text-white" />
             </div>
             <div>
-              <h1 className="text-white font-bold text-base leading-none">DataForge AI</h1>
-              <p className="text-slate-500 text-[10px] mt-0.5 uppercase tracking-widest">Analytics Platform</p>
+              <h1 className="font-bold text-base leading-none" style={{ color: 'var(--df-t1)' }}>
+                DataForge AI
+              </h1>
+              <p className="text-[10px] mt-0.5 uppercase tracking-widest" style={{ color: 'var(--df-t3)' }}>
+                Analytics Platform
+              </p>
             </div>
           </div>
         </div>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-          <p className="text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 mb-3">Navigation</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest px-3 mb-3"
+            style={{ color: 'var(--df-t4)' }}>
+            Navigation
+          </p>
           {TABS.map((tab) => {
             const disabled = !tab.alwaysOn && !data
             const active   = activeTab === tab.id
@@ -92,16 +103,26 @@ const App = () => {
                 key={tab.id}
                 onClick={() => !disabled && setActiveTab(tab.id)}
                 disabled={disabled}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                  active   ? 'text-white'
-                  : disabled ? 'text-slate-700 cursor-not-allowed'
-                             : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                }`}
-                style={active
-                  ? { background: 'linear-gradient(90deg, rgba(14,165,233,0.15) 0%, rgba(99,102,241,0.08) 100%)', borderLeft: '2px solid #0ea5e9' }
-                  : { borderLeft: '2px solid transparent' }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium group"
+                style={
+                  active ? {
+                    background: isDark
+                      ? 'linear-gradient(90deg, rgba(14,165,233,0.15) 0%, rgba(99,102,241,0.08) 100%)'
+                      : 'linear-gradient(90deg, rgba(14,165,233,0.1) 0%, rgba(99,102,241,0.05) 100%)',
+                    borderLeft: '2px solid #0ea5e9',
+                    color: 'var(--df-t1)',
+                  } : disabled ? {
+                    borderLeft: '2px solid transparent',
+                    color: 'var(--df-t4)',
+                    cursor: 'not-allowed',
+                    opacity: 0.5,
+                  } : {
+                    borderLeft: '2px solid transparent',
+                    color: 'var(--df-t2)',
+                  }
+                }
               >
-                <tab.icon size={16} className={active ? 'text-sky-400' : ''} />
+                <tab.icon size={16} style={{ color: active ? '#38bdf8' : 'inherit' }} />
                 <span className="flex-1 text-left">{tab.label}</span>
                 {tab.pro && (
                   <span className="text-[8px] font-black uppercase tracking-widest text-violet-400 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded-full">
@@ -114,65 +135,107 @@ const App = () => {
           })}
         </nav>
 
-        {/* Status */}
-        <div className="px-5 py-5 border-t border-slate-800/60">
+        {/* Status + Theme toggle */}
+        <div className="px-5 py-5 space-y-3" style={{ borderTop: '1px solid var(--df-border)' }}>
           {data ? (
             <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-emerald-400 text-xs font-semibold">Dataset Loaded</span>
               </div>
-              <p className="text-slate-400 text-[11px] truncate">{data.filename}</p>
-              <p className="text-slate-600 text-[10px] mt-0.5">
+              <p className="text-xs truncate" style={{ color: 'var(--df-t2)' }}>{data.filename}</p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'var(--df-t3)' }}>
                 {data.eda?.rows} rows · {data.eda?.columns} cols
               </p>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center">
-                <Shield size={13} className="text-slate-500" />
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: isDark ? 'rgba(30,41,59,0.7)' : '#f1f5f9' }}>
+                <Shield size={13} style={{ color: 'var(--df-t3)' }} />
               </div>
               <div>
-                <p className="text-slate-400 text-xs font-medium">Production Mode</p>
-                <p className="text-slate-600 text-[10px]">No data loaded</p>
+                <p className="text-xs font-medium" style={{ color: 'var(--df-t2)' }}>No data loaded</p>
+                <p className="text-[10px]" style={{ color: 'var(--df-t3)' }}>Upload to begin</p>
               </div>
             </div>
           )}
+
+          {/* Theme toggle pill */}
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl"
+            style={{
+              background: isDark ? 'rgba(30,41,59,0.5)' : '#f1f5f9',
+              border: '1px solid var(--df-border)',
+            }}
+          >
+            <span className="flex items-center gap-2 text-xs font-medium" style={{ color: 'var(--df-t2)' }}>
+              {isDark
+                ? <Moon size={13} style={{ color: '#38bdf8' }} />
+                : <Sun  size={13} style={{ color: '#f59e0b' }} />
+              }
+              {isDark ? 'Dark Mode' : 'Light Mode'}
+            </span>
+            {/* Animated pill */}
+            <div
+              className="relative w-9 h-5 rounded-full"
+              style={{ background: isDark ? 'rgba(14,165,233,0.25)' : '#bae6fd' }}
+            >
+              <div
+                className="absolute top-0.5 w-4 h-4 rounded-full shadow-sm"
+                style={{
+                  left: isDark ? '2px' : '18px',
+                  background: isDark ? '#0f172a' : '#0ea5e9',
+                }}
+              />
+            </div>
+          </button>
         </div>
       </aside>
 
-      {/* ── Main Content ─────────────────────────────────────────────────── */}
+      {/* ── Main Content ──────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
 
         {/* Top bar */}
-        <header className="shrink-0 flex items-center justify-between px-8 py-4 border-b border-slate-800/60"
-          style={{ background: 'rgba(8,13,24,0.8)', backdropFilter: 'blur(12px)' }}>
+        <header
+          className="shrink-0 flex items-center justify-between px-8 py-4"
+          style={{
+            background: 'var(--df-header)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid var(--df-border)',
+          }}
+        >
           <div>
-            <h2 className="text-white font-semibold text-lg">
+            <h2 className="font-semibold text-lg" style={{ color: 'var(--df-t1)' }}>
               {TABS.find(t => t.id === activeTab)?.label}
             </h2>
-            <p className="text-slate-500 text-xs mt-0.5">
+            <p className="text-xs mt-0.5" style={{ color: 'var(--df-t3)' }}>
               {data ? `Analyzing: ${data.filename}` : 'Upload a dataset to begin'}
             </p>
           </div>
 
           {data && (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/80 border border-slate-700/60 rounded-lg text-slate-400 text-xs">
+              <div
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+                style={{
+                  background: isDark ? 'rgba(30,41,59,0.8)' : '#f1f5f9',
+                  border: '1px solid var(--df-border)',
+                  color: 'var(--df-t2)',
+                }}
+              >
                 <Zap size={12} className="text-amber-400" />
                 {data.eda?.rows?.toLocaleString()} records processed
               </div>
 
-              {/* Export button */}
               <div className="relative">
                 <button
                   onClick={handleExport}
                   disabled={exporting}
-                  className="flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium"
                 >
-                  {exporting
-                    ? <Loader2 size={14} className="animate-spin" />
-                    : <Download size={14} />}
+                  {exporting ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
                   {exporting ? 'Generating…' : 'Export Report'}
                 </button>
                 {exportError && (
