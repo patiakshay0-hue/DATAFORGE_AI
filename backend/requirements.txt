@@ -11,6 +11,11 @@ reportlab
 python-dotenv
 scipy
 anthropic
-torch
-torchvision
+# Pillow enables image-metadata CSV export in the converter (lightweight, deploy-safe).
 Pillow
+# Deep learning (tabular) uses torch when available and falls back to scikit-learn
+# otherwise. The Image Classifier requires torch. torch + torchvision are omitted
+# here because they exceed Render free-tier limits; install them for full local/
+# self-hosted use:  pip install torch torchvision
+# torch
+# torchvision

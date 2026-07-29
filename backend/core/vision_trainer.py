@@ -171,18 +171,19 @@ def _try_backbone():
         return None, 0, None, "scratch"
 
 
-class _SmallCNN(nn.Module):
-    def __init__(self, n_classes):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.Conv2d(3, 16, 3, padding=1), nn.BatchNorm2d(16), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(16, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.AdaptiveAvgPool2d(1),
-        )
-        self.head = nn.Linear(64, n_classes)
+if HAS_TORCH:
+    class _SmallCNN(nn.Module):
+        def __init__(self, n_classes):
+            super().__init__()
+            self.net = nn.Sequential(
+                nn.Conv2d(3, 16, 3, padding=1), nn.BatchNorm2d(16), nn.ReLU(), nn.MaxPool2d(2),
+                nn.Conv2d(16, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2),
+                nn.Conv2d(32, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.AdaptiveAvgPool2d(1),
+            )
+            self.head = nn.Linear(64, n_classes)
 
-    def forward(self, x):
-        return self.head(self.net(x).flatten(1))
+        def forward(self, x):
+            return self.head(self.net(x).flatten(1))
 
 
 def train_classifier(config: dict | None = None) -> dict:
