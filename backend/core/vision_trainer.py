@@ -22,17 +22,28 @@ import zipfile
 import numpy as np
 
 try:
+    from PIL import Image
+    HAS_PIL = True
+except Exception:
+    HAS_PIL = False
+
+try:
     import torch
     import torch.nn as nn
     from torch.utils.data import DataLoader, TensorDataset
     from torchvision import transforms, models
-    from PIL import Image
     HAS_TORCH = True
-except Exception:  # torch or torchvision or PIL missing
+except Exception:  # torch or torchvision missing
     HAS_TORCH = False
 
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+
+# Images work with Pillow alone (lightweight, deploy-safe); torch adds the CNN.
+VISION_AVAILABLE = HAS_PIL
+ENGINE_NAME = "PyTorch (CNN)" if HAS_TORCH else "scikit-learn (image features)"
 
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".gif", ".webp"}
 IMG_SIZE = 128
@@ -64,8 +75,8 @@ def _clean_parts(name: str):
 def load_image_zip(content: bytes) -> dict:
     """Unpack a zip of images. The immediate parent folder of each image is its
     class label — robust to an extra wrapper folder (dataset/cats/1.jpg)."""
-    if not HAS_TORCH:
-        return {"status": "error", "note": "Image classification needs torch + torchvision installed."}
+    if not HAS_PIL:
+        return {"status": "error", "note": "Image tools need Pillow installed on the backend."}
 
     try:
         zf = zipfile.ZipFile(io.BytesIO(content))
@@ -125,7 +136,7 @@ def load_image_zip(content: bytes) -> dict:
     return {
         "status": "success", "classes": classes, "counts": counts,
         "total": len(images), "thumbnails": thumbnails,
-        "warnings": warnings[:10], "engine": "PyTorch",
+        "warnings": warnings[:10], "engine": ENGINE_NAME,
     }
 
 
@@ -140,7 +151,7 @@ def current_dataset():
         "total": VISION_STORE["total"],
         "thumbnails": VISION_STORE["thumbnails"],
         "warnings": VISION_STORE.get("warnings", []),
-        "engine": "PyTorch",
+        "engine": ENGINE_NAME,
     }
 
 
@@ -187,11 +198,14 @@ if HAS_TORCH:
 
 
 def train_classifier(config: dict | None = None) -> dict:
-    if not HAS_TORCH:
-        return {"status": "error", "note": "Image classification needs torch + torchvision installed."}
+    if not HAS_PIL:
+        return {"status": "error", "note": "Image tools need Pillow installed on the backend."}
     if not VISION_STORE.get("images"):
         return {"status": "error", "note": "Upload a zip of labelled images first."}
+    return _train_cnn(config) if HAS_TORCH else _train_lite(config)
 
+
+def _train_cnn(config: dict | None = None) -> dict:
     torch.manual_seed(42)
     np.random.seed(42)
     cfg = {"epochs": 15, "learning_rate": 0.001, **(config or {})}
@@ -292,9 +306,83 @@ def train_classifier(config: dict | None = None) -> dict:
     }
 
 
+# ── Lightweight engine (no torch): image features + scikit-learn ──────────────
+def _img_features(img) -> np.ndarray:
+    """A compact colour/texture descriptor for one image (works with Pillow only)."""
+    im = img.convert("RGB").resize((32, 32))
+    arr = np.asarray(im, dtype=float) / 255.0            # (32,32,3)
+    feats = []
+    for c in range(3):                                    # per-channel mean & std
+        ch = arr[:, :, c]
+        feats += [ch.mean(), ch.std()]
+    for c in range(3):                                    # per-channel 8-bin histogram
+        h, _ = np.histogram(arr[:, :, c], bins=8, range=(0, 1))
+        s = h.sum()
+        feats += (h / s).tolist() if s else h.tolist()
+    gray = arr.mean(axis=2)                               # simple texture: gradient energy
+    feats += [float(np.abs(np.diff(gray, axis=1)).mean()),
+              float(np.abs(np.diff(gray, axis=0)).mean())]
+    feats += [img.width / max(1, img.height), float(gray.mean())]  # aspect ratio, brightness
+    return np.array(feats, dtype=float)
+
+
+def _train_lite(config: dict | None = None) -> dict:
+    np.random.seed(42)
+    cfg = {"epochs": 15, **(config or {})}
+    epochs = int(np.clip(cfg["epochs"], 1, 60))
+
+    classes = VISION_STORE["classes"]
+    images = VISION_STORE["images"]
+    X = np.array([_img_features(im) for im, _ in images])
+    y = np.array([lbl for _, lbl in images])
+
+    idx = np.arange(len(y))
+    tr, va = train_test_split(idx, test_size=max(0.2, min(0.3, 30 / len(idx))),
+                              random_state=42, stratify=y)
+    scaler = StandardScaler().fit(X[tr])
+    Xtr, Xva = scaler.transform(X[tr]), scaler.transform(X[va])
+    ytr, yva = y[tr], y[va]
+
+    model = MLPClassifier(hidden_layer_sizes=(64,), learning_rate_init=0.01, random_state=42)
+    all_classes = np.unique(y)
+    history = []
+    t0 = time.time()
+    for epoch in range(epochs):
+        model.partial_fit(Xtr, ytr, classes=all_classes)
+        val_acc = float(accuracy_score(yva, model.predict(Xva)))
+        history.append({"epoch": epoch + 1, "train_loss": round(float(model.loss_), 4),
+                        "val_loss": None, "val_metric": round(val_acc, 4)})
+    elapsed = round(time.time() - t0, 2)
+
+    y_pred = model.predict(Xva)
+    n_classes = len(classes)
+    avg = "binary" if n_classes == 2 else "macro"
+    metrics = {
+        "accuracy": round(float(accuracy_score(yva, y_pred)), 4),
+        "f1_score": round(float(f1_score(yva, y_pred, average=avg, zero_division=0)), 4),
+    }
+    cm = confusion_matrix(yva, y_pred, labels=list(range(n_classes))).tolist()
+    n_params = int(sum(c.size for c in model.coefs_) + sum(b.size for b in model.intercepts_))
+
+    VISION_MODEL.clear()
+    VISION_MODEL.update({"model": model, "scaler": scaler, "classes": classes, "mode": "lite"})
+    return {
+        "status": "success", "engine": ENGINE_NAME,
+        "backbone": "Colour & texture features + scikit-learn MLP",
+        "mode": "lite", "classes": classes, "metrics": metrics,
+        "primary_metric": "accuracy", "metric_label": "Accuracy",
+        "history": history, "confusion_matrix": cm, "labels": classes,
+        "n_params": n_params, "training_time": f"{elapsed}s",
+        "n_train": int(len(tr)), "n_val": int(len(va)),
+        "architecture": [f"Input · image → {X.shape[1]} colour/texture features",
+                         "Standardize", "Dense 64 · ReLU",
+                         f"Dense · {n_classes} classes (softmax)"],
+    }
+
+
 def predict_image(content: bytes) -> dict:
-    if not HAS_TORCH:
-        return {"status": "error", "note": "Image classification needs torch + torchvision installed."}
+    if not HAS_PIL:
+        return {"status": "error", "note": "Image tools need Pillow installed on the backend."}
     if not VISION_MODEL.get("model"):
         return {"status": "error", "note": "Train an image classifier first."}
     try:
@@ -302,12 +390,16 @@ def predict_image(content: bytes) -> dict:
     except Exception:
         return {"status": "error", "note": "Could not read that image file."}
 
-    x = VISION_MODEL["transform"](img).unsqueeze(0)
-    model = VISION_MODEL["model"]
-    model.eval()
-    with torch.no_grad():
-        feats = VISION_MODEL["feat_fn"](x) if VISION_MODEL["mode"] == "transfer" else x
-        proba = torch.softmax(model(feats), dim=1)[0].numpy()
+    if VISION_MODEL["mode"] == "lite":
+        feats = VISION_MODEL["scaler"].transform(_img_features(img).reshape(1, -1))
+        proba = VISION_MODEL["model"].predict_proba(feats)[0]
+    else:
+        x = VISION_MODEL["transform"](img).unsqueeze(0)
+        model = VISION_MODEL["model"]
+        model.eval()
+        with torch.no_grad():
+            fx = VISION_MODEL["feat_fn"](x) if VISION_MODEL["mode"] == "transfer" else x
+            proba = torch.softmax(model(fx), dim=1)[0].numpy()
 
     classes = VISION_MODEL["classes"]
     order = np.argsort(proba)[::-1]

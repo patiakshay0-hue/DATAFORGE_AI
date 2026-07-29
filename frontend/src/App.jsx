@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FileUp, BarChart3, Brain, LayoutDashboard,
   Database, Lightbulb, ChevronRight, Network, Images, FileCog,
@@ -36,6 +36,19 @@ const App = () => {
   const [data,        setData]        = useState(null)
   const [exporting,   setExporting]   = useState(false)
   const [exportError, setExportError] = useState(null)
+  const [backendReady, setBackendReady] = useState(true)
+
+  // Warm up the backend on load. Render's free tier spins down after inactivity;
+  // pinging it now means the server is awake by the time the user uploads,
+  // instead of the first request hanging for ~60s on a cold start.
+  useEffect(() => {
+    let cancelled = false
+    const coldTimer = setTimeout(() => { if (!cancelled) setBackendReady(false) }, 2500)
+    fetch(`${import.meta.env.VITE_API_URL}/`, { cache: 'no-store' })
+      .catch(() => {})
+      .finally(() => { clearTimeout(coldTimer); if (!cancelled) setBackendReady(true) })
+    return () => { cancelled = true; clearTimeout(coldTimer) }
+  }, [])
 
   const handleUploadSuccess = (response) => {
     setData(response)
@@ -253,6 +266,15 @@ const App = () => {
             </div>
           )}
         </header>
+
+        {/* Cold-start notice — the free-tier backend can take ~1 min to wake */}
+        {!backendReady && (
+          <div className="shrink-0 flex items-center gap-2.5 px-8 py-2.5 text-xs"
+            style={{ background: 'rgba(245,158,11,0.1)', borderBottom: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}>
+            <Loader2 size={13} className="animate-spin shrink-0" />
+            Waking up the server (free hosting sleeps when idle) — the first request can take up to a minute. You can start uploading; it'll go through once it's awake.
+          </div>
+        )}
 
         {/* Page content */}
         <main className="flex-1 overflow-auto p-8">

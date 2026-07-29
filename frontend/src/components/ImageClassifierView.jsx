@@ -47,7 +47,7 @@ const ImageClassifierView = () => {
 
   const train = async () => {
     setTraining(true); setError(null); setResult(null)
-    const steps = ['Decoding images…', 'Loading MobileNetV2 backbone…', 'Extracting embeddings…', 'Training classifier head…', 'Evaluating…']
+    const steps = ['Decoding images…', 'Extracting image features…', 'Training classifier…', 'Evaluating on hold-out set…']
     let i = 0; setTrainStep(steps[0])
     const iv = setInterval(() => { i++; if (i < steps.length) setTrainStep(steps[i]) }, 1200)
     try {
@@ -66,10 +66,10 @@ const ImageClassifierView = () => {
       </div>
       <h3 className="text-lg font-bold" style={{ color: 'var(--df-t1)' }}>Image engine not installed</h3>
       <p className="text-sm" style={{ color: 'var(--df-t3)' }}>
-        The CNN image classifier needs PyTorch + torchvision on the backend. Install them and restart the server:
+        The image classifier needs Pillow on the backend (add PyTorch for the full CNN engine). Install and restart the server:
       </p>
       <code className="block text-xs bg-black/30 rounded-lg px-4 py-2.5 text-emerald-400 font-mono">
-        pip install torch torchvision
+        pip install Pillow   # + optional: pip install torch torchvision
       </code>
     </div>
   )

@@ -16,7 +16,7 @@ from core.cleaner import missing_report, handle_missing
 from core.deep_trainer import suggest_config, train_neural_network, recommend_targets, predict as deep_predict
 from core.vision_trainer import (
     load_image_zip, train_classifier, predict_image, current_dataset as vision_dataset,
-    HAS_TORCH as VISION_READY,
+    VISION_AVAILABLE as VISION_READY, HAS_TORCH, ENGINE_NAME as VISION_ENGINE,
 )
 from core import converter
 from core.exporter import generate_pdf_report
@@ -185,7 +185,12 @@ class VisionTrainRequest(BaseModel):
 
 @app.get("/vision/status")
 async def vision_status():
-    return {"ready": VISION_READY, "has_dataset": bool(_vision_has_dataset())}
+    return {
+        "ready": VISION_READY,
+        "engine": VISION_ENGINE,
+        "cnn": HAS_TORCH,
+        "has_dataset": bool(_vision_has_dataset()),
+    }
 
 def _vision_has_dataset():
     from core.vision_trainer import VISION_STORE
@@ -194,7 +199,7 @@ def _vision_has_dataset():
 @app.post("/vision/upload")
 async def vision_upload(file: UploadFile = File(...)):
     if not VISION_READY:
-        raise HTTPException(status_code=400, detail="Image classification needs torch + torchvision installed on the backend.")
+        raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
     if not file.filename.lower().endswith(".zip"):
         raise HTTPException(status_code=400, detail="Please upload a .zip archive of labelled image folders.")
     content = await file.read()
@@ -206,7 +211,7 @@ async def vision_upload(file: UploadFile = File(...)):
 @app.post("/vision/train")
 async def vision_train(request: VisionTrainRequest):
     if not VISION_READY:
-        raise HTTPException(status_code=400, detail="Image classification needs torch + torchvision installed on the backend.")
+        raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
     result = train_classifier(request.config)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Training failed"))
@@ -279,7 +284,7 @@ async def convert_load():
 @app.post("/convert/send-to-vision")
 async def convert_send_to_vision():
     if not VISION_READY:
-        raise HTTPException(status_code=400, detail="Image classification needs torch + torchvision installed.")
+        raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
     content = converter.get_stored_zip()
     if content is None:
         raise HTTPException(status_code=400, detail="Upload an image zip first")
