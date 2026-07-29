@@ -1,27 +1,33 @@
 import React, { useState } from 'react'
 import {
   FileUp, BarChart3, Brain, LayoutDashboard,
-  Database, Lightbulb, ChevronRight,
+  Database, Lightbulb, ChevronRight, Network, Images, FileCog,
   Cpu, Shield, Zap, MessageSquare, Loader2, Download,
   Sun, Moon
 } from 'lucide-react'
 import { useTheme } from './ThemeContext'
-import FileUpload    from './components/FileUpload'
-import EDAView       from './components/EDAView'
-import DashboardView from './components/DashboardView'
-import MLView        from './components/MLView'
-import PreviewView   from './components/PreviewView'
-import InsightsView  from './components/InsightsView'
-import ChatView      from './components/ChatView'
+import FileUpload          from './components/FileUpload'
+import EDAView             from './components/EDAView'
+import DashboardView       from './components/DashboardView'
+import MLView              from './components/MLView'
+import DeepLearningView    from './components/DeepLearningView'
+import ImageClassifierView from './components/ImageClassifierView'
+import ImportConvertView   from './components/ImportConvertView'
+import PreviewView         from './components/PreviewView'
+import InsightsView        from './components/InsightsView'
+import ChatView            from './components/ChatView'
 
 const TABS = [
-  { id: 'upload',    label: 'Upload Data',    icon: FileUp,          alwaysOn: true },
-  { id: 'preview',   label: 'Data Preview',   icon: Database },
-  { id: 'eda',       label: 'Automated EDA',  icon: BarChart3 },
-  { id: 'insights',  label: 'AI Insights',    icon: Lightbulb },
-  { id: 'ml',        label: 'ML Models',      icon: Brain },
-  { id: 'dashboard', label: 'Dashboard',      icon: LayoutDashboard },
-  { id: 'chat',      label: 'Chat with Data', icon: MessageSquare, pro: true },
+  { id: 'convert',   label: 'Import & Convert', icon: FileCog,         alwaysOn: true },
+  { id: 'upload',    label: 'Upload Data',      icon: FileUp,          alwaysOn: true },
+  { id: 'preview',   label: 'Data Preview',     icon: Database },
+  { id: 'eda',       label: 'Automated EDA',    icon: BarChart3 },
+  { id: 'insights',  label: 'AI Insights',      icon: Lightbulb },
+  { id: 'ml',        label: 'ML Models',        icon: Brain },
+  { id: 'deep',      label: 'Deep Learning',    icon: Network },
+  { id: 'vision',    label: 'Image Classifier', icon: Images, alwaysOn: true },
+  { id: 'dashboard', label: 'Dashboard',        icon: LayoutDashboard },
+  { id: 'chat',      label: 'Chat with Data',   icon: MessageSquare, pro: true },
 ]
 
 const App = () => {
@@ -250,11 +256,14 @@ const App = () => {
 
         {/* Page content */}
         <main className="flex-1 overflow-auto p-8">
+          {activeTab === 'convert'   && <ImportConvertView onDataLoaded={handleUploadSuccess} onNavigate={setActiveTab} />}
           {activeTab === 'upload'    && <FileUpload onUploadSuccess={handleUploadSuccess} />}
           {activeTab === 'preview'   && data && <PreviewView data={data} />}
-          {activeTab === 'eda'       && data && <EDAView data={data.eda} />}
+          {activeTab === 'eda'       && data && <EDAView data={data.eda} onDataUpdated={setData} />}
           {activeTab === 'insights'  && data && <InsightsView onNavigate={setActiveTab} />}
           {activeTab === 'ml'        && data && <MLView data={data} />}
+          {activeTab === 'deep'      && data && <DeepLearningView data={data} />}
+          {activeTab === 'vision'    && <ImageClassifierView />}
           {activeTab === 'dashboard' && data && <DashboardView data={data.eda} />}
           {activeTab === 'chat'      && data && <ChatView data={data} />}
         </main>

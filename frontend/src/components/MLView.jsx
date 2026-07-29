@@ -15,19 +15,16 @@ const ALL_MODELS = [
   { name: 'SVM',                 category: 'Both',           desc: 'Finds optimal hyperplane for complex decision boundaries',      badge: 'Reg + Class'        },
   { name: 'KNN',                 category: 'Both',           desc: 'Classifies by proximity to K nearest neighbors',               badge: 'Reg + Class'        },
   { name: 'K-Means',             category: 'Clustering',     desc: 'Unsupervised grouping of similar data points (no target needed)',badge: 'Clustering'        },
-  { name: 'CNN',                 category: 'Deep Learning',  desc: 'Convolutional network — optimized for image / spatial data',   badge: 'Image data'         },
-  { name: 'RNN/LSTM',            category: 'Deep Learning',  desc: 'Recurrent network — optimized for sequences & time-series',   badge: 'Sequence data'      },
   { name: 'XGBoost',             category: 'Both',           desc: 'Gradient boosting — gold standard for structured tabular data',badge: 'Reg + Class'        },
 ]
 
-const CATEGORIES = ['All', 'Regression', 'Classification', 'Both', 'Clustering', 'Deep Learning']
+const CATEGORIES = ['All', 'Regression', 'Classification', 'Both', 'Clustering']
 
 const CAT_STYLE = {
   'Regression':    { text: 'text-sky-400',     bg: 'bg-sky-500/10',     border: 'border-sky-500/20'   },
   'Classification':{ text: 'text-violet-400',  bg: 'bg-violet-500/10',  border: 'border-violet-500/20' },
   'Both':          { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20'},
   'Clustering':    { text: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20'  },
-  'Deep Learning': { text: 'text-pink-400',    bg: 'bg-pink-500/10',    border: 'border-pink-500/20'   },
 }
 
 const MODEL_COLORS = ['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ec4899','#6366f1','#14b8a6','#f97316']

@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts'
-import { BarChart3, PieChart as PieIcon, Table } from 'lucide-react'
+import {
+  BarChart3, PieChart as PieIcon, Table, Wand2, Sparkles, Loader2,
+  CheckCircle2, AlertCircle, ChevronDown, ChevronUp
+} from 'lucide-react'
 import { useTheme } from '../ThemeContext'
 
 const COLORS = ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1']
 
-const EDAView = ({ data }) => {
+const EDAView = ({ data, onDataUpdated }) => {
   const { isDark } = useTheme()
   const [activeStatTab, setActiveStatTab] = useState('summary')
 
@@ -58,6 +62,9 @@ const EDAView = ({ data }) => {
           </div>
         ))}
       </div>
+
+      {/* Missing-value cleaning */}
+      <CleaningPanel isDark={isDark} missing={missing} rows={rows} onDataUpdated={onDataUpdated} />
 
       {/* Stats table */}
       <div className={`rounded-2xl overflow-hidden border ${isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'}`}
@@ -204,6 +211,157 @@ const EDAView = ({ data }) => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Missing-value cleaning panel ──────────────────────────────────────────────
+const API = import.meta.env.VITE_API_URL
+
+const METHOD_LABELS = {
+  median: 'Fill with median', mean: 'Fill with mean', zero: 'Fill with 0',
+  mode: 'Fill with most frequent', constant: 'Fill with value…',
+  ffill: 'Forward fill', bfill: 'Backward fill',
+  drop_rows: 'Drop rows with missing', drop_column: 'Drop this column',
+}
+
+const CleaningPanel = ({ isDark, missing, rows, onDataUpdated }) => {
+  const [report,   setReport]   = useState(null)
+  const [strat,    setStrat]    = useState({})       // column -> { method, value }
+  const [open,     setOpen]     = useState(false)
+  const [applying, setApplying] = useState(false)
+  const [result,   setResult]   = useState(null)
+  const [error,    setError]    = useState(null)
+
+  const totalMissing = Object.values(missing).reduce((a, b) => a + b, 0)
+
+  // (re)load the report whenever the underlying data (missing counts) changes
+  useEffect(() => {
+    if (totalMissing === 0) { setReport(null); return }
+    axios.get(`${API}/clean/missing-report`).then(res => {
+      setReport(res.data)
+      const init = {}
+      res.data.columns.forEach(c => { init[c.column] = { method: c.suggested, value: 'Unknown' } })
+      setStrat(init)
+    }).catch(() => setError('Could not load the missing-value report.'))
+  }, [totalMissing])
+
+  const apply = async (strategies) => {
+    setApplying(true); setError(null); setResult(null)
+    try {
+      const res = await axios.post(`${API}/clean/apply`, { strategies })
+      setResult(res.data.clean_summary)
+      onDataUpdated?.(res.data)   // refresh the whole dataset across the app
+    } catch (e) {
+      setError(e.response?.data?.detail || 'Cleaning failed.')
+    } finally { setApplying(false) }
+  }
+
+  const applyPerColumn = () =>
+    apply(report.columns.map(c => ({ column: c.column, method: strat[c.column]?.method, value: strat[c.column]?.value })))
+
+  const autoClean = () =>
+    apply(report.columns.map(c => ({ column: c.column, method: c.suggested })))
+
+  const card = `rounded-2xl border ${isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'}`
+
+  // All clean → success confirmation
+  if (totalMissing === 0) {
+    return (
+      <div className={`${card} p-5 flex items-center gap-3`} style={{ background: 'var(--df-card)' }}>
+        <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+        <div>
+          <p className="font-semibold text-sm" style={{ color: 'var(--df-t1)' }}>No missing values</p>
+          <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
+            {result ? `Cleaned — ${result.cells_filled} cells filled, ${result.rows_removed} rows removed${result.columns_dropped.length ? `, ${result.columns_dropped.length} column(s) dropped` : ''}.` : 'Your dataset is complete and ready to analyse.'}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  const affected = report?.columns || []
+
+  return (
+    <div className={card} style={{ background: 'var(--df-card)' }}>
+      {/* Banner */}
+      <div className="flex items-center justify-between gap-4 px-6 py-5 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0">
+            <Wand2 size={18} className="text-amber-400" />
+          </div>
+          <div>
+            <h3 className="font-bold" style={{ color: 'var(--df-t1)' }}>Handle Missing Values</h3>
+            <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
+              <span className="text-amber-400 font-semibold">{totalMissing.toLocaleString()}</span> missing cells across{' '}
+              <span className="text-amber-400 font-semibold">{affected.length}</span> column(s)
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <button onClick={autoClean} disabled={applying || !report}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #10b981, #0ea5e9)' }}>
+            {applying ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            Auto-clean
+          </button>
+          <button onClick={() => setOpen(o => !o)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-medium text-sm transition-colors"
+            style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)', color: 'var(--df-t2)' }}>
+            Customize {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="mx-6 mb-4 flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+          <AlertCircle size={15} className="shrink-0" /> {error}
+        </div>
+      )}
+
+      {/* Per-column controls */}
+      {open && report && (
+        <div className="px-6 pb-6" style={{ borderTop: '1px solid var(--df-border)' }}>
+          <p className="text-xs mt-4 mb-3" style={{ color: 'var(--df-t3)' }}>
+            Choose how to handle each column. Suggested defaults are pre-selected by column type.
+          </p>
+          <div className="space-y-2.5">
+            {affected.map(c => {
+              const cur = strat[c.column] || {}
+              return (
+                <div key={c.column} className="flex items-center gap-3 flex-wrap p-3 rounded-xl"
+                  style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)' }}>
+                  <div className="flex-1 min-w-[140px]">
+                    <p className="font-semibold text-sm" style={{ color: 'var(--df-t1)' }}>{c.column}</p>
+                    <p className="text-[11px]" style={{ color: 'var(--df-t3)' }}>
+                      <span className={c.kind === 'numeric' ? 'text-sky-400' : 'text-violet-400'}>{c.kind}</span>
+                      {' · '}{c.missing} missing ({c.pct}%)
+                    </p>
+                  </div>
+                  <select value={cur.method || c.suggested}
+                    onChange={e => setStrat(s => ({ ...s, [c.column]: { ...s[c.column], method: e.target.value } }))}
+                    className="rounded-lg px-3 py-2 text-sm outline-none border"
+                    style={{ background: 'var(--df-card)', borderColor: 'var(--df-input-border)', color: 'var(--df-t1)' }}>
+                    {c.methods.map(m => <option key={m} value={m}>{METHOD_LABELS[m] || m}</option>)}
+                  </select>
+                  {cur.method === 'constant' && (
+                    <input type="text" value={cur.value ?? ''} placeholder="value"
+                      onChange={e => setStrat(s => ({ ...s, [c.column]: { ...s[c.column], value: e.target.value } }))}
+                      className="rounded-lg px-3 py-2 text-sm outline-none border w-28"
+                      style={{ background: 'var(--df-card)', borderColor: 'var(--df-input-border)', color: 'var(--df-t1)' }} />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          <button onClick={applyPerColumn} disabled={applying}
+            className="mt-4 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+            {applying ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+            Apply choices
+          </button>
         </div>
       )}
     </div>

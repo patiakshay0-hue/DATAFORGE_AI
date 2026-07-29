@@ -54,7 +54,7 @@ def _prepare_data(df: pd.DataFrame, target_column: str):
     df = df.dropna(subset=[target_column]).reset_index(drop=True)
     y_raw = df[target_column]
 
-    # Build feature columns one by one — avoids all pandas copy/view issues
+# Preprocess features: encode categoricals, convert numerics, drop datetimes and high-cardinality text
     X_cols = {}
     for col in df.columns:
         if col == target_column:
@@ -159,17 +159,6 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
     if "K-Means" in selected:
         results.append(_train_kmeans(df))
         selected = [m for m in selected if m != "K-Means"]
-
-    # Deep learning — not applicable for tabular data
-    for dl in ["CNN", "RNN/LSTM"]:
-        if dl in selected:
-            results.append({
-                "model": dl,
-                "status": "not_applicable",
-                "note": "Requires image/sequence data. Not suitable for tabular datasets.",
-                "metrics": None,
-            })
-            selected = [m for m in selected if m != dl]
 
     if not selected:
         best = next((r["model"] for r in results if r.get("status") == "success"), None)

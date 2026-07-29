@@ -11,3 +11,6 @@ reportlab
 python-dotenv
 scipy
 anthropic
+torch
+torchvision
+Pillow

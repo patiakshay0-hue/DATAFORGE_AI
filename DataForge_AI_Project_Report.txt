@@ -1,0 +1,856 @@
+================================================================================
+                    DATAFORGE AI — PROJECT REPORT
+                    Automated Analytics & LLM Intelligence Platform
+================================================================================
+
+Report Generated  : 2026-06-11
+Author            : Akshay Pradip Patil  (patiakshay0-hue)
+GitHub Repository : https://github.com/patiakshay0-hue/DATAFORGE_AI
+Project Type      : Full-Stack Web Application
+Status            : Production-Ready (Feature Complete)
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+  1.  Project Overview
+  2.  Goals & Objectives
+  3.  System Architecture
+  4.  Technology Stack
+  5.  Project Folder Structure
+  6.  Backend — Core Modules
+  7.  Backend — REST API Endpoints
+  8.  Frontend — Component Breakdown
+  9.  Feature Descriptions
+      9.1  File Upload & Parsing
+      9.2  Data Preview
+      9.3  Automated EDA
+      9.4  AI Insights Engine
+      9.5  ML Model Training
+      9.6  Dashboard
+      9.7  Export to PDF
+      9.8  Chat with Data (LLM Pro Feature)
+      9.9  Dark / Light Mode Theme System
+ 10.  Data Flow Diagram (Textual)
+ 11.  Security & Data Privacy
+ 12.  Environment Configuration
+ 13.  Local Development Setup
+ 14.  Deployment Guide (Free Hosting)
+ 15.  Known Limitations
+ 16.  Future Enhancements
+ 17.  Commit History Summary
+ 18.  Conclusion
+
+================================================================================
+1. PROJECT OVERVIEW
+================================================================================
+
+DataForge AI is a full-stack data analytics platform that allows any user —
+regardless of programming experience — to upload a dataset and immediately
+receive automated statistical analysis, machine learning model comparisons,
+AI-generated narrative insights, and an intelligent LLM-powered chat interface.
+
+The platform combines:
+  - A Python/FastAPI backend for data processing, ML training, PDF export,
+    and LLM streaming.
+  - A React/Vite frontend with a polished dark/light UI built on Tailwind CSS.
+  - Claude (Anthropic's AI) as the intelligence layer for chat and insights.
+
+Users interact with their data entirely through a browser — no Python or coding
+knowledge required.
+
+================================================================================
+2. GOALS & OBJECTIVES
+================================================================================
+
+Primary Goals:
+  - Provide instant, zero-code exploratory data analysis (EDA) for any CSV,
+    XLSX, or JSON dataset.
+  - Offer a one-click ML model leaderboard so non-experts can identify the
+    best-performing algorithm for their data.
+  - Let users ask free-form questions about their data in plain English via an
+    LLM-backed chat interface.
+  - Generate a professional PDF report of the full analysis with one click.
+  - Deliver a modern, accessible UI with dark and light mode support.
+
+Secondary Goals:
+  - Ensure data privacy — all processing happens in-memory with no persistence.
+  - Make the codebase clean and deployable for free using Render + Vercel.
+  - Provide safe secret management (API key never committed to git).
+
+================================================================================
+3. SYSTEM ARCHITECTURE
+================================================================================
+
+  ┌──────────────────────────────────────────────────────┐
+  │                   Browser (React SPA)                │
+  │  ┌────────────┐  ┌─────────┐  ┌──────────────────┐  │
+  │  │ Tailwind   │  │ Recharts│  │  Lucide Icons    │  │
+  │  │ CSS v4     │  │ Charts  │  │  (React 18)      │  │
+  │  └────────────┘  └─────────┘  └──────────────────┘  │
+  └──────────────────────┬───────────────────────────────┘
+                         │  HTTP / Server-Sent Events
+                         ▼
+  ┌──────────────────────────────────────────────────────┐
+  │              FastAPI Backend  (Python 3.x)           │
+  │  ┌──────────┐ ┌──────────┐ ┌────────────────────┐  │
+  │  │ loader.py│ │analyzer  │ │ insights.py        │  │
+  │  │ (Pandas) │ │.py (EDA) │ │ (rule-based logic) │  │
+  │  └──────────┘ └──────────┘ └────────────────────┘  │
+  │  ┌──────────┐ ┌──────────┐ ┌────────────────────┐  │
+  │  │trainer.py│ │exporter  │ │ chat.py            │  │
+  │  │(Sklearn  │ │.py(PDF)  │ │ (Anthropic SDK)    │  │
+  │  │+XGBoost) │ │(Reportlab│ │                    │  │
+  │  └──────────┘ └──────────┘ └────────────────────┘  │
+  │                                                      │
+  │               In-Memory data_store {}                │
+  └──────────────────────┬───────────────────────────────┘
+                         │  HTTPS API call
+                         ▼
+  ┌──────────────────────────────────────────────────────┐
+  │         Anthropic API  (claude-haiku-4-5-20251001)   │
+  │         Used only for: Chat with Data feature        │
+  └──────────────────────────────────────────────────────┘
+
+Architecture type    : Monorepo, client-server (REST + SSE)
+Communication        : JSON over HTTP for most endpoints;
+                       Server-Sent Events (SSE) for streaming chat
+State management     : React useState / useContext (no Redux)
+Data persistence     : None — all state is in-memory Python dict
+Deployment targets   : Vercel (frontend) + Render (backend)
+
+================================================================================
+4. TECHNOLOGY STACK
+================================================================================
+
+── FRONTEND ────────────────────────────────────────────────────────────────────
+
+  Framework       : React 18
+  Build Tool      : Vite 4
+  Styling         : Tailwind CSS v4 (with @theme tokens)
+  Charts          : Recharts (AreaChart, BarChart, PieChart, LineChart)
+  Icons           : Lucide React
+  HTTP Client     : Axios (data calls) + native fetch (streaming SSE)
+  Fonts           : Inter (Google Fonts)
+  Theme System    : Custom React Context + CSS Custom Properties (--df-*)
+  Language        : JavaScript (JSX)
+
+── BACKEND ─────────────────────────────────────────────────────────────────────
+
+  Framework       : FastAPI
+  Server          : Uvicorn (ASGI)
+  Data Processing : Pandas, NumPy
+  ML Library      : Scikit-learn 1.x
+  Gradient Boost  : XGBoost
+  PDF Generation  : ReportLab
+  LLM Integration : Anthropic Python SDK (claude-haiku-4-5-20251001)
+  Env Management  : python-dotenv
+  File Parsing    : Pandas (CSV), openpyxl (XLSX), json (JSON)
+  Language        : Python 3.10+
+
+── DEVOPS / TOOLING ────────────────────────────────────────────────────────────
+
+  Version Control : Git + GitHub
+  GitHub Account  : patiakshay0-hue
+  Repository      : DATAFORGE_AI (public)
+  Free Deployment : Vercel (frontend) + Render (backend)
+  Secret Handling : .env (gitignored) + environment variables in dashboards
+
+================================================================================
+5. PROJECT FOLDER STRUCTURE
+================================================================================
+
+  DataForge_Ai/
+  ├── .gitignore                    # Excludes .env, __pycache__, node_modules, etc.
+  │
+  ├── backend/
+  │   ├── main.py                   # FastAPI app — all routes defined here
+  │   ├── requirements.txt          # Python dependencies
+  │   ├── .env                      # SECRET — not committed (ANTHROPIC_API_KEY)
+  │   ├── .env.example              # Safe template committed to git
+  │   └── core/
+  │       ├── loader.py             # File ingestion (CSV, XLSX, JSON → DataFrame)
+  │       ├── analyzer.py           # EDA: stats, correlations, chart data
+  │       ├── insights.py           # Rule-based insight generation
+  │       ├── trainer.py            # ML model training & evaluation
+  │       ├── exporter.py           # PDF report generation (ReportLab)
+  │       └── chat.py               # Anthropic streaming chat
+  │
+  └── frontend/
+      ├── .env                      # Local env (VITE_API_URL=http://localhost:8000)
+      ├── .env.example              # Safe template committed to git
+      ├── index.html                # Entry point — title: "DataForge AI"
+      ├── vite.config.js
+      ├── package.json
+      └── src/
+          ├── main.jsx              # React root — wraps App in ThemeProvider
+          ├── App.jsx               # Layout: sidebar, header, tab routing
+          ├── ThemeContext.jsx      # Dark/light mode context + localStorage
+          ├── index.css             # Tailwind + CSS variable tokens
+          └── components/
+              ├── FileUpload.jsx    # Drag-and-drop upload UI
+              ├── PreviewView.jsx   # Paginated data table + schema cards
+              ├── EDAView.jsx       # Stats table + distribution/pie charts
+              ├── InsightsView.jsx  # Insight cards + LLM upsell banner
+              ├── MLView.jsx        # Model selector, training, leaderboard
+              ├── DashboardView.jsx # KPI cards + area/pie charts
+              ├── ChatView.jsx      # Streaming LLM chat interface
+              └── App.css           # Legacy (minimal overrides)
+
+================================================================================
+6. BACKEND — CORE MODULES
+================================================================================
+
+── core/loader.py ──────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - Reads raw bytes uploaded via the /upload endpoint.
+    - Detects file format from the filename extension.
+    - Parses CSV with Pandas read_csv(), XLSX with read_excel(openpyxl),
+      JSON with read_json().
+    - Returns a clean pandas DataFrame.
+    - get_schema(df) inspects each column and returns:
+        name, type (numeric / categorical / datetime / boolean),
+        unique value count, missing value count.
+
+── core/analyzer.py ────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - perform_eda(df) produces a JSON-serialisable dict containing:
+        summary     : Descriptive statistics (count, mean, std, min,
+                      25%, 50%, 75%, max) for all columns.
+        correlation : Pearson correlation matrix for numeric columns.
+        missing     : Missing value count per column.
+        charts      : Up to 10 histogram bar charts (numeric distributions)
+                      and up to 5 pie charts (categorical value counts).
+        rows/columns: Dataset dimensions.
+
+── core/insights.py ─────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - generate_insights(df) runs a series of deterministic checks and
+      produces a list of insight objects: { type, title, text }.
+    - Insight types: "success", "warning", "insight", "info".
+    - Checks performed include:
+        Missing value warnings (columns >5% missing).
+        High-correlation pair detection (|r| > 0.8).
+        Constant / near-constant column detection.
+        Class imbalance detection for low-cardinality columns.
+        Dataset size and feature count assessment.
+        Data completeness badges.
+
+── core/trainer.py ──────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - suggest_models(df, target_column): Returns problem_type and a ranked
+      list of recommended models based on target column characteristics.
+    - train_selected_models(df, models, target_column): Orchestrates training
+      for all selected models.
+
+  Training pipeline:
+    Step 1 — _prepare_data():
+      Builds feature matrix column-by-column (avoids pandas copy-on-write).
+      LabelEncoder applied to categorical columns (<50 unique values).
+      High-cardinality text columns are dropped.
+      Datetime columns are excluded.
+      Target column auto-classified as regression (numeric, >10 unique) or
+      classification (categorical or low-cardinality numeric).
+
+    Step 2 — Train/test split:
+      test_size = max(0.15, min(0.25, 20 / n_rows))
+      StandardScaler applied for SVM, KNN, Logistic Regression.
+
+    Step 3 — Model training:
+      Each model is instantiated, trained, and timed.
+      Classification metrics: accuracy, F1, precision, recall.
+      Regression metrics    : R², MAE, MSE.
+      K-Means clustering    : silhouette score, n_clusters, inertia.
+      CNN / RNN/LSTM        : marked as "not_applicable" (require image/
+                              sequence data, not tabular CSV).
+
+    Step 4 — Ranking:
+      Supervised results sorted by primary metric (descending for most,
+      ascending for MSE/MAE). best_model = top supervised result only
+      (K-Means never overrides supervised models).
+
+  Supported models (11):
+    Linear Regression, Logistic Regression, Decision Tree, Random Forest,
+    Naive Bayes, SVM, KNN, K-Means, CNN*, RNN/LSTM*, XGBoost
+    (* = not_applicable for tabular data)
+
+── core/exporter.py ─────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - generate_pdf_report(filename, schema, eda, insights, df) → bytes
+    - Builds an A4 PDF using ReportLab Platypus:
+        Cover header    : Branded dark background with gradient rule.
+        Metadata row    : Filename, date, record count, feature count.
+        Schema table    : Column name, type, unique count, missing count.
+        Stats table     : Descriptive statistics for up to 15 columns.
+        Data Quality    : Missing values table or "complete" badge.
+        Sample Data     : First 8 rows, first 7 columns.
+        AI Insights     : Each insight as a titled block with colour-coded
+                          horizontal rule.
+        Footer          : "Generated by DataForge AI · YYYY-MM-DD".
+
+── core/chat.py ────────────────────────────────────────────────────────────────
+
+  Responsibilities:
+    - check_api_key() → validates ANTHROPIC_API_KEY presence and format.
+    - _build_data_context() assembles a rich text prompt context block:
+        Dataset name, row/column counts.
+        Full schema listing with types and missing counts.
+        Numeric descriptive statistics.
+        Top 5 values for up to 5 categorical columns.
+        Pearson correlation matrix (if ≥2 numeric columns).
+        First 10 rows as CSV.
+    - stream_chat_response() — async generator that:
+        Builds the Anthropic messages array from multi-turn history.
+        Calls claude-haiku-4-5-20251001 via client.messages.stream().
+        Applies prompt caching (cache_control: ephemeral) on the system
+        prompt to reduce latency and token costs on follow-up messages.
+        Yields SSE chunks: "data: {\"text\": \"...\"}\n\n"
+        Yields final:      "data: [DONE]\n\n"
+        Handles AuthenticationError and RateLimitError gracefully.
+
+================================================================================
+7. BACKEND — REST API ENDPOINTS
+================================================================================
+
+  Base URL (local)    : http://localhost:8000
+  Base URL (deployed) : https://<your-service>.onrender.com
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Method │ Path           │ Description                                    │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ GET    │ /              │ Health check — returns {"message": "..."}      │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ POST   │ /upload        │ Upload CSV/XLSX/JSON file (multipart/form-data)│
+  │        │                │ Returns: filename, schema, eda, preview[0..9]  │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ GET    │ /insights      │ Returns list of insight objects for loaded data│
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ GET    │ /analyze       │ Re-runs EDA on loaded data                     │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ POST   │ /suggest       │ Body: {target_column?}                         │
+  │        │                │ Returns: {problem_type, suggested_models[]}    │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ POST   │ /train         │ Body: {models[], target_column?}               │
+  │        │                │ Returns: {results[], best_model, task}         │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ GET    │ /export        │ Returns binary PDF as application/pdf          │
+  │        │                │ Content-Disposition: attachment; filename=...  │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ GET    │ /chat/status   │ Returns {configured: bool, message: string}    │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │ POST   │ /chat          │ Body: {question, history[]}                    │
+  │        │                │ Returns SSE stream (text/event-stream)         │
+  │        │                │ Each chunk: data: {"text": "..."}              │
+  │        │                │ Final:      data: [DONE]                       │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  CORS: allow_origins=["*"] — open for development; restrict in production.
+
+================================================================================
+8. FRONTEND — COMPONENT BREAKDOWN
+================================================================================
+
+── App.jsx ─────────────────────────────────────────────────────────────────────
+
+  Root layout component. Renders:
+    - Left sidebar (fixed 256px width):
+        Logo (Cpu icon + gradient)
+        Navigation tabs (7 items)
+        Dataset status card (animated green dot when loaded)
+        Dark/Light mode toggle pill
+    - Top header (sticky, frosted glass):
+        Page title + subtitle
+        Records-processed badge
+        Export Report button
+    - Main content area (scrollable):
+        Tab-conditional component rendering
+
+  State: activeTab, data (full upload response), exporting, exportError
+  Theme: useTheme() → isDark + toggleTheme
+
+── ThemeContext.jsx ─────────────────────────────────────────────────────────────
+
+  React Context that:
+    - Initialises theme from localStorage ("df-theme" key).
+    - Applies data-theme attribute to <html> element on every change.
+    - Provides isDark (boolean) and toggleTheme() to all descendants.
+    - Persists preference across browser sessions.
+
+── index.css ────────────────────────────────────────────────────────────────────
+
+  Defines CSS Custom Properties on :root (dark defaults) and
+  [data-theme="light"] (light overrides):
+
+    --df-bg            App/page background
+    --df-sidebar       Sidebar gradient
+    --df-card          Card/surface background
+    --df-header        Frosted-glass header background
+    --df-border        Primary border color
+    --df-t1            Primary text (headings)
+    --df-t2            Secondary text (body)
+    --df-t3            Muted text (labels, captions)
+    --df-t4            Disabled text
+    --df-chart-grid    Recharts CartesianGrid stroke
+    --df-chart-axis    Recharts XAxis/YAxis stroke
+    --df-input-bg      Input/select background
+    --df-input-border  Input border
+    --df-row-hover     Table row hover background
+    --df-shadow        Box shadow
+    --df-tooltip-bg    Chart tooltip background
+    --df-tooltip-bdr   Chart tooltip border
+
+  Global transition: all color-property transitions run 220ms ease on every
+  element for smooth theme switching (animation classes excluded).
+
+── FileUpload.jsx ────────────────────────────────────────────────────────────────
+
+  - Drag-and-drop + click-to-browse upload zone.
+  - Upload progress bar (via Axios onUploadProgress).
+  - Error display on failure.
+  - Supported format chips (CSV, XLSX, JSON).
+  - Theme-aware: border/bg adapt to isDark.
+
+── PreviewView.jsx ───────────────────────────────────────────────────────────────
+
+  - Schema Detection grid: one card per column showing type badge,
+    unique count, and missing value count.
+  - Column search (live filter).
+  - Raw Data table: paginated (10 rows/page), numeric values shown in
+    sky-blue monospace, null values shown as italic "null".
+  - Theme-aware: table headers, row hover, pagination buttons.
+
+── EDAView.jsx ──────────────────────────────────────────────────────────────────
+
+  - Overview strip: 4 KPI tiles (rows, columns, numeric features, missing).
+  - Statistical Summary table with tab toggle to Missing Values table.
+  - Distribution section: histogram bar charts per numeric column.
+  - Categorical Breakdown section: donut pie charts per categorical column.
+  - Recharts chart colors (grid, axis, tooltip) driven by isDark.
+
+── InsightsView.jsx ─────────────────────────────────────────────────────────────
+
+  - Loading spinner while fetching /insights.
+  - Error state with retry hint.
+  - Header banner (gradient changes by theme).
+  - Grid of insight cards with colour-coded left accent bar
+    (emerald=success, amber=warning, sky=insight, violet=info).
+  - LLM Upsell Banner with "Unlock LLM Engine →" button
+    that navigates to the Chat tab via onNavigate prop.
+
+── MLView.jsx ────────────────────────────────────────────────────────────────────
+
+  Setup Screen:
+    - Target column selector.
+    - AI Suggestion panel (calls /suggest, auto-selects recommended models,
+      shows "Suggested" badge on model cards, provides local fallback).
+    - Category filter tabs (All / Regression / Classification / Both /
+      Clustering / Deep Learning).
+    - 11 model cards with checkbox, description, and category badge.
+    - Select All / Clear bulk actions.
+    - Train button with gradient styling.
+
+  Training Screen:
+    - Animated Brain spinner.
+    - Live step progress text.
+    - List of selected models with Loader2 spinners.
+
+  Results Screen (ResultsView):
+    - Best model banner with Trophy icon.
+    - Leaderboard grid: one card per successful model with:
+        Rank number, training time, metric bars (PercentBar).
+        "BEST" badge on winning card.
+    - Skipped / Not Applicable section.
+    - "Select Different Models" button to retrain.
+
+── DashboardView.jsx ────────────────────────────────────────────────────────────
+
+  - 4 KPI cards with trend badges (up/down arrows, green/red).
+  - Area chart: primary numeric feature distribution trend.
+  - Pie/donut chart: first categorical column breakdown.
+  - Multi-feature bar charts (up to 3 additional numeric columns).
+  - All chart colors adapt to isDark (grid lines, axis labels).
+
+── ChatView.jsx ─────────────────────────────────────────────────────────────────
+
+  - API key status check on mount (GET /chat/status).
+  - ApiKeyBanner shown if key not configured.
+  - "Claude AI connected" green pill when ready.
+  - Empty state: welcome card + 6 suggested question chips.
+  - MessageBubble:
+      User message: right-aligned blue bubble.
+      Assistant message: left-aligned with gradient bot avatar,
+        markdown-lite rendering (headings, bullets, numbered lists,
+        code blocks, bold, inline code).
+  - Streaming via fetch + ReadableStream reader parsing SSE chunks.
+  - Multi-turn conversation history sent on each message.
+  - Copy button on assistant messages (hover-reveal).
+  - Auto-growing textarea (max 120px height).
+  - Theme-aware: bubbles, input bar, suggestion chips.
+
+================================================================================
+9. FEATURE DESCRIPTIONS
+================================================================================
+
+9.1  FILE UPLOAD & PARSING
+────────────────────────────
+  Accepts CSV, XLSX (Excel), and JSON files up to ~50 MB via drag-and-drop
+  or file browser. On successful upload the backend returns the full EDA
+  result, schema, and first 10 rows preview. All other tabs unlock.
+
+9.2  DATA PREVIEW
+──────────────────
+  Shows a schema grid (one card per column) and a paginated data table.
+  Useful for verifying the file was parsed correctly and for understanding
+  the structure and types before analysis.
+
+9.3  AUTOMATED EDA
+───────────────────
+  Zero-config exploratory data analysis:
+    - Descriptive statistics (mean, std, min, quartiles, max).
+    - Missing value counts and percentages.
+    - Histograms for up to 10 numeric columns.
+    - Value-count pie/donut charts for up to 5 categorical columns.
+    - Pearson correlation matrix (available for PDF export and chat context).
+
+9.4  AI INSIGHTS ENGINE
+────────────────────────
+  Rule-based insight engine that scans the dataset and generates narrative
+  findings. Examples: "High correlation detected between col_A and col_B",
+  "Column X is 43% missing — consider imputation", "Dataset is complete —
+  no missing values found". Results displayed as colour-coded cards.
+
+9.5  ML MODEL TRAINING
+───────────────────────
+  User selects any combination of 11 models from a categorised grid.
+  Optional AI suggestion auto-selects the best models based on the target
+  column's data type and cardinality. The engine:
+    - Preprocesses features (label encoding, NA imputation, scaling for SVM/KNN).
+    - Splits into train/test sets (15–25% test, adaptive).
+    - Trains each model and records timing.
+    - Computes classification metrics (accuracy, F1, precision, recall) or
+      regression metrics (R², MAE, MSE).
+    - Returns a ranked leaderboard with percentage bars.
+
+9.6  DASHBOARD
+───────────────
+  A business-intelligence style view with KPI cards (total records, features,
+  quality score, data coverage), an area chart for numeric distributions,
+  a composition pie chart, and multi-feature bar charts.
+
+9.7  EXPORT TO PDF
+───────────────────
+  "Export Report" button in the header calls GET /export which triggers a
+  full ReportLab PDF build server-side and streams it as a binary download.
+  The PDF contains: branded header, schema table, statistical summary,
+  data quality section, sample data, and AI insights.
+
+9.8  CHAT WITH DATA (LLM PRO FEATURE)
+───────────────────────────────────────
+  Powered by Anthropic's Claude (claude-haiku-4-5-20251001):
+    - Sends the full dataset context (schema, stats, correlations, sample rows)
+      as a system prompt with prompt caching enabled for lower latency.
+    - Supports multi-turn conversation (full history sent each request).
+    - Streams responses token-by-token via Server-Sent Events.
+    - Frontend renders markdown-formatted responses in real time.
+    - Requires ANTHROPIC_API_KEY in backend/.env.
+
+9.9  DARK / LIGHT MODE THEME SYSTEM
+─────────────────────────────────────
+  Full dual-theme system built with React Context + CSS custom properties:
+    - Dark theme: deep navy (#080d18) backgrounds, slate borders, sky/violet
+      accent colours.
+    - Light theme: clean white cards with shadow-sm, slate-50 page background,
+      same accent colours reading naturally on white.
+    - Animated pill toggle (Moon/Sun icons) in the sidebar.
+    - Preference persisted in localStorage ("df-theme").
+    - Smooth 220ms CSS transitions on all color properties globally.
+    - Chart colors (grid, axis, tooltip) switch via isDark conditional.
+
+================================================================================
+10. DATA FLOW DIAGRAM (TEXTUAL)
+================================================================================
+
+  User drops CSV file
+         │
+         ▼
+  FileUpload.jsx  ──POST /upload──►  main.py → loader.py
+                                          │
+                                          ▼
+                                    analyzer.py (EDA)
+                                          │
+                                          ▼
+                               data_store{df, schema, eda, filename}
+                                          │
+                                          ▼
+                              JSON Response → App.jsx setData()
+                                          │
+                     ┌────────────────────┴───────────────────┐
+                     ▼                                        ▼
+              PreviewView (schema + table)          EDAView (charts + stats)
+                     │                                        │
+                     ▼                                        ▼
+              GET /insights                       MLView: POST /suggest
+              InsightsView cards                  POST /train → leaderboard
+                     │                                        │
+                     ▼                                        ▼
+              GET /export                         ChatView: POST /chat
+              PDF binary download                 SSE stream → token render
+                                                       │
+                                                       ▼
+                                              Anthropic API (Claude)
+
+================================================================================
+11. SECURITY & DATA PRIVACY
+================================================================================
+
+  Data Storage     : ALL uploaded data is held exclusively in Python's
+                     in-memory dict (data_store = {}).  Nothing is written
+                     to disk, a database, or any third-party storage.
+
+  Data Lifetime    : Data is erased when:
+                     (a) A new file is uploaded (overwrites the dict).
+                     (b) The backend process is restarted.
+                     (c) The server shuts down.
+
+  External Calls   : The ONLY time user data leaves the server is when the
+                     Chat feature is used — a text summary is sent to
+                     Anthropic's API.  Raw file bytes are never forwarded.
+                     Anthropic's API policy: data is not used for training
+                     and is subject to their data retention policy
+                     (~30 days).
+
+  API Key Safety   :
+                     - ANTHROPIC_API_KEY is stored in backend/.env.
+                     - backend/.env is listed in .gitignore and was never
+                       committed to the repository.
+                     - backend/.env.example (safe template) is committed.
+                     - For production (Render), the key is set via the
+                       Render dashboard's environment variable panel.
+
+  CORS             : Currently set to allow_origins=["*"] for development
+                     convenience.  For a production hardening step, replace
+                     "*" with the exact Vercel frontend URL.
+
+  Input Validation : File-type validation in loader.py (extension check).
+                     Pydantic models on all POST request bodies.
+                     HTTPException raised with meaningful status codes.
+
+================================================================================
+12. ENVIRONMENT CONFIGURATION
+================================================================================
+
+  ── Backend (backend/.env) ───────────────────────────────────────────────────
+
+    ANTHROPIC_API_KEY=sk-ant-api03-<your-key>
+
+    Get your key at: https://console.anthropic.com/
+    The backend will refuse chat requests if this key is absent.
+
+  ── Frontend (frontend/.env) ─────────────────────────────────────────────────
+
+    VITE_API_URL=http://localhost:8000     # for local development
+
+    For production, set this to your Render backend URL:
+    VITE_API_URL=https://dataforge-ai-backend.onrender.com
+
+    This variable is embedded at Vite build time and used by all fetch/axios
+    calls in the frontend components.
+
+================================================================================
+13. LOCAL DEVELOPMENT SETUP
+================================================================================
+
+  Prerequisites:
+    - Python 3.10 or newer
+    - Node.js 18 or newer
+    - Git
+
+  Step 1 — Clone the repository:
+    git clone https://github.com/patiakshay0-hue/DATAFORGE_AI.git
+    cd DATAFORGE_AI
+
+  Step 2 — Backend setup:
+    cd backend
+    python -m venv .venv
+    .venv\Scripts\activate          # Windows
+    # source .venv/bin/activate     # macOS/Linux
+    pip install -r requirements.txt
+    copy .env.example .env          # Windows
+    # cp .env.example .env          # macOS/Linux
+    # Edit .env and add your ANTHROPIC_API_KEY
+    python main.py
+    # Backend runs on http://localhost:8000
+
+  Step 3 — Frontend setup (new terminal):
+    cd frontend
+    npm install
+    # .env is already present with VITE_API_URL=http://localhost:8000
+    npm run dev
+    # Frontend runs on http://localhost:5173
+
+  Step 4 — Open the app:
+    Visit http://localhost:5173 in your browser.
+    Upload any CSV/XLSX/JSON file and explore all features.
+
+================================================================================
+14. DEPLOYMENT GUIDE (FREE HOSTING)
+================================================================================
+
+  ── Step 1: Deploy Backend on Render ─────────────────────────────────────────
+
+    1. Create account at https://render.com
+    2. New → Web Service → Connect GitHub → select DATAFORGE_AI
+    3. Configure:
+         Root Directory   : backend
+         Runtime          : Python 3
+         Build Command    : pip install -r requirements.txt
+         Start Command    : uvicorn main:app --host 0.0.0.0 --port $PORT
+         Instance Type    : Free
+    4. Environment Variables (Render dashboard):
+         ANTHROPIC_API_KEY = sk-ant-api03-<your-key>
+    5. Deploy. Note the URL:
+         https://dataforge-ai-backend.onrender.com  (example)
+
+  ── Step 2: Deploy Frontend on Vercel ────────────────────────────────────────
+
+    1. Create account at https://vercel.com
+    2. Add New Project → Import from GitHub → select DATAFORGE_AI
+    3. Configure:
+         Root Directory   : frontend
+         Framework Preset : Vite
+         Build Command    : npm run build
+         Output Directory : dist
+    4. Environment Variables (Vercel dashboard):
+         VITE_API_URL = https://dataforge-ai-backend.onrender.com
+    5. Deploy. Your app is live at:
+         https://dataforge-ai.vercel.app  (example)
+
+  Free Tier Limitations:
+    Render free instances sleep after 15 minutes of inactivity.
+    First request after sleep takes ~30 seconds to wake up.
+    Vercel free tier has unlimited bandwidth and no sleep.
+
+  Auto-redeploy: Both Render and Vercel redeploy automatically on every
+  push to the main branch of the GitHub repository.
+
+================================================================================
+15. KNOWN LIMITATIONS
+================================================================================
+
+  1. No Authentication:
+     The backend has no user authentication. Anyone with the backend URL can
+     upload files and overwrite the in-memory data_store. Suitable for
+     personal/demo use; not for multi-user production.
+
+  2. Single Dataset at a Time:
+     data_store holds only one dataset. Uploading a new file replaces the
+     previous one for all users hitting the same server instance.
+
+  3. CNN & RNN/LSTM Not Trainable:
+     These deep learning models are listed in the UI for educational awareness
+     but are marked "not_applicable" for tabular data. They require dedicated
+     image/sequence pipelines (TensorFlow/PyTorch).
+
+  4. Render Free Tier Cold Starts:
+     Free Render instances take ~30 seconds to wake after 15 minutes idle.
+     Users may experience a brief delay on first interaction after inactivity.
+
+  5. Large Dataset Performance:
+     The EDA and ML training steps run synchronously in the FastAPI request
+     handler. Very large datasets (>100k rows) may cause the request to time
+     out on the free Render tier.
+
+  6. Chat Requires Anthropic Credits:
+     The Chat with Data feature requires a funded Anthropic API account.
+     A valid API key with zero credit balance will return a billing error.
+
+  7. PDF Export Uses Dark Theme Colors:
+     The ReportLab PDF is hardcoded with the dark navy color palette to match
+     the original brand design. It does not switch to match the user's current
+     light/dark mode preference.
+
+================================================================================
+16. FUTURE ENHANCEMENTS
+================================================================================
+
+  Technical Improvements:
+    - Add user authentication (JWT / OAuth) for multi-user support.
+    - Switch data_store from a global dict to per-session Redis storage.
+    - Make large-file EDA and ML training asynchronous (Celery / background
+      task queue) with progress websocket updates.
+    - Add dataset versioning so users can compare multiple uploads.
+
+  Feature Additions:
+    - Feature engineering suggestions (binning, log transform, outlier flagging).
+    - Auto-hyperparameter tuning (GridSearchCV / Optuna).
+    - Model persistence — allow trained models to be downloaded as .pkl.
+    - Confusion matrix and ROC curve visualisations for classification results.
+    - Time-series specific analysis (ACF/PACF, seasonal decomposition).
+    - Data cleaning wizard (imputation, duplicate removal, type correction).
+    - Collaborative annotations — let users add notes to insights.
+    - Support for SQL database connections (upload data from SQL, not just files).
+
+  UX Improvements:
+    - Column-level filtering and sorting in the Data Preview table.
+    - Downloadable chart images from EDA and Dashboard.
+    - Keyboard shortcuts for tab navigation.
+    - Mobile responsive layout optimisation.
+    - Tooltip explanations on model metrics (what is F1 score?).
+
+================================================================================
+17. COMMIT HISTORY SUMMARY
+================================================================================
+
+  Commit 1  1c40942  Initial commit: DataForge AI — full-stack analytics platform
+            Added full project scaffold including all backend core modules
+            (loader, analyzer, insights, trainer, exporter, chat),
+            FastAPI main.py, all React components, and Tailwind CSS setup.
+
+  Commit 2  16805b8  Replace hardcoded localhost URLs with VITE_API_URL env var
+            All frontend API calls refactored to use import.meta.env.VITE_API_URL
+            for environment-agnostic deployment. Added frontend/.env and
+            frontend/.env.example.
+
+  Commit 3  3f14dbc  Wire Unlock LLM Engine button to navigate to Chat tab
+            The "Unlock LLM Engine →" button in InsightsView now calls
+            onNavigate('chat') to switch the active tab without a page reload.
+
+  Commit 4  ffea347  Add dark/light mode toggle with full theme system
+            Complete dual-theme system: ThemeContext, CSS custom properties
+            (--df-* tokens), animated pill toggle in sidebar, theme-aware
+            updates to all 7 components and all chart colors.
+
+================================================================================
+18. CONCLUSION
+================================================================================
+
+DataForge AI is a complete, deployable, full-stack data analytics platform
+that brings automated EDA, ML model comparison, AI-generated insights, LLM
+chat, and PDF reporting together in a single browser-based tool.
+
+The codebase demonstrates:
+  - Clean separation of concerns (backend core modules, frontend component
+    architecture).
+  - Real-world FastAPI patterns (streaming responses, file uploads, Pydantic
+    models, CORS, environment management).
+  - A production-grade React application with Context API, Recharts, custom
+    CSS variables for theming, and SSE streaming.
+  - Responsible secret management (API key never in version control).
+  - Free, auto-deploying infrastructure via Vercel + Render.
+
+The platform is suitable for:
+  - Data analysts who want rapid EDA without writing code.
+  - Students learning about ML model comparison.
+  - Developers demonstrating Anthropic Claude integration.
+  - Portfolio showcase of a full-stack AI application.
+
+================================================================================
+                           END OF REPORT
+                    DataForge AI — Project Report
+                    Akshay Pradip Patil | 2026-06-11
+================================================================================
