@@ -5,8 +5,8 @@ id,age,income,spending_score,gender,region,target
 4,23,16000,77,Female,West,1
 5,31,17000,40,Female,East,0
 6,22,17000,76,Female,West,1
-7,35,18000,6,Female,East,0
-8,23,18000,94,Female,North,1
+7,35,15000,6,Female,East,0
+8,23,15000,94,Female,North,1
 9,64,19000,3,Male,South,0
 10,30,19000,72,Female,North,1
 11,67,19000,14,Male,South,0
@@ -23,9 +23,9 @@ id,age,income,spending_score,gender,region,target
 22,25,24000,73,Male,North,1
 23,46,25000,5,Female,South,0
 24,31,25000,73,Male,South,1
-25,54,28000,14,Female,East,0
-26,29,28000,82,Male,North,1
-27,45,28000,32,Male,South,0
-28,35,28000,61,Male,West,1
+25,54,25000,14,Female,East,0
+26,29,25000,82,Male,North,1
+27,45,25000,32,Male,South,0
+28,35,25000,61,Male,West,1
 29,40,29000,31,Female,East,0
 30,23,29000,87,Female,South,1

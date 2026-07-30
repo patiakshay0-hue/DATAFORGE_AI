@@ -1,36 +1,41 @@
 import pandas as pd
 import numpy as np
 
+SAMPLE_CAP = 5000
+
+
+def _sample(df: pd.DataFrame) -> pd.DataFrame:
+    return df if len(df) <= SAMPLE_CAP else df.sample(n=SAMPLE_CAP, random_state=42)
+
+
 def perform_eda(df: pd.DataFrame):
-    # Summary Statistics
+    eda_df = _sample(df)
+
     summary = df.describe(include='all').transpose()
     summary = summary.fillna("N/A").to_dict(orient="index")
-    
-    # Correlation Matrix (numeric columns only)
-    numeric_df = df.select_dtypes(include=[np.number])
+
+    numeric_df = eda_df.select_dtypes(include=[np.number])
     corr_matrix = {}
     if not numeric_df.empty:
         corr = numeric_df.corr().fillna(0)
         corr_matrix = corr.to_dict()
-    
-    # Missing Values
+
     missing_values = df.isnull().sum().to_dict()
-    
-    # Data for charts
+
     charts = {}
-    
-    # 1. Distribution of numeric columns
-    for col in numeric_df.columns[:10]: # Limit to first 10 for performance
-        hist, bin_edges = np.histogram(df[col].dropna(), bins=20)
-        charts[f"dist_{col}"] = {
-            "type": "bar",
-            "data": [{"bin": float(bin_edges[i]), "count": int(hist[i])} for i in range(len(hist))]
-        }
-    
-    # 2. Categorical counts
-    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+
+    for col in numeric_df.columns[:10]:
+        vals = eda_df[col].dropna()
+        if len(vals):
+            hist, bin_edges = np.histogram(vals, bins=20)
+            charts[f"dist_{col}"] = {
+                "type": "bar",
+                "data": [{"bin": float(bin_edges[i]), "count": int(hist[i])} for i in range(len(hist))]
+            }
+
+    categorical_cols = eda_df.select_dtypes(include=['object', 'category']).columns
     for col in categorical_cols[:5]:
-        counts = df[col].value_counts().head(10).to_dict()
+        counts = eda_df[col].value_counts().head(10).to_dict()
         charts[f"count_{col}"] = {
             "type": "pie",
             "data": [{"name": k, "value": v} for k, v in counts.items()]

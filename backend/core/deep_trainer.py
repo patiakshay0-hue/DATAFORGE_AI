@@ -23,6 +23,8 @@ from sklearn.metrics import (
     r2_score, mean_squared_error, mean_absolute_error,
     confusion_matrix, roc_curve, auc,
 )
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 
 try:
     import torch
@@ -68,10 +70,14 @@ def _clean_config(cfg: dict | None) -> dict:
     layers = [int(u) for u in layers if int(u) > 0][: LIMITS["max_layers"]]
     layers = [min(u, LIMITS["max_units"]) for u in layers] or [64]
     cfg["hidden_layers"] = layers
-    lo, hi = LIMITS["epochs"];        cfg["epochs"]        = int(np.clip(cfg["epochs"], lo, hi))
-    lo, hi = LIMITS["learning_rate"]; cfg["learning_rate"] = float(np.clip(cfg["learning_rate"], lo, hi))
-    lo, hi = LIMITS["dropout"];       cfg["dropout"]       = float(np.clip(cfg["dropout"], lo, hi))
-    lo, hi = LIMITS["batch_size"];    cfg["batch_size"]    = int(np.clip(cfg["batch_size"], lo, hi))
+    lo, hi = LIMITS["epochs"]
+    cfg["epochs"] = int(np.clip(cfg["epochs"], lo, hi))
+    lo, hi = LIMITS["learning_rate"]
+    cfg["learning_rate"] = float(np.clip(cfg["learning_rate"], lo, hi))
+    lo, hi = LIMITS["dropout"]
+    cfg["dropout"] = float(np.clip(cfg["dropout"], lo, hi))
+    lo, hi = LIMITS["batch_size"]
+    cfg["batch_size"] = int(np.clip(cfg["batch_size"], lo, hi))
     return cfg
 
 
@@ -98,12 +104,15 @@ def _prepare_rich(df: pd.DataFrame, target_column: str):
             n_uniq = series.nunique()
             if n_uniq > min(50, max(2, len(df) // 3)):
                 continue  # drop high-cardinality free text
-            cats = sorted(series.fillna("__na__").astype(str).unique().tolist())
+            cats = sorted(series.fillna(
+                "__na__").astype(str).unique().tolist())
             mapping = {c: i for i, c in enumerate(cats)}
             encoders[col] = {"type": "categorical", "mapping": mapping}
-            cols.append(series.fillna("__na__").astype(str).map(mapping).astype(float).values)
+            cols.append(series.fillna("__na__").astype(
+                str).map(mapping).astype(float).values)
             feature_names.append(col)
-            spec.append({"name": col, "kind": "categorical", "categories": cats, "default": cats[0]})
+            spec.append({"name": col, "kind": "categorical",
+                        "categories": cats, "default": cats[0]})
         else:
             vals = pd.to_numeric(series, errors="coerce")
             median = vals.median()
@@ -119,14 +128,16 @@ def _prepare_rich(df: pd.DataFrame, target_column: str):
             })
 
     if not cols:
-        raise ValueError("No usable feature columns found after preprocessing.")
+        raise ValueError(
+            "No usable feature columns found after preprocessing.")
 
     X = np.column_stack(cols)
 
     n_unique = y_raw.nunique()
     if pd.api.types.is_numeric_dtype(y_raw) and n_unique > 10:
         task = "regression"
-        y = pd.to_numeric(y_raw, errors="coerce").fillna(y_raw.median()).values.astype(float)
+        y = pd.to_numeric(y_raw, errors="coerce").fillna(
+            y_raw.median()).values.astype(float)
         target_meta = {"type": "regression"}
     else:
         task = "classification"
@@ -165,7 +176,8 @@ def recommend_targets(df: pd.DataFrame) -> dict:
         if nu <= 1:
             continue  # constant column is useless
         name = str(col).lower()
-        is_id = (nu == n) or any(name == h or name.endswith("_" + h) or name.startswith(h + "_") for h in _ID_HINTS)
+        is_id = (nu == n) or any(name == h or name.endswith("_" + h)
+                                 or name.startswith(h + "_") for h in _ID_HINTS)
         if is_id:
             continue
         is_num = pd.api.types.is_numeric_dtype(s)
@@ -212,8 +224,10 @@ def suggest_config(df, target_column: str | None) -> dict:
         return {"task": None, "note": str(e), "config": DEFAULTS, "engine": engine}
 
     n_features, n_rows = X.shape[1], X.shape[0]
-    width = int(min(LIMITS["max_units"], max(32, 2 ** int(np.ceil(np.log2(max(8, n_features * 2)))))))
-    hidden = [width, max(16, width // 2)] if n_rows >= 200 else [max(16, width // 2)]
+    width = int(min(LIMITS["max_units"], max(
+        32, 2 ** int(np.ceil(np.log2(max(8, n_features * 2)))))))
+    hidden = [width, max(16, width // 2)
+              ] if n_rows >= 200 else [max(16, width // 2)]
     epochs = 80 if n_rows < 1000 else 50
     n_classes = int(len(np.unique(y))) if task == "classification" else None
 
@@ -264,7 +278,8 @@ def _permutation_importance(predict_scaled, Xs_val, y_val, task, feature_names, 
             Xp = Xs_val.copy()
             rng.shuffle(Xp[:, j])
             drops.append(base - score(predict_scaled(Xp)[0]))
-        out.append({"feature": name, "importance": round(max(0.0, float(np.mean(drops))), 4)})
+        out.append({"feature": name, "importance": round(
+            max(0.0, float(np.mean(drops))), 4)})
     total = sum(o["importance"] for o in out) or 1.0
     for o in out:
         o["importance_pct"] = round(100 * o["importance"] / total, 1)
@@ -277,7 +292,8 @@ def _evaluation(task, y_test, y_pred, proba, target_meta):
     if task == "classification":
         labels = list(range(len(target_meta.get("classes", []))))
         cm = confusion_matrix(y_test, y_pred, labels=labels).tolist()
-        ev = {"kind": "classification", "labels": target_meta["classes"], "confusion_matrix": cm}
+        ev = {"kind": "classification",
+              "labels": target_meta["classes"], "confusion_matrix": cm}
         if len(labels) == 2 and proba is not None:
             fpr, tpr, _ = roc_curve(y_test, proba[:, 1])
             ev["roc"] = {
@@ -290,7 +306,8 @@ def _evaluation(task, y_test, y_pred, proba, target_meta):
     idx = np.arange(len(y_test))
     if len(idx) > 200:
         idx = np.random.RandomState(42).choice(idx, 200, replace=False)
-    points = [{"actual": round(float(y_test[i]), 4), "predicted": round(float(y_pred[i]), 4)} for i in idx]
+    points = [{"actual": round(float(y_test[i]), 4), "predicted": round(
+        float(y_pred[i]), 4)} for i in idx]
     return {"kind": "regression", "points": points}
 
 
@@ -298,36 +315,43 @@ def _evaluation(task, y_test, y_pred, proba, target_meta):
 def _build_torch_mlp(in_dim, out_dim, hidden, dropout):
     layers, prev = [], in_dim
     for units in hidden:
-        layers += [nn.Linear(prev, units), nn.BatchNorm1d(units), nn.ReLU(), nn.Dropout(dropout)]
+        layers += [nn.Linear(prev, units), nn.BatchNorm1d(units),
+                   nn.ReLU(), nn.Dropout(dropout)]
         prev = units
     layers.append(nn.Linear(prev, out_dim))
     return nn.Sequential(*layers)
 
 
 def _train_torch(X, y, task, cfg, feature_names, target_meta):
-    torch.manual_seed(42); np.random.seed(42)
+    torch.manual_seed(42)
+    np.random.seed(42)
     rng = np.random.RandomState(42)
     n_classes = int(len(np.unique(y))) if task == "classification" else 1
     out_dim = n_classes if task == "classification" else 1
 
     test_size = max(0.15, min(0.25, 20 / len(X)))
-    X_tr, X_test, y_tr, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-    X_tr, X_val, y_tr, y_val = train_test_split(X_tr, y_tr, test_size=0.2, random_state=42)
+    X_tr, X_test, y_tr, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42)
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X_tr, y_tr, test_size=0.2, random_state=42)
 
     scaler = StandardScaler().fit(X_tr)
-    X_tr, X_val, X_test = scaler.transform(X_tr), scaler.transform(X_val), scaler.transform(X_test)
+    X_tr, X_val, X_test = scaler.transform(
+        X_tr), scaler.transform(X_val), scaler.transform(X_test)
 
     xt = torch.tensor(X_tr, dtype=torch.float32)
     xv = torch.tensor(X_val, dtype=torch.float32)
     if task == "classification":
-        yt = torch.tensor(y_tr, dtype=torch.long); yv = torch.tensor(y_val, dtype=torch.long)
+        yt = torch.tensor(y_tr, dtype=torch.long)
+        yv = torch.tensor(y_val, dtype=torch.long)
         criterion = nn.CrossEntropyLoss()
     else:
         yt = torch.tensor(y_tr, dtype=torch.float32).view(-1, 1)
         yv = torch.tensor(y_val, dtype=torch.float32).view(-1, 1)
         criterion = nn.MSELoss()
 
-    model = _build_torch_mlp(X.shape[1], out_dim, cfg["hidden_layers"], cfg["dropout"])
+    model = _build_torch_mlp(
+        X.shape[1], out_dim, cfg["hidden_layers"], cfg["dropout"])
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg["learning_rate"])
     n_params = sum(p.numel() for p in model.parameters())
     batch = min(cfg["batch_size"], len(xt))
@@ -351,8 +375,10 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
             idx = perm[i:i + batch]
             optimizer.zero_grad()
             loss = criterion(model(xt[idx]), yt[idx])
-            loss.backward(); optimizer.step()
-            epoch_loss += float(loss.item()); nb += 1
+            loss.backward()
+            optimizer.step()
+            epoch_loss += float(loss.item())
+            nb += 1
         model.eval()
         with torch.no_grad():
             val_out = model(xv)
@@ -364,7 +390,8 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
     elapsed = round(time.time() - t0, 2)
 
     y_pred, proba = predict_scaled(X_test)
-    importance = _permutation_importance(predict_scaled, X_val, y_val, task, feature_names, rng)
+    importance = _permutation_importance(
+        predict_scaled, X_val, y_val, task, feature_names, rng)
     evaluation = _evaluation(task, y_test, y_pred, proba, target_meta)
     metrics, primary = _final_metrics(task, y_test, y_pred)
 
@@ -377,19 +404,24 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
 def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
     rng = np.random.RandomState(42)
     test_size = max(0.15, min(0.25, 20 / len(X)))
-    X_tr, X_test, y_tr, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-    X_tr, X_val, y_tr, y_val = train_test_split(X_tr, y_tr, test_size=0.2, random_state=42)
+    X_tr, X_test, y_tr, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42)
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X_tr, y_tr, test_size=0.2, random_state=42)
 
     scaler = StandardScaler().fit(X_tr)
-    X_tr, X_val, X_test = scaler.transform(X_tr), scaler.transform(X_val), scaler.transform(X_test)
+    X_tr, X_val, X_test = scaler.transform(
+        X_tr), scaler.transform(X_val), scaler.transform(X_test)
 
     common = dict(hidden_layer_sizes=tuple(cfg["hidden_layers"]),
                   learning_rate_init=cfg["learning_rate"],
                   batch_size=min(cfg["batch_size"], len(X_tr)), random_state=42)
     if task == "classification":
-        model = MLPClassifier(**common); classes = np.unique(y)
+        model = MLPClassifier(**common)
+        classes = np.unique(y)
     else:
-        model = MLPRegressor(**common); classes = None
+        model = MLPRegressor(**common)
+        classes = None
 
     def predict_scaled(Xs):
         if task == "classification":
@@ -411,12 +443,14 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
     elapsed = round(time.time() - t0, 2)
 
     y_pred, proba = predict_scaled(X_test)
-    importance = _permutation_importance(predict_scaled, X_val, y_val, task, feature_names, rng)
+    importance = _permutation_importance(
+        predict_scaled, X_val, y_val, task, feature_names, rng)
     evaluation = _evaluation(task, y_test, y_pred, proba, target_meta)
     metrics, primary = _final_metrics(task, y_test, y_pred)
 
     out_dim = len(np.unique(y)) if task == "classification" else 1
-    n_params = int(sum(c.size for c in model.coefs_) + sum(b.size for b in model.intercepts_))
+    n_params = int(sum(c.size for c in model.coefs_) +
+                   sum(b.size for b in model.intercepts_))
     return _assemble(model, scaler, "scikit-learn", task, metrics, primary, history,
                      X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
                      feature_names, target_meta, predict_scaled)
@@ -446,7 +480,8 @@ def train_neural_network(df, target_column, config=None):
         return {"status": "error", "note": "A target column is required to train a neural network."}
     cfg = _clean_config(config)
     try:
-        X, y, task, feats, spec, encoders, target_meta = _prepare_rich(df, target_column)
+        X, y, task, feats, spec, encoders, target_meta = _prepare_rich(
+            df, target_column)
     except Exception as e:
         return {"status": "error", "note": str(e)}
     if len(X) < 20:
@@ -459,10 +494,163 @@ def train_neural_network(df, target_column, config=None):
         return {"status": "error", "note": str(e)[:300]}
 
     # attach the input schema so the playground can build its form
-    LAST_MODEL.update({"encoders": encoders, "spec": spec, "target_column": target_column})
+    LAST_MODEL.update({"encoders": encoders, "spec": spec,
+                      "target_column": target_column})
     result["feature_spec"] = spec
     result["target_column"] = target_column
     return result
+
+
+# ── Auto-optimize config: algorithm to find best hidden layers, epochs, LR ───
+def auto_optimize_config(df: pd.DataFrame, target_column: str = None) -> dict:
+    n_samples, n_features = df.shape
+    n_features -= 1  # exclude target if provided
+
+    task = "auto"
+    n_classes = None
+
+    if target_column and target_column in df.columns:
+        y_raw = df[target_column]
+        n_unique = y_raw.nunique(dropna=True)
+        if pd.api.types.is_numeric_dtype(y_raw) and n_unique > 10:
+            task = "regression"
+        elif 2 <= n_unique <= 20:
+            task = "classification"
+            n_classes = n_unique
+
+    # Hidden layers algorithm based on data size and complexity
+    base_width = int(
+        min(256, max(16, 2 ** int(np.ceil(np.log2(max(8, n_features * 1.5)))))))
+    if n_samples < 500:
+        hidden_layers = [base_width]
+    elif n_samples < 2000:
+        hidden_layers = [base_width, max(16, base_width // 2)]
+    elif n_samples < 10000:
+        hidden_layers = [base_width, max(
+            32, base_width // 2), max(16, base_width // 4)]
+    else:
+        hidden_layers = [min(512, base_width * 2),
+                         base_width, max(32, base_width // 2)]
+    if task == "classification" and n_classes and n_classes > 5:
+        hidden_layers = hidden_layers + [max(16, hidden_layers[-1] // 2)]
+
+    # Epochs algorithm
+    if n_samples < 500:
+        epochs = 150
+    elif n_samples < 2000:
+        epochs = 100
+    elif n_samples < 10000:
+        epochs = 60
+    else:
+        epochs = 40
+
+    # Learning rate algorithm
+    lr = 0.001
+    if n_features > 50:
+        lr = 0.0005
+    if n_samples > 10000:
+        lr = min(lr, 0.0003)
+    if task == "classification" and n_classes and n_classes > 10:
+        lr = min(lr, 0.0005)
+
+    return {
+        "config": {
+            "hidden_layers": hidden_layers,
+            "epochs": epochs,
+            "learning_rate": lr,
+            "dropout": 0.2 if n_samples > 1000 else 0.1,
+            "batch_size": min(256, max(16, 2 ** int(np.log2(min(n_samples // 10, 64))))),
+        },
+        "data_profile": {
+            "n_samples": int(n_samples),
+            "n_features": int(n_features),
+            "task": task,
+            "n_classes": n_classes,
+        },
+    }
+
+
+# ── Pattern discovery: PCA, clusters, correlations ───────────────────────────
+PATTERN_SAMPLE_CAP = 5000
+
+
+def _pattern_sample(df: pd.DataFrame) -> pd.DataFrame:
+    return df if len(df) <= PATTERN_SAMPLE_CAP else df.sample(n=PATTERN_SAMPLE_CAP, random_state=42)
+
+
+def discover_patterns(df: pd.DataFrame) -> dict:
+    df = df.select_dtypes(include=[np.number]).copy()
+    df = df.dropna(axis=1, how="all")
+    if df.shape[1] < 2:
+        return {"error": "Need at least 2 numeric columns for pattern discovery."}
+    df = df.fillna(df.median(numeric_only=True))
+
+    sample_df = _pattern_sample(df)
+
+    # Correlation matrix (top features by variance)
+    variances = df.var().sort_values(ascending=False)
+    top_cols = variances.head(min(20, len(variances))).index.tolist()
+    corr_df = sample_df[top_cols].corr()
+
+    # PCA on sampled data
+    n_components = min(3, sample_df.shape[1], sample_df.shape[0])
+    pca = PCA(n_components=n_components)
+    pca_result = pca.fit_transform(sample_df.values)
+
+    # Feature ranking by variance (uses full data, cheap O(n) per column)
+    var_df = df.var().sort_values(ascending=False)
+    feature_rank = [{"feature": col, "variance": round(float(v), 4)}
+                    for col, v in var_df.head(30).items()]
+
+    # PCA loadings
+    loadings = []
+    for i, col in enumerate(sample_df.columns[:20]):
+        loadings.append({
+            "feature": col,
+            "pc1": round(float(pca.components_[0][i]), 4) if n_components >= 1 else 0,
+            "pc2": round(float(pca.components_[1][i]), 4) if n_components >= 2 else 0,
+        })
+
+    # Fast elbow + silhouette on sampled data
+    best_k, best_score = 2, -1
+    elbow = []
+    vals = sample_df.values
+    ks = range(2, min(10, len(sample_df)))
+    if len(sample_df) >= 10:
+        from sklearn.metrics import silhouette_score
+        for k in ks:
+            km = KMeans(n_clusters=k, random_state=42, n_init=3)
+            labels = km.fit_predict(vals)
+            elbow.append({"k": k, "inertia": round(float(km.inertia_), 2)})
+            if len(set(labels)) > 1:
+                s = silhouette_score(vals, labels)
+                if s > best_score:
+                    best_score, best_k = s, k
+
+    final_km = KMeans(n_clusters=best_k, random_state=42, n_init=3)
+    cluster_labels = final_km.fit_predict(vals).tolist()
+
+    return {
+        "pca": {
+            "explained_variance_ratio": [round(float(v), 4) for v in pca.explained_variance_ratio_],
+            "points": [{"x": round(float(r[0]), 4), "y": round(float(r[1]), 4) if n_components >= 2 else 0,
+                        "z": round(float(r[2]), 4) if n_components >= 3 else 0}
+                       for r in pca_result[:500]],
+            "loadings": loadings,
+        },
+        "clusters": {
+            "n_clusters": best_k,
+            "silhouette_score": round(float(best_score), 4) if best_score > 0 else None,
+            "labels": cluster_labels[:500],
+            "elbow": elbow,
+        },
+        "correlation": {
+            "columns": top_cols,
+            "values": [[round(float(corr_df.iloc[i, j]), 4) for j in range(len(top_cols))]
+                       for i in range(len(top_cols))],
+        },
+        "feature_rank": feature_rank,
+    }
 
 
 # ── Prediction playground ─────────────────────────────────────────────────────
@@ -470,7 +658,8 @@ def predict(inputs: dict) -> dict:
     if "predict_scaled" not in LAST_MODEL:
         return {"status": "error", "note": "No trained network in memory. Train a model first."}
     try:
-        row = _encode_row(inputs, LAST_MODEL["feature_names"], LAST_MODEL["encoders"])
+        row = _encode_row(
+            inputs, LAST_MODEL["feature_names"], LAST_MODEL["encoders"])
         Xs = LAST_MODEL["scaler"].transform(row)
         preds, proba = LAST_MODEL["predict_scaled"](Xs)
         task = LAST_MODEL["task"]

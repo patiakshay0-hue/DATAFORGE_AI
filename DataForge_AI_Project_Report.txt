@@ -177,7 +177,7 @@ Deployment targets   : Vercel (frontend) + Render (backend)
   │       └── chat.py               # Anthropic streaming chat
   │
   └── frontend/
-      ├── .env                      # Local env (VITE_API_URL=http://localhost:8000)
+      ├── .env                      # Local env (VITE_API_URL=http://localhost:5000)
       ├── .env.example              # Safe template committed to git
       ├── index.html                # Entry point — title: "DataForge AI"
       ├── vite.config.js
@@ -317,7 +317,7 @@ Deployment targets   : Vercel (frontend) + Render (backend)
 7. BACKEND — REST API ENDPOINTS
 ================================================================================
 
-  Base URL (local)    : http://localhost:8000
+  Base URL (local)    : http://localhost:5000
   Base URL (deployed) : https://<your-service>.onrender.com
 
   ┌──────────────────────────────────────────────────────────────────────────┐
@@ -653,7 +653,7 @@ Deployment targets   : Vercel (frontend) + Render (backend)
 
   ── Frontend (frontend/.env) ─────────────────────────────────────────────────
 
-    VITE_API_URL=http://localhost:8000     # for local development
+    VITE_API_URL=http://localhost:5000     # for local development
 
     For production, set this to your Render backend URL:
     VITE_API_URL=https://dataforge-ai-backend.onrender.com
@@ -684,12 +684,12 @@ Deployment targets   : Vercel (frontend) + Render (backend)
     # cp .env.example .env          # macOS/Linux
     # Edit .env and add your ANTHROPIC_API_KEY
     python main.py
-    # Backend runs on http://localhost:8000
+    # Backend runs on http://localhost:5000
 
   Step 3 — Frontend setup (new terminal):
     cd frontend
     npm install
-    # .env is already present with VITE_API_URL=http://localhost:8000
+    # .env is already present with VITE_API_URL=http://localhost:5000
     npm run dev
     # Frontend runs on http://localhost:5173
 
