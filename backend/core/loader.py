@@ -23,14 +23,19 @@ def get_schema(df: pd.DataFrame):
         missing = int(df[col].isnull().sum())
         unique = int(df[col].nunique())
         
-        col_type = "numeric"
-        if "object" in dtype or "category" in dtype:
-            col_type = "categorical"
-        elif "datetime" in dtype:
-            col_type = "datetime"
-        elif "bool" in dtype:
+        # Use the pandas type API rather than substring-matching the dtype name:
+        # pandas 3 renamed the default string dtype from "object" to "str", so a
+        # plain `"object" in dtype` check silently labels text columns numeric.
+        series = df[col]
+        if pd.api.types.is_bool_dtype(series):
             col_type = "boolean"
-            
+        elif pd.api.types.is_datetime64_any_dtype(series):
+            col_type = "datetime"
+        elif pd.api.types.is_numeric_dtype(series):
+            col_type = "numeric"
+        else:
+            col_type = "categorical"
+
         schema.append({
             "name": col,
             "type": col_type,

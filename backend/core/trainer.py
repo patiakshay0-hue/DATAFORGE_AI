@@ -62,7 +62,11 @@ def _prepare_data(df: pd.DataFrame, target_column: str):
         series = df[col]
         if pd.api.types.is_datetime64_any_dtype(series):
             continue
-        if series.dtype == 'object':
+        # Anything non-numeric (object, pandas 3 "str", category, bool) is a
+        # categorical feature. Checking `dtype == 'object'` misses pandas 3
+        # string columns, which then fall through to to_numeric() and become
+        # a column of zeros — a silently useless feature.
+        if not pd.api.types.is_numeric_dtype(series):
             n_uniq = series.nunique()
             if n_uniq > min(50, max(2, len(df) // 3)):
                 continue  # drop high-cardinality text

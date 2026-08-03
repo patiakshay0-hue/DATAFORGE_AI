@@ -29,7 +29,9 @@ def _build_data_context(df: pd.DataFrame, schema: list, eda: dict, filename: str
         lines.append(desc.to_string())
 
     # Categorical value counts (top 5 per column)
-    cat_cols = df.select_dtypes(include='object').columns
+    cat_cols = df.select_dtypes(
+        exclude=[np.number, "datetime", "datetimetz", "timedelta"]
+    ).columns
     if len(cat_cols):
         lines += ["", "=== CATEGORICAL COLUMNS ==="]
         for col in cat_cols[:5]:

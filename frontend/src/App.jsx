@@ -18,6 +18,7 @@ import {
   Download,
   Sun,
   Moon,
+  Sparkles,
 } from "lucide-react";
 import { useTheme } from "./ThemeContext";
 import FileUpload from "./components/FileUpload";
@@ -26,6 +27,7 @@ import DashboardView from "./components/DashboardView";
 import MLView from "./components/MLView";
 import SmartConfigView from "./components/SmartConfigView";
 import DeepLearningView from "./components/DeepLearningView";
+import DeepLearning1View from "./components/DeepLearning1View";
 import ImageClassifierView from "./components/ImageClassifierView";
 import ImportConvertView from "./components/ImportConvertView";
 import PreviewView from "./components/PreviewView";
@@ -40,7 +42,8 @@ const TABS = [
   { id: "insights", label: "AI Insights", icon: Lightbulb },
   { id: "ml", label: "ML Models", icon: Brain },
   { id: "deep", label: "Deep Learning", icon: Brain, alwaysOn: true },
-  // { id: 'deep',      label: 'Deep Learning',    icon: Network },
+  // Unsupervised — needs no target column, so it is always available.
+  { id: "deep1", label: "Deep Learning 1.0", icon: Sparkles, alwaysOn: true },
   { id: "vision", label: "Image Classifier", icon: Images, alwaysOn: true },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "chat", label: "Chat with Data", icon: MessageSquare, pro: true },
@@ -351,7 +354,8 @@ const App = () => {
           )}
           {activeTab === "ml" && data && <MLView data={data} />}
           {activeTab === "smart" && data && <SmartConfigView data={data} />}
-          {/* {activeTab === 'deep'      && data && <DeepLearningView data={data} />} */}
+          {activeTab === "deep" && <DeepLearningView data={data} />}
+          {activeTab === "deep1" && <DeepLearning1View data={data} />}
           {activeTab === "vision" && <ImageClassifierView />}
           {activeTab === "dashboard" && data && (
             <DashboardView data={data.eda} />

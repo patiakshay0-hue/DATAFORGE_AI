@@ -35,6 +35,8 @@ except ImportError:
 
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 
+from core.dl1.config import infer_task
+
 
 # ── Config ───────────────────────────────────────────────────────────────────
 DEFAULTS = {
@@ -43,7 +45,20 @@ DEFAULTS = {
     "learning_rate": 0.001,
     "dropout": 0.2,
     "batch_size": 32,
+    # Extended knobs (Deep Learning 1.0). Defaults reproduce the original
+    # hardcoded behaviour, so existing callers are unaffected; AutoModelConfig
+    # overrides them deliberately.
+    "activation": "relu",
+    "optimizer": "adam",
+    "loss_function": None,          # None → derive from task
+    "early_stopping": {"enabled": False},
 }
+
+# Activation / optimizer names accepted from a config. Anything else falls back to
+# the default rather than raising, so a bad client payload can't break training.
+ACTIVATIONS = ("relu", "gelu", "tanh", "elu", "leaky_relu", "silu")
+OPTIMIZERS = ("adam", "adamw", "sgd", "rmsprop")
+LOSSES = ("cross_entropy", "weighted_cross_entropy", "mse", "huber", "mae")
 
 LIMITS = {
     "epochs": (1, 300),
@@ -78,6 +93,27 @@ def _clean_config(cfg: dict | None) -> dict:
     cfg["dropout"] = float(np.clip(cfg["dropout"], lo, hi))
     lo, hi = LIMITS["batch_size"]
     cfg["batch_size"] = int(np.clip(cfg["batch_size"], lo, hi))
+
+    # Extended knobs — unknown values degrade to the default instead of raising.
+    cfg["activation"] = str(cfg.get("activation") or "relu").lower()
+    if cfg["activation"] not in ACTIVATIONS:
+        cfg["activation"] = "relu"
+    cfg["optimizer"] = str(cfg.get("optimizer") or "adam").lower()
+    if cfg["optimizer"] not in OPTIMIZERS:
+        cfg["optimizer"] = "adam"
+    loss = cfg.get("loss_function")
+    cfg["loss_function"] = loss.lower() if isinstance(loss, str) and loss.lower() in LOSSES else None
+
+    es = cfg.get("early_stopping") or {}
+    if not isinstance(es, dict):
+        es = {}
+    cfg["early_stopping"] = {
+        "enabled": bool(es.get("enabled", False)),
+        "monitor": es.get("monitor", "val_loss"),
+        "patience": int(np.clip(int(es.get("patience", 10)), 1, 100)),
+        "min_delta": float(es.get("min_delta", 1e-4)),
+        "restore_best_weights": bool(es.get("restore_best_weights", True)),
+    }
     return cfg
 
 
@@ -133,8 +169,9 @@ def _prepare_rich(df: pd.DataFrame, target_column: str):
 
     X = np.column_stack(cols)
 
-    n_unique = y_raw.nunique()
-    if pd.api.types.is_numeric_dtype(y_raw) and n_unique > 10:
+    # Shared with core.dl1.config so the auto-selected configuration and the model
+    # that actually trains never disagree about the task type.
+    if infer_task(y_raw) == "regression":
         task = "regression"
         y = pd.to_numeric(y_raw, errors="coerce").fillna(
             y_raw.median()).values.astype(float)
@@ -255,11 +292,13 @@ def _final_metrics(task, y_true, y_pred):
     }, "r2_score"
 
 
-def _describe_arch(in_dim, hidden, out_dim, dropout, engine="PyTorch"):
+def _describe_arch(in_dim, hidden, out_dim, dropout, engine="PyTorch", activation="relu"):
+    act = {"relu": "ReLU", "gelu": "GELU", "tanh": "Tanh", "elu": "ELU",
+           "leaky_relu": "LeakyReLU", "silu": "SiLU"}.get(activation, "ReLU")
     arch = [f"Input · {in_dim} features"]
     for u in hidden:
-        arch.append(f"Dense {u} · BatchNorm · ReLU · Dropout {dropout}" if engine == "PyTorch"
-                    else f"Dense {u} · ReLU · L2 reg")
+        arch.append(f"Dense {u} · BatchNorm · {act} · Dropout {dropout}" if engine == "PyTorch"
+                    else f"Dense {u} · {act} · L2 reg")
     arch.append(f"Output · {out_dim} unit{'s' if out_dim != 1 else ''}")
     return arch
 
@@ -312,11 +351,63 @@ def _evaluation(task, y_test, y_pred, proba, target_meta):
 
 
 # ── PyTorch path ─────────────────────────────────────────────────────────────
-def _build_torch_mlp(in_dim, out_dim, hidden, dropout):
+def _torch_activation(name: str):
+    """Map a config activation name to a fresh torch module."""
+    return {
+        "relu": nn.ReLU,
+        "gelu": nn.GELU,
+        "tanh": nn.Tanh,
+        "elu": nn.ELU,
+        "leaky_relu": nn.LeakyReLU,
+        "silu": nn.SiLU,
+    }.get(name, nn.ReLU)()
+
+
+def _torch_optimizer(name: str, params, lr: float):
+    """Map a config optimizer name to a torch optimizer.
+
+    AdamW gets an explicit weight_decay — that decoupled decay is the whole reason
+    to choose it over Adam. SGD gets momentum so it is competitive at all.
+    """
+    if name == "adamw":
+        return torch.optim.AdamW(params, lr=lr, weight_decay=1e-2)
+    if name == "sgd":
+        return torch.optim.SGD(params, lr=lr, momentum=0.9)
+    if name == "rmsprop":
+        return torch.optim.RMSprop(params, lr=lr)
+    return torch.optim.Adam(params, lr=lr)
+
+
+def _torch_criterion(loss_name: str | None, task: str, y_train):
+    """Build the loss function, returning (criterion, resolved_name).
+
+    `weighted_cross_entropy` derives per-class weights inversely proportional to
+    class frequency, which is what makes it useful on imbalanced targets.
+    """
+    if task == "classification":
+        if loss_name == "weighted_cross_entropy":
+            classes, counts = np.unique(y_train, return_counts=True)
+            weights = np.zeros(int(classes.max()) + 1, dtype=np.float32)
+            # Inverse-frequency weighting, normalised to mean 1 so the loss scale
+            # stays comparable to unweighted cross-entropy.
+            inv = counts.sum() / (len(classes) * counts)
+            for cls, w in zip(classes, inv):
+                weights[int(cls)] = w
+            return nn.CrossEntropyLoss(weight=torch.tensor(weights)), "weighted_cross_entropy"
+        return nn.CrossEntropyLoss(), "cross_entropy"
+
+    if loss_name == "huber":
+        return nn.HuberLoss(), "huber"
+    if loss_name == "mae":
+        return nn.L1Loss(), "mae"
+    return nn.MSELoss(), "mse"
+
+
+def _build_torch_mlp(in_dim, out_dim, hidden, dropout, activation="relu"):
     layers, prev = [], in_dim
     for units in hidden:
         layers += [nn.Linear(prev, units), nn.BatchNorm1d(units),
-                   nn.ReLU(), nn.Dropout(dropout)]
+                   _torch_activation(activation), nn.Dropout(dropout)]
         prev = units
     layers.append(nn.Linear(prev, out_dim))
     return nn.Sequential(*layers)
@@ -344,15 +435,15 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
     if task == "classification":
         yt = torch.tensor(y_tr, dtype=torch.long)
         yv = torch.tensor(y_val, dtype=torch.long)
-        criterion = nn.CrossEntropyLoss()
     else:
         yt = torch.tensor(y_tr, dtype=torch.float32).view(-1, 1)
         yv = torch.tensor(y_val, dtype=torch.float32).view(-1, 1)
-        criterion = nn.MSELoss()
+    criterion, loss_name = _torch_criterion(cfg.get("loss_function"), task, y_tr)
 
     model = _build_torch_mlp(
-        X.shape[1], out_dim, cfg["hidden_layers"], cfg["dropout"])
-    optimizer = torch.optim.Adam(model.parameters(), lr=cfg["learning_rate"])
+        X.shape[1], out_dim, cfg["hidden_layers"], cfg["dropout"], cfg.get("activation", "relu"))
+    optimizer = _torch_optimizer(cfg.get("optimizer", "adam"), model.parameters(),
+                                 cfg["learning_rate"])
     n_params = sum(p.numel() for p in model.parameters())
     batch = min(cfg["batch_size"], len(xt))
 
@@ -365,6 +456,16 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
                 return proba.argmax(1), proba
             return out.view(-1).numpy(), None
 
+    es = cfg.get("early_stopping") or {}
+    es_on = bool(es.get("enabled"))
+    patience = int(es.get("patience", 10))
+    min_delta = float(es.get("min_delta", 1e-4))
+    restore_best = bool(es.get("restore_best_weights", True))
+    monitor = es.get("monitor", "val_loss")
+
+    best_score, best_epoch, best_state, stale = None, 0, None, 0
+    stopped_early = False
+
     history = []
     t0 = time.time()
     for epoch in range(cfg["epochs"]):
@@ -373,6 +474,9 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
         epoch_loss, nb = 0.0, 0
         for i in range(0, len(xt), batch):
             idx = perm[i:i + batch]
+            # BatchNorm needs >1 sample; a trailing batch of one would crash it.
+            if len(idx) < 2:
+                continue
             optimizer.zero_grad()
             loss = criterion(model(xt[idx]), yt[idx])
             loss.backward()
@@ -387,6 +491,24 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
                           else r2_score(y_val, val_out.view(-1).numpy()))
         history.append({"epoch": epoch + 1, "train_loss": round(epoch_loss / max(1, nb), 4),
                         "val_loss": round(val_loss, 4), "val_metric": round(float(val_metric), 4)})
+
+        if not es_on:
+            continue
+
+        # Lower is better for loss, higher is better for the metric.
+        current = val_loss if monitor == "val_loss" else -float(val_metric)
+        if best_score is None or current < best_score - min_delta:
+            best_score, best_epoch, stale = current, epoch + 1, 0
+            if restore_best:
+                best_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
+        else:
+            stale += 1
+            if stale >= patience:
+                stopped_early = True
+                break
+
+    if stopped_early and restore_best and best_state is not None:
+        model.load_state_dict(best_state)
     elapsed = round(time.time() - t0, 2)
 
     y_pred, proba = predict_scaled(X_test)
@@ -397,7 +519,9 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
 
     return _assemble(model, scaler, "PyTorch", task, metrics, primary, history,
                      X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
-                     feature_names, target_meta, predict_scaled)
+                     feature_names, target_meta, predict_scaled,
+                     loss_name=loss_name, stopped_early=stopped_early,
+                     best_epoch=best_epoch or len(history))
 
 
 # ── scikit-learn fallback ────────────────────────────────────────────────────
@@ -413,21 +537,42 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
     X_tr, X_val, X_test = scaler.transform(
         X_tr), scaler.transform(X_val), scaler.transform(X_test)
 
+    # Map the config onto sklearn's vocabulary. The mapping is deliberately lossy —
+    # sklearn's MLP has no GELU/SiLU/ELU and no Huber objective — so we degrade to
+    # the nearest supported option rather than failing. This path is what runs in
+    # deployments without torch (see requirements.txt).
+    sk_activation = {"relu": "relu", "gelu": "relu", "silu": "relu", "elu": "relu",
+                     "leaky_relu": "relu", "tanh": "tanh"}.get(cfg.get("activation"), "relu")
+    sk_solver = {"adam": "adam", "adamw": "adam",
+                 "sgd": "sgd", "rmsprop": "adam"}.get(cfg.get("optimizer"), "adam")
+
     common = dict(hidden_layer_sizes=tuple(cfg["hidden_layers"]),
                   learning_rate_init=cfg["learning_rate"],
+                  activation=sk_activation, solver=sk_solver,
                   batch_size=min(cfg["batch_size"], len(X_tr)), random_state=42)
     if task == "classification":
         model = MLPClassifier(**common)
         classes = np.unique(y)
+        loss_name = "cross_entropy"
     else:
         model = MLPRegressor(**common)
         classes = None
+        loss_name = "mse"
 
     def predict_scaled(Xs):
         if task == "classification":
             proba = model.predict_proba(Xs)
             return proba.argmax(1), proba
         return model.predict(Xs), None
+
+    es = cfg.get("early_stopping") or {}
+    es_on = bool(es.get("enabled"))
+    patience = int(es.get("patience", 10))
+    min_delta = float(es.get("min_delta", 1e-4))
+    restore_best = bool(es.get("restore_best_weights", True))
+
+    best_score, best_epoch, best_weights, stale = None, 0, None, 0
+    stopped_early = False
 
     history = []
     t0 = time.time()
@@ -440,6 +585,26 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
             vm = r2_score(y_val, model.predict(X_val))
         history.append({"epoch": epoch + 1, "train_loss": round(float(getattr(model, "loss_", 0.0)), 4),
                         "val_loss": None, "val_metric": round(float(vm), 4)})
+
+        if not es_on:
+            continue
+
+        # sklearn's partial_fit exposes no validation loss, so patience tracks the
+        # validation metric here (higher is better) rather than val_loss.
+        current = -float(vm)
+        if best_score is None or current < best_score - min_delta:
+            best_score, best_epoch, stale = current, epoch + 1, 0
+            if restore_best:
+                best_weights = ([c.copy() for c in model.coefs_],
+                                [b.copy() for b in model.intercepts_])
+        else:
+            stale += 1
+            if stale >= patience:
+                stopped_early = True
+                break
+
+    if stopped_early and restore_best and best_weights is not None:
+        model.coefs_, model.intercepts_ = best_weights
     elapsed = round(time.time() - t0, 2)
 
     y_pred, proba = predict_scaled(X_test)
@@ -453,12 +618,15 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
                    sum(b.size for b in model.intercepts_))
     return _assemble(model, scaler, "scikit-learn", task, metrics, primary, history,
                      X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
-                     feature_names, target_meta, predict_scaled)
+                     feature_names, target_meta, predict_scaled,
+                     loss_name=loss_name, stopped_early=stopped_early,
+                     best_epoch=best_epoch or len(history))
 
 
 def _assemble(model, scaler, engine, task, metrics, primary, history, in_dim, cfg,
               out_dim, n_params, elapsed, importance, evaluation, feature_names,
-              target_meta, predict_scaled):
+              target_meta, predict_scaled, loss_name=None, stopped_early=False,
+              best_epoch=None):
     LAST_MODEL.clear()
     LAST_MODEL.update({
         "engine": engine, "task": task, "model": model, "scaler": scaler,
@@ -469,9 +637,19 @@ def _assemble(model, scaler, engine, task, metrics, primary, history, in_dim, cf
         "status": "success", "engine": engine, "task": task, "metrics": metrics,
         "primary_metric": primary, "metric_label": "Accuracy" if task == "classification" else "Val R²",
         "history": history,
-        "architecture": _describe_arch(in_dim, cfg["hidden_layers"], out_dim, cfg["dropout"], engine),
+        "architecture": _describe_arch(in_dim, cfg["hidden_layers"], out_dim, cfg["dropout"],
+                                       engine, cfg.get("activation", "relu")),
         "n_params": n_params, "training_time": f"{elapsed}s", "config": cfg,
         "feature_importance": importance, "evaluation": evaluation,
+        # Training outcome — lets the report state what actually ran, rather than
+        # what was requested.
+        "loss_function": loss_name,
+        "optimizer": cfg.get("optimizer"),
+        "activation": cfg.get("activation"),
+        "epochs_run": len(history),
+        "epochs_requested": cfg.get("epochs"),
+        "stopped_early": bool(stopped_early),
+        "best_epoch": best_epoch or len(history),
     }
 
 

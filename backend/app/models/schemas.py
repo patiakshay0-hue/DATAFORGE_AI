@@ -43,3 +43,9 @@ class ConvertChoice(BaseModel):
 class ChatRequest(BaseModel):
     question: str
     history: Optional[List[dict]] = []
+
+
+class DL1SelectRequest(BaseModel):
+    """Patterns the user picked from a Deep Learning 1.0 run."""
+    pattern_ids: Optional[List[str]] = []
+    preferred: Optional[str] = None

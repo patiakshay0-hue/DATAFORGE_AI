@@ -33,7 +33,11 @@ def perform_eda(df: pd.DataFrame):
                 "data": [{"bin": float(bin_edges[i]), "count": int(hist[i])} for i in range(len(hist))]
             }
 
-    categorical_cols = eda_df.select_dtypes(include=['object', 'category']).columns
+    # Exclude-based selection so this keeps working across pandas 2/3/4, where
+    # the default string dtype changes name ("object" -> "str").
+    categorical_cols = eda_df.select_dtypes(
+        exclude=[np.number, "datetime", "datetimetz", "timedelta"]
+    ).columns
     for col in categorical_cols[:5]:
         counts = eda_df[col].value_counts().head(10).to_dict()
         charts[f"count_{col}"] = {

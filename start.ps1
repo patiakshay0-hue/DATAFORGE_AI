@@ -1,23 +1,62 @@
 # start.ps1
-$root = Split-Path $MyInvocation.MyCommand.Path
+# Run with:  powershell -ExecutionPolicy Bypass -File start.ps1
 
-# Kill any leftover processes on our ports
-netstat -ano | Select-String ":5000" | ForEach-Object { ($_ -split '\s+')[-1] } | Where-Object { $_ -ne '' } | Select-Object -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }
-netstat -ano | Select-String ":3000" | ForEach-Object { ($_ -split '\s+')[-1] } | Where-Object { $_ -ne '' } | Select-Object -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }
+$root = $PSScriptRoot
+if (-not $root) { $root = Split-Path -Parent $MyInvocation.MyCommand.Path }
+
+# --- Free our ports (only real listeners; never touch PID 0/4) -----------------
+function Stop-PortListener($port) {
+    $conns = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
+    foreach ($procId in ($conns.OwningProcess | Select-Object -Unique)) {
+        if ($procId -and $procId -gt 4) {
+            Write-Host "Freeing port $port (PID $procId)" -ForegroundColor DarkYellow
+            try { Stop-Process -Id $procId -Force -ErrorAction Stop } catch {}
+        }
+    }
+}
+Stop-PortListener 5000
+Stop-PortListener 3000
 Start-Sleep 1
 
-# Backend
+# --- Sanity checks -------------------------------------------------------------
+if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
+    Write-Host "python not found on PATH." -ForegroundColor Red; exit 1
+}
+if (-not (Test-Path "$root\frontend\node_modules")) {
+    Write-Host "frontend\node_modules missing. Run: npm install --prefix frontend" -ForegroundColor Red; exit 1
+}
+
+# --- Backend -------------------------------------------------------------------
 Write-Host "Starting backend..." -ForegroundColor Cyan
-$be = Start-Process -NoNewWindow -FilePath "python" -ArgumentList "-m uvicorn main:app --host 0.0.0.0 --port 5000 --reload" -PassThru -WorkingDirectory "$root\backend"
+$be = Start-Process -NoNewWindow -PassThru -FilePath "python" `
+    -ArgumentList "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000", "--reload" `
+    -WorkingDirectory "$root\backend"
 
-# Frontend
+# --- Frontend ------------------------------------------------------------------
+# NOTE: must be npm.cmd / npx.cmd, not "npx". Start-Process resolves the bare name
+# to the extensionless Unix shell script shipped by Node, which Windows cannot
+# execute ("%1 is not a valid Win32 application").
 Write-Host "Starting frontend..." -ForegroundColor Cyan
-$fe = Start-Process -NoNewWindow -FilePath "npx" -ArgumentList "vite" -PassThru -WorkingDirectory "$root\frontend"
+$fe = Start-Process -NoNewWindow -PassThru -FilePath "npm.cmd" `
+    -ArgumentList "run", "dev" `
+    -WorkingDirectory "$root\frontend"
 
-Write-Host "Backend running on http://localhost:5000" -ForegroundColor Green
-Write-Host "Frontend running on http://localhost:3000" -ForegroundColor Green
+Write-Host "Backend  -> http://localhost:5000  (docs: /docs)" -ForegroundColor Green
+Write-Host "Frontend -> http://localhost:3000" -ForegroundColor Green
+Write-Host "Press Ctrl+C to stop both." -ForegroundColor DarkGray
 
-Wait-Process -Id $be.Id, $fe.Id
-
-
-# run this file using "powershell -ExecutionPolicy Bypass -File start.ps1"
+# --- Wait ----------------------------------------------------------------------
+$procs = @($be, $fe) | Where-Object { $_ -and -not $_.HasExited }
+try {
+    if ($procs) { Wait-Process -Id $procs.Id }
+    else { Write-Host "Neither process started." -ForegroundColor Red; exit 1 }
+}
+finally {
+    foreach ($p in @($be, $fe)) {
+        if ($p -and -not $p.HasExited) {
+            try { Stop-Process -Id $p.Id -Force -ErrorAction Stop } catch {}
+        }
+    }
+    Stop-PortListener 5000
+    Stop-PortListener 3000
+}
