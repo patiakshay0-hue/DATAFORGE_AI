@@ -497,88 +497,303 @@ const Patterns = ({ patterns, selected, preferred, onToggle, onPrefer, isDark })
   )
 }
 
+const PatternVisualization = ({ pattern, isDark }) => {
+  const data = pattern.data || {}
+  const viz = pattern.visualization
+  const type = pattern.type
+
+  if (viz === 'bar' && data.items?.length) {
+    const axis = isDark ? '#64748b' : '#94a3b8'
+    return (
+      <ResponsiveContainer width="100%" height={Math.max(120, data.items.length * 28)}>
+        <BarChart data={data.items} layout="vertical" margin={{ top: 4, right: 20, left: 8, bottom: 4 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#e2e8f0'} horizontal={false} />
+          <XAxis type="number" stroke={axis} fontSize={10} tickLine={false} unit="%" />
+          <YAxis type="category" dataKey="feature" stroke={axis} fontSize={10} tickLine={false} width={80} />
+          <Tooltip contentStyle={{ background: isDark ? '#0f172a' : '#fff',
+            border: '1px solid var(--df-border)', borderRadius: 10, fontSize: 11 }} />
+          <Bar dataKey="error_pct" radius={[0, 4, 4, 0]} fill={TYPE_COLORS[type] || '#8b5cf6'} />
+        </BarChart>
+      </ResponsiveContainer>
+    )
+  }
+
+  if (viz === 'scatter' && data.points?.length) {
+    const highlightIndices = new Set(data.indices || [])
+    const labels = data.labels || []
+    const hasClusters = labels.length > 0 && type !== 'anomalies'
+    
+    const clusterColors = ['#8b5cf6', '#06b6d4', '#f43f5e', '#10b981', '#f59e0b', '#6366f1', '#ec4899', '#14b8a6']
+    const uniqueLabels = [...new Set(labels)].sort()
+    const labelColorMap = Object.fromEntries(uniqueLabels.map((l, i) => [l, clusterColors[i % clusterColors.length]]))
+
+    const scatterData = data.points.map((pt, i) => ({
+      x: pt.x,
+      y: pt.y,
+      isHighlight: highlightIndices.has(i),
+      cluster: labels[i],
+      color: hasClusters ? labelColorMap[labels[i]] : (highlightIndices.has(i) ? '#ef4444' : '#8b5cf6')
+    }))
+
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        <ScatterChart margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#1e293b' : '#e2e8f0'} />
+          <XAxis type="number" dataKey="x" stroke={isDark ? '#64748b' : '#94a3b8'} fontSize={10} tickLine={false} />
+          <YAxis type="number" dataKey="y" stroke={isDark ? '#64748b' : '#94a3b8'} fontSize={10} tickLine={false} width={40} />
+          <Tooltip contentStyle={{ background: isDark ? '#0f172a' : '#fff',
+            border: '1px solid var(--df-border)', borderRadius: 10, fontSize: 11 }}
+            formatter={(v, name) => [v.toFixed(3), name === 'x' ? 'PC1' : 'PC2']} />
+          <Scatter data={scatterData} fill="#8b5cf6">
+            {scatterData.map((entry, i) => (
+              <Cell key={`cell-${i}`} fill={entry.color} r={entry.isHighlight ? 5 : 3} />
+            ))}
+          </Scatter>
+        </ScatterChart>
+      </ResponsiveContainer>
+    )
+  }
+
+  if (viz === 'heatmap' && data.pairs?.length) {
+    return (
+      <div className="space-y-2">
+        <div className="overflow-x-auto">
+          <table className="text-[11px] w-full">
+            <thead>
+              <tr style={{ color: 'var(--df-t3)' }}>
+                <th className="text-left py-1 px-2">Feature A</th>
+                <th className="text-left py-1 px-2">Feature B</th>
+                <th className="text-right py-1 px-2">Correlation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.pairs.slice(0, 8).map((p, i) => (
+                <tr key={i} style={{ color: 'var(--df-t2)' }}>
+                  <td className="py-1 px-2 font-mono">{p.a}</td>
+                  <td className="py-1 px-2 font-mono">{p.b}</td>
+                  <td className="py-1 px-2 text-right font-mono" style={{ 
+                    color: Math.abs(p.r) > 0.7 ? '#10b981' : Math.abs(p.r) > 0.4 ? '#f59e0b' : 'var(--df-t3)'
+                  }}>{p.r.toFixed(3)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+
+  return null
+}
+
+const SelectedPatternDetail = ({ pattern, result, isDark }) => {
+  const data = pattern.data || {}
+  const type = pattern.type
+
+  return (
+    <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)' }}>
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+          style={{ color: TYPE_COLORS[type] || '#8b5cf6', background: `${TYPE_COLORS[type] || '#8b5cf6'}1a`,
+                   border: `1px solid ${TYPE_COLORS[type] || '#8b5cf6'}33` }}>
+          {type.replace(/_/g, ' ')}
+        </span>
+        <span className="text-xs font-bold" style={{ color: 'var(--df-t1)' }}>{pattern.title}</span>
+      </div>
+
+      {pattern.visualization && (
+        <PatternVisualization pattern={pattern} isDark={isDark} />
+      )}
+
+      {type === 'clusters' && data.profiles?.length > 0 && (
+        <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--df-border)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
+            Cluster Profiles
+          </p>
+          <div className="space-y-2">
+            {data.profiles.map(prof => (
+              <div key={prof.cluster} className="text-[11px]" style={{ color: 'var(--df-t2)' }}>
+                <span className="font-mono font-bold">Cluster {prof.cluster}</span> ({prof.size} rows, {(prof.share * 100).toFixed(1)}%)
+                <span className="ml-2 text-[10px]" style={{ color: 'var(--df-t3)' }}>
+                  {prof.traits?.slice(0, 3).map(t => `${t.feature} (${t.z > 0 ? '+' : ''}${t.z.toFixed(2)}σ)`).join(', ')}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {type === 'anomalies' && (
+        <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--df-border)' }}>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>{data.count || 0}</p>
+              <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Anomalies</p>
+            </div>
+            <div>
+              <p className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>{((data.share || 0) * 100).toFixed(1)}%</p>
+              <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Of data</p>
+            </div>
+            <div>
+              <p className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>{(data.error_ratio || 1).toFixed(1)}x</p>
+              <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Error ratio</p>
+            </div>
+          </div>
+          {data.drivers?.length > 0 && (
+            <div className="mt-2">
+              <p className="text-[10px] font-bold" style={{ color: 'var(--df-t3)' }}>Key drivers:</p>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {data.drivers.slice(0, 5).map(d => (
+                  <span key={d.feature} className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+                    style={{ background: 'var(--df-card)', color: 'var(--df-t2)' }}>
+                    {d.feature} ({d.deviation > 0 ? '+' : ''}{d.deviation.toFixed(2)}σ)
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {type === 'compressibility' && (
+        <div className="mt-3 grid grid-cols-3 gap-3 text-center">
+          <div>
+            <p className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>{data.n_features || 0}</p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Original</p>
+          </div>
+          <div>
+            <p className="text-lg font-black text-violet-400">{data.latent_dim || 0}</p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Latent dims</p>
+          </div>
+          <div>
+            <p className="text-lg font-black text-emerald-400">{data.reduction_pct || 0}%</p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Reduction</p>
+          </div>
+        </div>
+      )}
+
+      {(type === 'non_linear' || type === 'linear_structure') && (
+        <div className="mt-3 grid grid-cols-3 gap-3 text-center">
+          <div>
+            <p className="text-sm font-mono font-bold" style={{ color: 'var(--df-t1)' }}>{(data.ae_error || 0).toFixed(4)}</p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Autoencoder</p>
+          </div>
+          <div>
+            <p className="text-sm font-mono font-bold" style={{ color: 'var(--df-t1)' }}>{(data.pca_error || 0).toFixed(4)}</p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>PCA</p>
+          </div>
+          <div>
+            <p className="text-sm font-mono font-bold" style={{ color: type === 'non_linear' ? '#10b981' : 'var(--df-t1)' }}>
+              {type === 'non_linear' ? '+' : ''}{((data.gain || 0) * 100).toFixed(1)}%
+            </p>
+            <p className="text-[9px] uppercase" style={{ color: 'var(--df-t3)' }}>Advantage</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Report ────────────────────────────────────────────────────────────────────
 const Report = ({ recommendation, result, card, isDark, onDownload, downloading }) => {
   const used = recommendation.features_used || []
   const ignored = recommendation.features_ignored || []
   const ranking = recommendation.ranking || []
+  
+  const selectedPatterns = (recommendation.selected_patterns || []).map(sel => {
+    const full = result.patterns?.find(p => p.id === sel.id) || sel
+    return { ...full, ...sel }
+  })
 
   return (
-    <div className={card} style={{ background: 'var(--df-card)' }}>
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
-        <div>
-          <h4 className="font-bold text-base flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
-            <CheckCircle2 size={16} className="text-emerald-400" /> Your Report
+    <div className="space-y-5">
+      {selectedPatterns.length > 0 && (
+        <div className={card} style={{ background: 'var(--df-card)' }}>
+          <h4 className="font-bold text-base flex items-center gap-2 mb-4" style={{ color: 'var(--df-t1)' }}>
+            <Sparkles size={16} className="text-violet-400" /> Selected Patterns
           </h4>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--df-t3)' }}>
-            Based on {recommendation.selected_patterns?.length || 0} selected pattern(s)
-          </p>
-        </div>
-        <button onClick={onDownload} disabled={downloading}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
-          {downloading ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
-          {downloading ? 'Building…' : 'Download PDF'}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-        <div className="rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
-          <p className="text-xs font-bold uppercase tracking-wider mb-2 text-emerald-400">
-            Columns to use ({used.length})
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {used.length ? used.map(c => (
-              <span key={c} className="text-[11px] font-mono px-2 py-0.5 rounded"
-                style={{ background: 'var(--df-input-bg)', color: 'var(--df-t1)' }}>{c}</span>
-            )) : <span className="text-xs" style={{ color: 'var(--df-t3)' }}>—</span>}
-          </div>
-        </div>
-        <div className="rounded-xl p-4" style={{ background: 'rgba(148,163,184,0.08)', border: '1px solid var(--df-border)' }}>
-          <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
-            Columns to ignore ({ignored.length})
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {ignored.length ? ignored.map(c => (
-              <span key={c} className="text-[11px] font-mono px-2 py-0.5 rounded line-through"
-                style={{ background: 'var(--df-input-bg)', color: 'var(--df-t3)' }}>{c}</span>
-            )) : <span className="text-xs" style={{ color: 'var(--df-t3)' }}>none</span>}
-          </div>
-        </div>
-      </div>
-
-      <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
-        Feature ranking
-      </p>
-      <div className="space-y-1.5">
-        {ranking.slice(0, 12).map(r => (
-          <div key={r.feature} className="flex items-center gap-3">
-            <span className="text-[10px] font-mono w-5 text-right shrink-0" style={{ color: 'var(--df-t4)' }}>{r.rank}</span>
-            <span className="text-xs font-mono w-32 truncate shrink-0" style={{ color: 'var(--df-t1)' }}>{r.feature}</span>
-            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--df-input-bg)' }}>
-              <div className="h-full rounded-full"
-                style={{ width: `${Math.min(100, r.information_pct)}%`,
-                         background: r.in_selected_pattern ? 'linear-gradient(90deg,#7c3aed,#6366f1)' : '#475569' }} />
-            </div>
-            <span className="text-[10px] font-mono w-12 text-right shrink-0" style={{ color: 'var(--df-t3)' }}>
-              {r.information_pct.toFixed(1)}%
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {recommendation.excluded_at_load?.length > 0 && (
-        <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--df-border)' }}>
-          <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
-            Excluded before modelling
-          </p>
-          {recommendation.excluded_at_load.map(e => (
-            <p key={e.column} className="text-[11px]" style={{ color: 'var(--df-t3)' }}>
-              <span className="font-mono" style={{ color: 'var(--df-t2)' }}>{e.column}</span> — {e.reason}
-            </p>
+          {selectedPatterns.map(p => (
+            <SelectedPatternDetail key={p.id} pattern={p} result={result} isDark={isDark} />
           ))}
         </div>
       )}
+
+      <div className={card} style={{ background: 'var(--df-card)' }}>
+        <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
+          <div>
+            <h4 className="font-bold text-base flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
+              <CheckCircle2 size={16} className="text-emerald-400" /> Feature Recommendation
+            </h4>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--df-t3)' }}>
+              Based on {recommendation.selected_patterns?.length || 0} selected pattern(s)
+            </p>
+          </div>
+          <button onClick={onDownload} disabled={downloading}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
+            {downloading ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+            {downloading ? 'Building…' : 'Download PDF'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)' }}>
+            <p className="text-xs font-bold uppercase tracking-wider mb-2 text-emerald-400">
+              Columns to use ({used.length})
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {used.length ? used.map(c => (
+                <span key={c} className="text-[11px] font-mono px-2 py-0.5 rounded"
+                  style={{ background: 'var(--df-input-bg)', color: 'var(--df-t1)' }}>{c}</span>
+              )) : <span className="text-xs" style={{ color: 'var(--df-t3)' }}>—</span>}
+            </div>
+          </div>
+          <div className="rounded-xl p-4" style={{ background: 'rgba(148,163,184,0.08)', border: '1px solid var(--df-border)' }}>
+            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
+              Columns to ignore ({ignored.length})
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {ignored.length ? ignored.map(c => (
+                <span key={c} className="text-[11px] font-mono px-2 py-0.5 rounded line-through"
+                  style={{ background: 'var(--df-input-bg)', color: 'var(--df-t3)' }}>{c}</span>
+              )) : <span className="text-xs" style={{ color: 'var(--df-t3)' }}>none</span>}
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
+          Feature ranking
+        </p>
+        <div className="space-y-1.5">
+          {ranking.slice(0, 12).map(r => (
+            <div key={r.feature} className="flex items-center gap-3">
+              <span className="text-[10px] font-mono w-5 text-right shrink-0" style={{ color: 'var(--df-t4)' }}>{r.rank}</span>
+              <span className="text-xs font-mono w-32 truncate shrink-0" style={{ color: 'var(--df-t1)' }}>{r.feature}</span>
+              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--df-input-bg)' }}>
+                <div className="h-full rounded-full"
+                  style={{ width: `${Math.min(100, r.information_pct)}%`,
+                           background: r.in_selected_pattern ? 'linear-gradient(90deg,#7c3aed,#6366f1)' : '#475569' }} />
+              </div>
+              <span className="text-[10px] font-mono w-12 text-right shrink-0" style={{ color: 'var(--df-t3)' }}>
+                {r.information_pct.toFixed(1)}%
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {recommendation.excluded_at_load?.length > 0 && (
+          <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--df-border)' }}>
+            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--df-t3)' }}>
+              Excluded before modelling
+            </p>
+            {recommendation.excluded_at_load.map(e => (
+              <p key={e.column} className="text-[11px]" style={{ color: 'var(--df-t3)' }}>
+                <span className="font-mono" style={{ color: 'var(--df-t2)' }}>{e.column}</span> — {e.reason}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
