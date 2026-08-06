@@ -1,4 +1,4 @@
-"""Per-job state for the Deep Learning 1.0 pipeline.
+"""Per-job state for the Deep Learning 2.0 pipeline.
 
 Why this exists instead of reusing `app.store.data_store`:
 
@@ -36,7 +36,7 @@ STAGES = [
 
 @dataclass
 class DL1Job:
-    """One end-to-end Deep Learning 1.0 run."""
+    """One end-to-end Deep Learning 2.0 run."""
 
     id: str
     filename: str
@@ -53,7 +53,8 @@ class DL1Job:
     profile: dict | None = None        # dataset profile (§2)
     config: dict | None = None         # AutoModelConfig output (§3)
     training: dict | None = None       # train_neural_network result (§6)
-    patterns: list[dict] = field(default_factory=list)   # narrated patterns (§4)
+    patterns: list[dict] = field(
+        default_factory=list)   # narrated patterns (§4)
     signals: dict | None = None        # raw SignalBundle, kept for the report
 
     # User choices from the pattern-selection step (§5).
@@ -103,7 +104,8 @@ def _evict_locked() -> None:
 
 
 def create(filename: str, target_column: str) -> DL1Job:
-    job = DL1Job(id=uuid.uuid4().hex[:12], filename=filename, target_column=target_column)
+    job = DL1Job(id=uuid.uuid4().hex[:12],
+                 filename=filename, target_column=target_column)
     with _lock:
         _evict_locked()
         _jobs[job.id] = job

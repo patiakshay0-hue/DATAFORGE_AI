@@ -1,4 +1,4 @@
-# Deep Learning 1.0 — Implementation Plan
+# Deep Learning 2.0 — Implementation Plan
 
 ## Decisions taken
 
@@ -30,25 +30,25 @@ training loop, permutation importance, evaluation, and the PDF report engine.
 
 The optimized path is: **reuse the proven pipeline, and spend the effort on the four
 things that genuinely don't exist yet** — full hyperparameter selection, the pattern
-*narrative* layer, pattern selection, and the extended report.
+_narrative_ layer, pattern selection, and the extended report.
 
 ---
 
 ## 1. Reuse map — do NOT rebuild these
 
-| Spec section | Already implemented | Location |
-|---|---|---|
-| §2 Auto preprocessing (numeric/categorical detection, missing values, encoding) | `_prepare_rich()` | `backend/core/deep_trainer.py:85` |
-| §2 Target column detection & ranking | `recommend_targets()` | `deep_trainer.py:170` |
-| §4 Feature importance | `_permutation_importance()` | `deep_trainer.py:268` |
-| §4 Correlation / PCA / clusters / feature ranking | `discover_patterns()` | `deep_trainer.py:581` |
-| §6 Confusion matrix, ROC, predicted-vs-actual | `_evaluation()` | `deep_trainer.py:290` |
-| §6 Accuracy/Precision/Recall/F1 · RMSE/MAE/R² | `_final_metrics()` | `deep_trainer.py:241` |
-| §6 PDF report engine + brand styling | `generate_pdf_report()` | `backend/core/exporter.py:78` |
-| §6 Loss/accuracy curves, confusion matrix UI | `ResultsView`, `ClassificationEval`, `RegressionEval` | `frontend/src/components/DeepLearningView.jsx:280` |
-| §7 Progress indicator during training | `TrainingScreen` | `DeepLearningView.jsx:256` |
-| §7 Streaming progress transport | SSE via `StreamingResponse` | `backend/app/routes/chat_routes.py:27` |
-| §1 Nav pattern (`TABS` + `alwaysOn` + render switch) | — | `frontend/src/App.jsx:35` |
+| Spec section                                                                    | Already implemented                                   | Location                                           |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------- |
+| §2 Auto preprocessing (numeric/categorical detection, missing values, encoding) | `_prepare_rich()`                                     | `backend/core/deep_trainer.py:85`                  |
+| §2 Target column detection & ranking                                            | `recommend_targets()`                                 | `deep_trainer.py:170`                              |
+| §4 Feature importance                                                           | `_permutation_importance()`                           | `deep_trainer.py:268`                              |
+| §4 Correlation / PCA / clusters / feature ranking                               | `discover_patterns()`                                 | `deep_trainer.py:581`                              |
+| §6 Confusion matrix, ROC, predicted-vs-actual                                   | `_evaluation()`                                       | `deep_trainer.py:290`                              |
+| §6 Accuracy/Precision/Recall/F1 · RMSE/MAE/R²                                   | `_final_metrics()`                                    | `deep_trainer.py:241`                              |
+| §6 PDF report engine + brand styling                                            | `generate_pdf_report()`                               | `backend/core/exporter.py:78`                      |
+| §6 Loss/accuracy curves, confusion matrix UI                                    | `ResultsView`, `ClassificationEval`, `RegressionEval` | `frontend/src/components/DeepLearningView.jsx:280` |
+| §7 Progress indicator during training                                           | `TrainingScreen`                                      | `DeepLearningView.jsx:256`                         |
+| §7 Streaming progress transport                                                 | SSE via `StreamingResponse`                           | `backend/app/routes/chat_routes.py:27`             |
+| §1 Nav pattern (`TABS` + `alwaysOn` + render switch)                            | —                                                     | `frontend/src/App.jsx:35`                          |
 
 **Consequence:** the training/evaluation core is done and working (verified: a real
 `/deep/train` run returns all 13 fields the UI consumes). Treat it as a dependency,
@@ -77,7 +77,7 @@ this repo by `chat_routes.py` — copy that shape, don't invent one.
 
 **Saves:** ~5 redundant preprocessing passes per run, and gives §7's progress display
 for free instead of the current fake `setInterval` timer
-(`DeepLearningView.jsx:71` currently *simulates* progress with a 1-second tick).
+(`DeepLearningView.jsx:71` currently _simulates_ progress with a 1-second tick).
 
 ### O2 — Per-job store, not the global `data_store`
 
@@ -85,8 +85,8 @@ for free instead of the current fake `setInterval` timer
 by every request. `deep_trainer.predict()` likewise leans on a module-global for the
 last trained model.
 
-DL 1.0 makes this worse: the user trains, *then browses patterns, then selects one,
-then generates a report* — minutes apart. Any second upload in another tab clobbers
+DL 1.0 makes this worse: the user trains, _then browses patterns, then selects one,
+then generates a report_ — minutes apart. Any second upload in another tab clobbers
 the run mid-flow.
 
 Introduce `backend/app/dl1_store.py` with `jobs: dict[str, DL1Job]` + TTL eviction.
@@ -97,7 +97,7 @@ This is also the clean extension point for "Deep Learning 2.0" required by §8.
 §4 asks for nine pattern categories (importance, correlation, clusters, non-linear
 relationships, interactions, influential variables, segments, anomalies,
 target-drivers). Running a separate analysis per category is the expensive mistake —
-`discover_patterns()` alone already runs KMeans for k=2..10 *plus* silhouette scoring.
+`discover_patterns()` alone already runs KMeans for k=2..10 _plus_ silhouette scoring.
 
 Structure it as **one heavy pass → one shared signal bundle → nine cheap interpreters**:
 
@@ -115,20 +115,21 @@ Each detector is then a pure function over already-computed numbers. Turns
 
 ## 3. Gap analysis — what actually needs building
 
-| # | Spec | Status | Work |
-|---|---|---|---|
-| A1 | §3 `AutoModelConfig` | **Partial** | `auto_optimize_config()` returns `hidden_layers, epochs, learning_rate, dropout, batch_size`. **Missing: `optimizer`, `activation`, `loss_function`, `early_stopping`** |
-| A2 | §3 applying that config | **Partial** | Optimizer is hardcoded Adam (`deep_trainer.py:355`), activation hardcoded ReLU (`:319`), loss hardcoded (`:347,351`), **early stopping does not exist** — the loop runs all epochs unconditionally (`:370`) |
-| A3 | §4 Pattern narrative | **Missing** | `discover_patterns()` returns raw numbers. Spec needs `{title, description, confidence, columns, visualization}` per pattern |
-| A4 | §5 Pattern selection | **Missing** | No select / compare / mark-preferred state anywhere |
-| A5 | §6 Extended report | **Partial** | PDF engine exists but covers schema/EDA/insights only. Needs model config, selected pattern, features used vs ignored, feature ranking, DL metrics, DL charts |
-| A6 | §1 Navigation | **Trivial** | One `TABS` entry + one render line in `App.jsx` |
+| #   | Spec                    | Status      | Work                                                                                                                                                                                                        |
+| --- | ----------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1  | §3 `AutoModelConfig`    | **Partial** | `auto_optimize_config()` returns `hidden_layers, epochs, learning_rate, dropout, batch_size`. **Missing: `optimizer`, `activation`, `loss_function`, `early_stopping`**                                     |
+| A2  | §3 applying that config | **Partial** | Optimizer is hardcoded Adam (`deep_trainer.py:355`), activation hardcoded ReLU (`:319`), loss hardcoded (`:347,351`), **early stopping does not exist** — the loop runs all epochs unconditionally (`:370`) |
+| A3  | §4 Pattern narrative    | **Missing** | `discover_patterns()` returns raw numbers. Spec needs `{title, description, confidence, columns, visualization}` per pattern                                                                                |
+| A4  | §5 Pattern selection    | **Missing** | No select / compare / mark-preferred state anywhere                                                                                                                                                         |
+| A5  | §6 Extended report      | **Partial** | PDF engine exists but covers schema/EDA/insights only. Needs model config, selected pattern, features used vs ignored, feature ranking, DL metrics, DL charts                                               |
+| A6  | §1 Navigation           | **Trivial** | One `TABS` entry + one render line in `App.jsx`                                                                                                                                                             |
 
 ---
 
 ## 4. Build phases
 
 ### Phase 1 — Backend foundation
+
 - `backend/app/dl1_store.py` — job store, TTL, status enum
 - `backend/core/dl1/config.py` — `AutoModelConfig` class (A1). Extends the existing
   heuristics with optimizer / activation / loss / early-stopping rules driven by
@@ -137,20 +138,24 @@ Each detector is then a pure function over already-computed numbers. Turns
   patience-based early stopping with best-weight restore (A2)
 
 ### Phase 2 — Pattern engine
+
 - `backend/core/dl1/signals.py` — one pass producing `SignalBundle` (O3), fed by the
   **encoded** matrix from `_prepare_rich()` rather than raw numerics (see Risk R2)
 - `backend/core/dl1/patterns.py` — nine detectors + confidence scoring (A3)
 
 ### Phase 3 — Orchestration
+
 - `backend/core/dl1/pipeline.py` — the 8-stage runner, yielding progress events
 - `backend/app/routes/dl1_routes.py` — `run` / `stream` / `result` / `select` / `report`
 
 ### Phase 4 — Frontend
+
 - `frontend/src/components/dl1/` — `DL1View`, `StageProgress`, `PatternBrowser`,
   `PatternCompare`, `ReportView`
 - Nav entry + render line in `App.jsx` (A6)
 
 ### Phase 5 — Report
+
 - `backend/core/dl1/report.py` — extends `generate_pdf_report()` sections (A5)
 
 **Order matters:** Phases 1–2 are independently testable via curl before any UI
@@ -170,7 +175,7 @@ path** or the module breaks in production. sklearn's `MLPClassifier` does suppor
 
 **R2 — `discover_patterns()` is numeric-only.** Line 582 does
 `select_dtypes(include=[np.number])`, so categorical columns are dropped entirely.
-Spec §4 wants "data segments" and "anomaly groups", which are usually *driven* by
+Spec §4 wants "data segments" and "anomaly groups", which are usually _driven_ by
 categoricals. Fix by feeding it the encoded matrix from `_prepare_rich()`.
 
 **R3 — Correlation heatmap has no Recharts primitive.** Recharts (already used)
@@ -185,5 +190,5 @@ Recommend (c) — both shapes are simple, and it keeps report generation server-
 and reproducible.
 
 **R5 — Existing "Deep Learning" tab.** There is already a working Deep Learning
-section. Shipping "Deep Learning 1.0" alongside it means two similar nav items.
+section. Shipping "Deep Learning 2.0" alongside it means two similar nav items.
 Decide: coexist, or supersede.

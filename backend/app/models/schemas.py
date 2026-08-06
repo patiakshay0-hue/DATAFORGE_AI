@@ -46,6 +46,6 @@ class ChatRequest(BaseModel):
 
 
 class DL1SelectRequest(BaseModel):
-    """Patterns the user picked from a Deep Learning 1.0 run."""
+    """Patterns the user picked from a Deep Learning 2.0 run."""
     pattern_ids: Optional[List[str]] = []
     preferred: Optional[str] = None

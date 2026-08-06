@@ -43,7 +43,7 @@ const TABS = [
   { id: "ml", label: "ML Models", icon: Brain },
   { id: "deep", label: "Deep Learning", icon: Brain, alwaysOn: true },
   // Unsupervised — needs no target column, so it is always available.
-  { id: "deep1", label: "Deep Learning 1.0", icon: Sparkles, alwaysOn: true },
+  { id: "deep1", label: "Deep Learning 2.0", icon: Sparkles, alwaysOn: true },
   { id: "vision", label: "Image Classifier", icon: Images, alwaysOn: true },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "chat", label: "Chat with Data", icon: MessageSquare, pro: true },

@@ -1,1 +1,1996 @@
-{"nodes": [{"id": "$graphify-root$_backend_core_dl1_report_py", "label": "report.py", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L1"}, {"id": "$graphify-root$_backend_core_dl1_report_losscurve", "label": "LossCurve", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L34", "_callable": true, "_callable_class": true}, {"id": "flowable", "label": "Flowable", "file_type": "code", "source_file": "", "source_location": "", "origin_file": "$graphify-root$/backend/core/dl1/report.py"}, {"id": "$graphify-root$_backend_core_dl1_report_losscurve_init", "label": ".__init__()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L37", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "label": ".draw()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L43", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_architecturediagram", "label": "ArchitectureDiagram", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L86", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_core_dl1_report_architecturediagram_init", "label": ".__init__()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L89", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "label": ".draw()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L95", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_header", "label": "_header()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L112", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_generate", "label": "generate()", "file_type": "code", "source_file": "backend/core/dl1/report.py", "source_location": "L121", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_report_rationale_1", "label": "Deep Learning 1.0 PDF report. Reuses the brand styling and table helpers from\u2026", "file_type": "rationale", "source_file": "backend/core/dl1/report.py", "source_location": "L1"}, {"id": "$graphify-root$_backend_core_dl1_report_rationale_35", "label": "Training/validation reconstruction loss, drawn directly on the canvas.", "file_type": "rationale", "source_file": "backend/core/dl1/report.py", "source_location": "L35"}, {"id": "$graphify-root$_backend_core_dl1_report_rationale_87", "label": "Encoder \u2192 bottleneck \u2192 decoder, as stacked bars whose width tracks layer size.", "file_type": "rationale", "source_file": "backend/core/dl1/report.py", "source_location": "L87"}, {"id": "$graphify-root$_backend_core_dl1_report_rationale_122", "label": "Build the full report for a finished job.", "file_type": "rationale", "source_file": "backend/core/dl1/report.py", "source_location": "L122"}], "edges": [{"source": "$graphify-root$_backend_core_dl1_report_py", "target": "io", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L13", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "datetime", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L14", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_lib", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L16", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_lib_pagesizes", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L17", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_lib_styles", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L18", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_lib_units", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L19", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_lib_enums", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L20", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "reportlab_platypus", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L21", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "core_exporter", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L26", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "$graphify-root$_backend_core_dl1_report_losscurve", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L34", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_losscurve", "target": "flowable", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L34", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_losscurve", "target": "$graphify-root$_backend_core_dl1_report_losscurve_init", "relation": "method", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L37", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_losscurve", "target": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "relation": "method", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L43", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L86", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_architecturediagram", "target": "flowable", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L86", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_architecturediagram", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_init", "relation": "method", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L89", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_architecturediagram", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "relation": "method", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L95", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "$graphify-root$_backend_core_dl1_report_header", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L112", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_py", "target": "$graphify-root$_backend_core_dl1_report_generate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L121", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_losscurve_init", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_init", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L38", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_generate", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L200", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_generate", "target": "$graphify-root$_backend_core_dl1_report_losscurve", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L205", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_generate", "target": "$graphify-root$_backend_core_dl1_report_header", "relation": "indirect_call", "context": "argument", "confidence": "INFERRED", "source_file": "backend/core/dl1/report.py", "source_location": "L314", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_rationale_1", "target": "$graphify-root$_backend_core_dl1_report_py", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L1", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_rationale_35", "target": "$graphify-root$_backend_core_dl1_report_losscurve", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L35", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_rationale_87", "target": "$graphify-root$_backend_core_dl1_report_architecturediagram", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L87", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_report_rationale_122", "target": "$graphify-root$_backend_core_dl1_report_generate", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/report.py", "source_location": "L122", "weight": 1.0}], "raw_calls": [{"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L48", "receiver": "h"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L49", "receiver": "h"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setStrokeColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L57", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "HexColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L57", "receiver": "colors"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setLineWidth", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L58", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "line", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L61", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "series", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L73", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "BLUE", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L73"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "series", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L74", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "AMBER", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L74"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L76", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "SLATE_400", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L76"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setFont", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L77", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "drawString", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L78", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "drawRightString", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L79", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L80", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "BLUE", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L80"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "drawString", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L81", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L82", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "AMBER", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L82"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw", "callee": "drawString", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L83", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L105", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "HexColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L105", "receiver": "colors"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "roundRect", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L106", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L107", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "setFont", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L108", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw", "callee": "drawCentredString", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L109", "receiver": "c"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "saveState", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L113", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L114", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "DARK_BG", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L114"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "rect", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L115", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "W", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L115"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "setFillColor", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L116", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "VIOLET", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L116"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "rect", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L117", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "W", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L117"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_header", "callee": "restoreState", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L118", "receiver": "canvas"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "BytesIO", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L123", "receiver": "io"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "SimpleDocTemplate", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L124", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "A4", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L124"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_styles", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L126", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L131", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "dict", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L131"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L136", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L137", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L138", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L139", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "HRFlowable", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L140", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "VIOLET", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L140"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L141", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "strftime", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L146", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "now", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L146", "receiver": "datetime"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L147", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L150", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L150", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L150", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L152", "receiver": "tbl"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "TableStyle", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L152", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L155", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L158", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L158", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L161", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L161", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L162", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L162", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L163", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L165", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L166", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L166", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L167", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L170", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L170", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L173", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "str", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L173"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L173", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L174", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L175", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L176", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L177", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L178", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L179", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "upper", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L180", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L180", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "capitalize", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L181", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L181", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "upper", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L182", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L182", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L183", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L184", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L185", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L187", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L188", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L188", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "PURPLE", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L188"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L189", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L191", "receiver": "config"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L192", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L192", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L194", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L194", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L195", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L195", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L198", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L199", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L199", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L200", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L201", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L201", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L203", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L204", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L204", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L205", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L206", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L206", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L209", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L209", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L210", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "int", "is_member_call": false, "indirect": true, "context": "collection", "source_file": "backend/core/dl1/report.py", "source_location": "L213"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "float", "is_member_call": false, "indirect": true, "context": "collection", "source_file": "backend/core/dl1/report.py", "source_location": "L213"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L224", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L226", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L229", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L232", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L233", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L233", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "EMERALD", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L233"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L234", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L237", "receiver": "recommendation"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L238", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L238", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L240", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L240", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L245", "receiver": "by_id"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "HRFlowable", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L248", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "VIOLET", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L248"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L249", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L250", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L250", "receiver": "full"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L251", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L252", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L252", "receiver": "sel"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L255", "receiver": "sel"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L256", "receiver": "block"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L256", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L258", "receiver": "block"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L258", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L259", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "KeepTogether", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L259", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L260", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L260", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L263", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L263", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L264", "receiver": "recommendation"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L265", "receiver": "recommendation"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L266", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L266", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L267", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L268", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L268", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L269", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L269", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L270", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L271", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L271", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L273", "receiver": "recommendation"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L277", "receiver": "rows"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L279", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L281", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L281", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "VIOLET", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L281"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L282", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L284", "receiver": "recommendation"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L286", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L286", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L288", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L289", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L289", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "AMBER", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L289"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L290", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L294", "receiver": "els"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L294", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L297", "receiver": "rows"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "replace", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L297", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L299", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L299", "receiver": "p"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Table", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L300", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "setStyle", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L302", "receiver": "t"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "_table_style", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L302", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L303", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "HRFlowable", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L306", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "SLATE_700", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L306"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Spacer", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L307", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "Paragraph", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L308", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "strftime", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L309", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "now", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L309", "receiver": "datetime"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "ParagraphStyle", "is_member_call": false, "source_file": "backend/core/dl1/report.py", "source_location": "L310", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "SLATE_700", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L310"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "TA_CENTER", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/report.py", "source_location": "L311"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "build", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L314", "receiver": "doc"}, {"caller_nid": "$graphify-root$_backend_core_dl1_report_generate", "callee": "getvalue", "is_member_call": true, "source_file": "backend/core/dl1/report.py", "source_location": "L315", "receiver": "buf"}]}
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_py",
+      "label": "report.py",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "label": "LossCurve",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L34",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "flowable",
+      "label": "Flowable",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/backend/core/dl1/report.py"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_losscurve_init",
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L37",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "label": ".draw()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L43",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "label": "ArchitectureDiagram",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L86",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_architecturediagram_init",
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L89",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "label": ".draw()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L95",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_header",
+      "label": "_header()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L112",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_generate",
+      "label": "generate()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L121",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_rationale_1",
+      "label": "Deep Learning 2.0 PDF report. Reuses the brand styling and table helpers from\u2026",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_rationale_35",
+      "label": "Training/validation reconstruction loss, drawn directly on the canvas.",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L35"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_rationale_87",
+      "label": "Encoder \u2192 bottleneck \u2192 decoder, as stacked bars whose width tracks layer size.",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L87"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_report_rationale_122",
+      "label": "Build the full report for a finished job.",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L122"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "io",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "datetime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_lib",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_lib_pagesizes",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_lib_styles",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_lib_units",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_lib_enums",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "reportlab_platypus",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "core_exporter",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "target": "flowable",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "target": "$graphify-root$_backend_core_dl1_report_losscurve_init",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "target": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "target": "flowable",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_init",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "$graphify-root$_backend_core_dl1_report_header",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_py",
+      "target": "$graphify-root$_backend_core_dl1_report_generate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_losscurve_init",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram_init",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_generate",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_generate",
+      "target": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_generate",
+      "target": "$graphify-root$_backend_core_dl1_report_header",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_rationale_1",
+      "target": "$graphify-root$_backend_core_dl1_report_py",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_rationale_35",
+      "target": "$graphify-root$_backend_core_dl1_report_losscurve",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_rationale_87",
+      "target": "$graphify-root$_backend_core_dl1_report_architecturediagram",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_report_rationale_122",
+      "target": "$graphify-root$_backend_core_dl1_report_generate",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L122",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L48",
+      "receiver": "h"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L49",
+      "receiver": "h"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setStrokeColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L57",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "HexColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L57",
+      "receiver": "colors"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setLineWidth",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L58",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "line",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L61",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "series",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L73",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "BLUE",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "series",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L74",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "AMBER",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L76",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "SLATE_400",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setFont",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L77",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "drawString",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L78",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "drawRightString",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L79",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L80",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "BLUE",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "drawString",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L81",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L82",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "AMBER",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_losscurve_draw",
+      "callee": "drawString",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L83",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L105",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "HexColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L105",
+      "receiver": "colors"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "roundRect",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L106",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L107",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "setFont",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L108",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_architecturediagram_draw",
+      "callee": "drawCentredString",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L109",
+      "receiver": "c"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "saveState",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L113",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L114",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "DARK_BG",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "rect",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L115",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "W",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "setFillColor",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L116",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "VIOLET",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "rect",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L117",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "W",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_header",
+      "callee": "restoreState",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L118",
+      "receiver": "canvas"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "BytesIO",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L123",
+      "receiver": "io"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "SimpleDocTemplate",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L124",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "A4",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_styles",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L126",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L131",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "dict",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L136",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L137",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L138",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L139",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "HRFlowable",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L140",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "VIOLET",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L141",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "strftime",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L146",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L146",
+      "receiver": "datetime"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L147",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L150",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L150",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L150",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L152",
+      "receiver": "tbl"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "TableStyle",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L152",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L155",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L158",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L158",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L161",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L161",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L162",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L162",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L163",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L165",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L166",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L166",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L167",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L170",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L170",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L173",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "str",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L173",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L174",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L175",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L176",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L177",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L178",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L179",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "upper",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L180",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L180",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "capitalize",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L181",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L181",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "upper",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L182",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L182",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L183",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L184",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L185",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L187",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L188",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L188",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "PURPLE",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L189",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L191",
+      "receiver": "config"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L192",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L192",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L194",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L194",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L195",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L195",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L198",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L199",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L199",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L200",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L201",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L201",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L203",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L204",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L204",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L205",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L206",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L206",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L209",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L209",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L210",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "int",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "collection",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "float",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "collection",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L224",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L226",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L229",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L232",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L233",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L233",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "EMERALD",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L233"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L234",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L237",
+      "receiver": "recommendation"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L238",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L238",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L240",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L240",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L245",
+      "receiver": "by_id"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "HRFlowable",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L248",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "VIOLET",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L249",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L250",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L250",
+      "receiver": "full"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L251",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L252",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L252",
+      "receiver": "sel"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L255",
+      "receiver": "sel"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L256",
+      "receiver": "block"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L256",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L258",
+      "receiver": "block"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L258",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L259",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "KeepTogether",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L259",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L260",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L260",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L263",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L263",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L264",
+      "receiver": "recommendation"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L265",
+      "receiver": "recommendation"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L266",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L266",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L267",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L268",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L268",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L269",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L269",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L270",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L271",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L271",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L273",
+      "receiver": "recommendation"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L277",
+      "receiver": "rows"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L279",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L281",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L281",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "VIOLET",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L281"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L282",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L284",
+      "receiver": "recommendation"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L286",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L286",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L288",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L289",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L289",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "AMBER",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L290",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L294",
+      "receiver": "els"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L294",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L297",
+      "receiver": "rows"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L297",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L299",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L299",
+      "receiver": "p"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Table",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L300",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "setStyle",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L302",
+      "receiver": "t"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "_table_style",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L302",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L303",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "HRFlowable",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L306",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "SLATE_700",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Spacer",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L307",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "Paragraph",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L308",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "strftime",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L309",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L309",
+      "receiver": "datetime"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "ParagraphStyle",
+      "is_member_call": false,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L310",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "SLATE_700",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "TA_CENTER",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "build",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L314",
+      "receiver": "doc"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_report_generate",
+      "callee": "getvalue",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/report.py",
+      "source_location": "L315",
+      "receiver": "buf"
+    }
+  ]
+}

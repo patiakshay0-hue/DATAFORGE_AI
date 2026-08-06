@@ -45,7 +45,7 @@ DEFAULTS = {
     "learning_rate": 0.001,
     "dropout": 0.2,
     "batch_size": 32,
-    # Extended knobs (Deep Learning 1.0). Defaults reproduce the original
+    # Extended knobs (Deep Learning 2.0). Defaults reproduce the original
     # hardcoded behaviour, so existing callers are unaffected; AutoModelConfig
     # overrides them deliberately.
     "activation": "relu",
@@ -102,7 +102,8 @@ def _clean_config(cfg: dict | None) -> dict:
     if cfg["optimizer"] not in OPTIMIZERS:
         cfg["optimizer"] = "adam"
     loss = cfg.get("loss_function")
-    cfg["loss_function"] = loss.lower() if isinstance(loss, str) and loss.lower() in LOSSES else None
+    cfg["loss_function"] = loss.lower() if isinstance(
+        loss, str) and loss.lower() in LOSSES else None
 
     es = cfg.get("early_stopping") or {}
     if not isinstance(es, dict):
@@ -438,7 +439,8 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
     else:
         yt = torch.tensor(y_tr, dtype=torch.float32).view(-1, 1)
         yv = torch.tensor(y_val, dtype=torch.float32).view(-1, 1)
-    criterion, loss_name = _torch_criterion(cfg.get("loss_function"), task, y_tr)
+    criterion, loss_name = _torch_criterion(
+        cfg.get("loss_function"), task, y_tr)
 
     model = _build_torch_mlp(
         X.shape[1], out_dim, cfg["hidden_layers"], cfg["dropout"], cfg.get("activation", "relu"))
@@ -500,7 +502,8 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
         if best_score is None or current < best_score - min_delta:
             best_score, best_epoch, stale = current, epoch + 1, 0
             if restore_best:
-                best_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
+                best_state = {k: v.detach().clone()
+                              for k, v in model.state_dict().items()}
         else:
             stale += 1
             if stale >= patience:

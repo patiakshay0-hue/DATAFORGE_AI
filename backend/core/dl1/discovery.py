@@ -31,6 +31,8 @@ MAX_CLUSTER_K = 8
 SILHOUETTE_TOLERANCE = 0.03
 ANOMALY_PERCENTILE = 97.5
 MAX_MI_FEATURES = 12
+MAX_MI_ROWS = 5000
+MAX_CLUSTER_ROWS = 10000
 
 
 def _clamp(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
@@ -71,14 +73,25 @@ def _cluster_latent(latent: np.ndarray, names: list[str], X: np.ndarray):
     if len(latent) < MIN_CLUSTER_MEMBERS * 2:
         return {}
 
-    k_max = int(min(MAX_CLUSTER_K, max(2, len(latent) // MIN_CLUSTER_MEMBERS)))
+    # Sample for clustering to avoid O(n) blow-up on large datasets
+    if len(latent) > MAX_CLUSTER_ROWS:
+        rng = np.random.RandomState(42)
+        sample_idx = rng.choice(len(latent), MAX_CLUSTER_ROWS, replace=False)
+        latent_sample = latent[sample_idx]
+        X_sample = X[sample_idx]
+    else:
+        latent_sample = latent
+        X_sample = X
+        sample_idx = None
+
+    k_max = int(min(MAX_CLUSTER_K, max(2, len(latent_sample) // MIN_CLUSTER_MEMBERS)))
     scored, elbow = [], []
     for k in range(2, k_max + 1):
         km = KMeans(n_clusters=k, random_state=42, n_init=3)
-        labels = km.fit_predict(latent)
+        labels = km.fit_predict(latent_sample)
         elbow.append({"k": k, "inertia": round(_safe(km.inertia_), 2)})
         if len(set(labels)) > 1:
-            scored.append((k, _safe(silhouette_score(latent, labels), -1.0)))
+            scored.append((k, _safe(silhouette_score(latent_sample, labels), -1.0)))
 
     if not scored:
         return {}
@@ -89,7 +102,13 @@ def _cluster_latent(latent: np.ndarray, names: list[str], X: np.ndarray):
     best_score = dict(scored)[best_k]
 
     km = KMeans(n_clusters=best_k, random_state=42, n_init=5)
-    labels = km.fit_predict(latent)
+    sample_labels = km.fit_predict(latent_sample)
+
+    # Assign labels to full dataset using nearest centroid
+    if sample_idx is not None:
+        labels = km.predict(latent)
+    else:
+        labels = sample_labels
 
     profiles = []
     global_mean, global_std = X.mean(axis=0), X.std(axis=0) + 1e-9
@@ -109,11 +128,11 @@ def _cluster_latent(latent: np.ndarray, names: list[str], X: np.ndarray):
             "traits": traits,
         })
 
-    # 2-D projection for plotting the groups.
-    if latent.shape[1] >= 2:
-        pts = PCA(n_components=2, random_state=42).fit_transform(latent)
+    # 2-D projection for plotting the groups (on sample for speed)
+    if latent_sample.shape[1] >= 2:
+        pts = PCA(n_components=2, random_state=42).fit_transform(latent_sample)
     else:
-        pts = np.column_stack([latent[:, 0], np.zeros(len(latent))])
+        pts = np.column_stack([latent_sample[:, 0], np.zeros(len(latent_sample))])
 
     return {
         "n_clusters": best_k,
@@ -431,18 +450,24 @@ def _statistical_context(X: np.ndarray, names: list[str]):
     collinear.sort(key=lambda p: -abs(p["r"]))
 
     # Mutual information between feature pairs, restricted to the highest-variance
-    # columns so this stays O(k^2) with small k.
+    # columns so this stays O(k^2) with small k. Sample rows to avoid O(n) blow-up.
     coupled = []
     try:
         order = np.argsort(-X.var(axis=0))[:MAX_MI_FEATURES]
+        n_rows = X.shape[0]
+        if n_rows > MAX_MI_ROWS:
+            idx = np.random.RandomState(42).choice(n_rows, MAX_MI_ROWS, replace=False)
+            X_sample = X[idx]
+        else:
+            X_sample = X
         for pos_a in range(len(order)):
             for pos_b in range(pos_a + 1, len(order)):
                 ia, ib = int(order[pos_a]), int(order[pos_b])
                 r = abs(_safe(corr.iloc[ia, ib]))
                 if r >= 0.5:
-                    continue          # already explained linearly
+                    continue
                 mi = float(mutual_info_regression(
-                    X[:, [ia]], X[:, ib], random_state=42)[0])
+                    X_sample[:, [ia]], X_sample[:, ib], random_state=42)[0])
                 if mi > 0.3:
                     coupled.append({"a": names[ia], "b": names[ib],
                                     "mi": round(mi, 4), "r": round(r, 4)})

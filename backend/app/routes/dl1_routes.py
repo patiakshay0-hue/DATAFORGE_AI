@@ -1,4 +1,4 @@
-"""Deep Learning 1.0 routes — target-free training, pattern selection, reporting.
+"""Deep Learning 2.0 routes — target-free training, pattern selection, reporting.
 
 Flow:
     POST /dl1/run           upload a file (or reuse the loaded dataset) → job_id
@@ -60,7 +60,8 @@ async def dl1_run(file: UploadFile = File(None)):
 async def dl1_status(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Run not found or expired.")
+        raise HTTPException(
+            status_code=404, detail="Run not found or expired.")
     return job.public()
 
 
@@ -68,11 +69,13 @@ async def dl1_status(job_id: str):
 async def dl1_result(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Run not found or expired.")
+        raise HTTPException(
+            status_code=404, detail="Run not found or expired.")
     if job.status == "error":
         raise HTTPException(status_code=400, detail=job.error or "Run failed.")
     if job.status != "done":
-        raise HTTPException(status_code=409, detail="Run is still in progress.")
+        raise HTTPException(
+            status_code=409, detail="Run is still in progress.")
     return job.result()
 
 
@@ -80,9 +83,11 @@ async def dl1_result(job_id: str):
 async def dl1_select(job_id: str, request: DL1SelectRequest):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Run not found or expired.")
+        raise HTTPException(
+            status_code=404, detail="Run not found or expired.")
     if job.status != "done":
-        raise HTTPException(status_code=409, detail="Run is still in progress.")
+        raise HTTPException(
+            status_code=409, detail="Run is still in progress.")
 
     valid = {p["id"] for p in (job.patterns or [])}
     chosen = [pid for pid in (request.pattern_ids or []) if pid in valid]
@@ -90,7 +95,8 @@ async def dl1_select(job_id: str, request: DL1SelectRequest):
     if preferred and preferred not in chosen:
         chosen.append(preferred)
 
-    dl1_store.update(job_id, selected_patterns=chosen, preferred_pattern=preferred)
+    dl1_store.update(job_id, selected_patterns=chosen,
+                     preferred_pattern=preferred)
     job = dl1_store.get(job_id)
     return {**job.public(), "recommendation": pipeline.recommend_features(job)}
 
@@ -99,9 +105,11 @@ async def dl1_select(job_id: str, request: DL1SelectRequest):
 async def dl1_recommendation(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Run not found or expired.")
+        raise HTTPException(
+            status_code=404, detail="Run not found or expired.")
     if job.status != "done":
-        raise HTTPException(status_code=409, detail="Run is still in progress.")
+        raise HTTPException(
+            status_code=409, detail="Run is still in progress.")
     return pipeline.recommend_features(job)
 
 
@@ -109,17 +117,21 @@ async def dl1_recommendation(job_id: str):
 async def dl1_report_pdf(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(status_code=404, detail="Run not found or expired.")
+        raise HTTPException(
+            status_code=404, detail="Run not found or expired.")
     if job.status != "done":
-        raise HTTPException(status_code=409, detail="Run is still in progress.")
+        raise HTTPException(
+            status_code=409, detail="Run is still in progress.")
 
     try:
         pdf = dl1_report.generate(job, pipeline.recommend_features(job))
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Could not build report: {exc}")
+        raise HTTPException(
+            status_code=500, detail=f"Could not build report: {exc}")
 
     name = (job.filename or "dataset").rsplit(".", 1)[0]
     return StreamingResponse(
         io.BytesIO(pdf), media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="{name}_deep_learning_1.0.pdf"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{name}_deep_learning_1.0.pdf"'},
     )

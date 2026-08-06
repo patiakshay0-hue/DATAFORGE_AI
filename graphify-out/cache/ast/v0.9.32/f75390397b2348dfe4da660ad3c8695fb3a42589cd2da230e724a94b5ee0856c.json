@@ -1,1 +1,355 @@
-{"nodes": [{"id": "$graphify-root$_backend_app_models_schemas_py", "label": "schemas.py", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L1"}, {"id": "$graphify-root$_backend_app_models_schemas_suggestrequest", "label": "SuggestRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L5", "_callable": true, "_callable_class": true}, {"id": "basemodel", "label": "BaseModel", "file_type": "code", "source_file": "", "source_location": "", "origin_file": "$graphify-root$/backend/app/models/schemas.py"}, {"id": "$graphify-root$_backend_app_models_schemas_trainrequest", "label": "TrainRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L9", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest", "label": "DeepSuggestRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L14", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_deeptrainrequest", "label": "DeepTrainRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L18", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_deeppredictrequest", "label": "DeepPredictRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L23", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_autoconfigrequest", "label": "AutoConfigRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L27", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_cleanrequest", "label": "CleanRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L31", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_visiontrainrequest", "label": "VisionTrainRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L35", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_convertchoice", "label": "ConvertChoice", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L39", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_chatrequest", "label": "ChatRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L43", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_dl1selectrequest", "label": "DL1SelectRequest", "file_type": "code", "source_file": "backend/app/models/schemas.py", "source_location": "L48", "_callable": true, "_callable_class": true}, {"id": "$graphify-root$_backend_app_models_schemas_rationale_49", "label": "Patterns the user picked from a Deep Learning 1.0 run.", "file_type": "rationale", "source_file": "backend/app/models/schemas.py", "source_location": "L49"}], "edges": [{"source": "$graphify-root$_backend_app_models_schemas_py", "target": "pydantic", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L1", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "typing", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L2", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_suggestrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L5", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_suggestrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L5", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_trainrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L9", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_trainrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L9", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L14", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L14", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_deeptrainrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L18", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_deeptrainrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L18", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_deeppredictrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L23", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_deeppredictrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L23", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_autoconfigrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L27", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_autoconfigrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L27", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_cleanrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L31", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_cleanrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L31", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_visiontrainrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L35", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_visiontrainrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L35", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_convertchoice", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L39", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_convertchoice", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L39", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_chatrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L43", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_chatrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L43", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_py", "target": "$graphify-root$_backend_app_models_schemas_dl1selectrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L48", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_dl1selectrequest", "target": "basemodel", "relation": "inherits", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L48", "weight": 1.0}, {"source": "$graphify-root$_backend_app_models_schemas_rationale_49", "target": "$graphify-root$_backend_app_models_schemas_dl1selectrequest", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/app/models/schemas.py", "source_location": "L49", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_py",
+      "label": "schemas.py",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_suggestrequest",
+      "label": "SuggestRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L5",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "basemodel",
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/backend/app/models/schemas.py"
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_trainrequest",
+      "label": "TrainRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L9",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest",
+      "label": "DeepSuggestRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L14",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_deeptrainrequest",
+      "label": "DeepTrainRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_deeppredictrequest",
+      "label": "DeepPredictRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L23",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_autoconfigrequest",
+      "label": "AutoConfigRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L27",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_cleanrequest",
+      "label": "CleanRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L31",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_visiontrainrequest",
+      "label": "VisionTrainRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L35",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_convertchoice",
+      "label": "ConvertChoice",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L39",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_chatrequest",
+      "label": "ChatRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L43",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_dl1selectrequest",
+      "label": "DL1SelectRequest",
+      "file_type": "code",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L48",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "$graphify-root$_backend_app_models_schemas_rationale_49",
+      "label": "Patterns the user picked from a Deep Learning 2.0 run.",
+      "file_type": "rationale",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L49"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_suggestrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_suggestrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_trainrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_trainrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_deepsuggestrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_deeptrainrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_deeptrainrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_deeppredictrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_deeppredictrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_autoconfigrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_autoconfigrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_cleanrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_cleanrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_visiontrainrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_visiontrainrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_convertchoice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_convertchoice",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_chatrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_chatrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_py",
+      "target": "$graphify-root$_backend_app_models_schemas_dl1selectrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_dl1selectrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_app_models_schemas_rationale_49",
+      "target": "$graphify-root$_backend_app_models_schemas_dl1selectrequest",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/app/models/schemas.py",
+      "source_location": "L49",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

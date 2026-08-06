@@ -1,4 +1,4 @@
-"""Deep Learning 1.0 — automatic modelling, pattern discovery and reporting.
+"""Deep Learning 2.0 — automatic modelling, pattern discovery and reporting.
 
 Module layout (kept deliberately separable so a future 2.0 can swap pieces):
 

@@ -1,1 +1,549 @@
-{"nodes": [{"id": "$graphify-root$_backend_core_dl1_pipeline_py", "label": "pipeline.py", "file_type": "code", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L1"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_set", "label": "_set()", "file_type": "code", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L39", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_pipeline_run", "label": "run()", "file_type": "code", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L45", "_callable": true}, {"id": "dataframe", "label": "DataFrame", "file_type": "code", "source_file": "", "source_location": "", "origin_file": "$graphify-root$/backend/core/dl1/pipeline.py"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_start", "label": "start()", "file_type": "code", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L113", "_callable": true}, {"id": "dl1job", "label": "DL1Job", "file_type": "code", "source_file": "", "source_location": "", "origin_file": "$graphify-root$/backend/core/dl1/pipeline.py"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "label": "recommend_features()", "file_type": "code", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L122", "_callable": true}, {"id": "$graphify-root$_backend_core_dl1_pipeline_rationale_1", "label": "Deep Learning 1.0 pipeline \u2014 the full target-free run, as one job. Stages, in\u2026", "file_type": "rationale", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L1"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_rationale_46", "label": "Execute the whole pipeline, recording progress and results on the job.", "file_type": "rationale", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L46"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_rationale_114", "label": "Create a job and run the pipeline on a background thread.", "file_type": "rationale", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L114"}, {"id": "$graphify-root$_backend_core_dl1_pipeline_rationale_123", "label": "Decide which columns to use, based on the patterns the user selected. Ranking\u2026", "file_type": "rationale", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L123"}], "edges": [{"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "threading", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L20", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "traceback", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L21", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "pandas", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L23", "weight": 1.0, "local_alias": "pd"}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "app", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L25", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "$graphify-root$_backend_core_dl1_init_py", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L26", "weight": 1.0, "target_file": "$graphify-root$/backend/core/dl1/__init__.py"}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "$graphify-root$_backend_core_dl1_pipeline_set", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L39", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "$graphify-root$_backend_core_dl1_pipeline_run", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L45", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_run", "target": "dataframe", "relation": "references", "context": "parameter_type", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L45", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "$graphify-root$_backend_core_dl1_pipeline_start", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L113", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_start", "target": "dataframe", "relation": "references", "context": "parameter_type", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L113", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_start", "target": "dl1job", "relation": "references", "context": "return_type", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L113", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_py", "target": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "relation": "contains", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L122", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "target": "dl1job", "relation": "references", "context": "parameter_type", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L122", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_run", "target": "$graphify-root$_backend_core_dl1_pipeline_set", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L49", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_start", "target": "$graphify-root$_backend_core_dl1_pipeline_run", "relation": "indirect_call", "context": "argument", "confidence": "INFERRED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L116", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_rationale_1", "target": "$graphify-root$_backend_core_dl1_pipeline_py", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L1", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_rationale_46", "target": "$graphify-root$_backend_core_dl1_pipeline_run", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L46", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_rationale_114", "target": "$graphify-root$_backend_core_dl1_pipeline_start", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L114", "weight": 1.0}, {"source": "$graphify-root$_backend_core_dl1_pipeline_rationale_123", "target": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "relation": "rationale_for", "confidence": "EXTRACTED", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L123", "weight": 1.0}], "raw_calls": [{"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_set", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L40", "receiver": "STAGE_PROGRESS"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_set", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L41", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "prepare", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L50", "receiver": "unsupervised"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "isnull", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L59", "receiver": "df"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L64", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "auto_config", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L68", "receiver": "unsupervised"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L69", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "to_dict", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L69", "receiver": "cfg"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "join", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L73", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "str", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L73"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "train", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L74", "receiver": "unsupervised"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L77", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "discover", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L96", "receiver": "discovery"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L98", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L101", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L105", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "exc", "is_member_call": false, "indirect": true, "context": "argument", "source_file": "backend/core/dl1/pipeline.py", "source_location": "L107"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run", "callee": "print_exc", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L110", "receiver": "traceback"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start", "callee": "create", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L115", "receiver": "dl1_store"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start", "callee": "Thread", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L116", "receiver": "threading"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start", "callee": "copy", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L116", "receiver": "df"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L131", "receiver": "training"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "add", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L135", "receiver": "chosen_ids"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L140", "receiver": "implicated"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L140", "receiver": "p"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "update", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L146", "receiver": "flagged_redundant"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L146", "receiver": "p"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L160", "receiver": "ranked"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "append", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L161", "receiver": null}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "sort", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L164", "receiver": "ranked"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L170", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L172", "receiver": "profile"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L175", "receiver": "p"}, {"caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features", "callee": "get", "is_member_call": true, "source_file": "backend/core/dl1/pipeline.py", "source_location": "L176", "receiver": "p"}]}
+{
+  "nodes": [
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "label": "pipeline.py",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_set",
+      "label": "_set()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L39",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L45",
+      "_callable": true
+    },
+    {
+      "id": "dataframe",
+      "label": "DataFrame",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/backend/core/dl1/pipeline.py"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "label": "start()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L113",
+      "_callable": true
+    },
+    {
+      "id": "dl1job",
+      "label": "DL1Job",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "origin_file": "$graphify-root$/backend/core/dl1/pipeline.py"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "label": "recommend_features()",
+      "file_type": "code",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L122",
+      "_callable": true
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_rationale_1",
+      "label": "Deep Learning 2.0 pipeline \u2014 the full target-free run, as one job. Stages, in\u2026",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_rationale_46",
+      "label": "Execute the whole pipeline, recording progress and results on the job.",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L46"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_rationale_114",
+      "label": "Create a job and run the pipeline on a background thread.",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L114"
+    },
+    {
+      "id": "$graphify-root$_backend_core_dl1_pipeline_rationale_123",
+      "label": "Decide which columns to use, based on the patterns the user selected. Ranking\u2026",
+      "file_type": "rationale",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L123"
+    }
+  ],
+  "edges": [
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "threading",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "traceback",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "pandas",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "local_alias": "pd"
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "app",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "$graphify-root$_backend_core_dl1_init_py",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "target_file": "$graphify-root$/backend/core/dl1/__init__.py"
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "target": "dataframe",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "target": "dataframe",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "target": "dl1job",
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "target": "dl1job",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_set",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_rationale_1",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_py",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_rationale_46",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_rationale_114",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "$graphify-root$_backend_core_dl1_pipeline_rationale_123",
+      "target": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L123",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_set",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L40",
+      "receiver": "STAGE_PROGRESS"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_set",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L41",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "prepare",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L50",
+      "receiver": "unsupervised"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "isnull",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L59",
+      "receiver": "df"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L64",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "auto_config",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L68",
+      "receiver": "unsupervised"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L69",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "to_dict",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L69",
+      "receiver": "cfg"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L73",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "str",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "train",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L74",
+      "receiver": "unsupervised"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L77",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "discover",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L96",
+      "receiver": "discovery"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L98",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L101",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L105",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "exc",
+      "is_member_call": false,
+      "indirect": true,
+      "context": "argument",
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_run",
+      "callee": "print_exc",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L110",
+      "receiver": "traceback"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "callee": "create",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L115",
+      "receiver": "dl1_store"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "callee": "Thread",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L116",
+      "receiver": "threading"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_start",
+      "callee": "copy",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L116",
+      "receiver": "df"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L131",
+      "receiver": "training"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L135",
+      "receiver": "chosen_ids"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L140",
+      "receiver": "implicated"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L140",
+      "receiver": "p"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L146",
+      "receiver": "flagged_redundant"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L146",
+      "receiver": "p"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L160",
+      "receiver": "ranked"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "append",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L161",
+      "receiver": null
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L164",
+      "receiver": "ranked"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L170",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L172",
+      "receiver": "profile"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L175",
+      "receiver": "p"
+    },
+    {
+      "caller_nid": "$graphify-root$_backend_core_dl1_pipeline_recommend_features",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "backend/core/dl1/pipeline.py",
+      "source_location": "L176",
+      "receiver": "p"
+    }
+  ]
+}

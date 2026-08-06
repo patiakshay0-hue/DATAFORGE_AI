@@ -1,4 +1,4 @@
-"""Deep Learning 1.0 pipeline — the full target-free run, as one job.
+"""Deep Learning 2.0 pipeline — the full target-free run, as one job.
 
 Stages, in order:
 
@@ -46,7 +46,8 @@ def run(job_id: str, df: pd.DataFrame) -> None:
     """Execute the whole pipeline, recording progress and results on the job."""
     try:
         # ── 1. Preprocess ────────────────────────────────────────────────────
-        _set(job_id, "preprocess", "Detecting column types and handling missing values")
+        _set(job_id, "preprocess",
+             "Detecting column types and handling missing values")
         encoded = unsupervised.prepare(df)
 
         profile = {
@@ -113,7 +114,8 @@ def run(job_id: str, df: pd.DataFrame) -> None:
 def start(df: pd.DataFrame, filename: str) -> dl1_store.DL1Job:
     """Create a job and run the pipeline on a background thread."""
     job = dl1_store.create(filename=filename, target_column="")
-    thread = threading.Thread(target=run, args=(job.id, df.copy()), daemon=True)
+    thread = threading.Thread(
+        target=run, args=(job.id, df.copy()), daemon=True)
     thread.start()
     return job
 
@@ -161,7 +163,8 @@ def recommend_features(job: dl1_store.DL1Job) -> dict:
         (ignored if drop else used).append(name)
 
     # Promote pattern-implicated columns to the top of the ranking.
-    ranked.sort(key=lambda e: (not e["in_selected_pattern"], -e["information_pct"]))
+    ranked.sort(key=lambda e: (
+        not e["in_selected_pattern"], -e["information_pct"]))
     for i, entry in enumerate(ranked, start=1):
         entry["rank"] = i
 

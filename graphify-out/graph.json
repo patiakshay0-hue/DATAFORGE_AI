@@ -136,24 +136,24 @@
       "community_name": "dl1_routes.py"
     },
     {
-      "label": "Per-job state for the Deep Learning 1.0 pipeline. Why this exists instead of\u2026",
+      "label": "Per-job state for the Deep Learning 2.0 pipeline. Why this exists instead of\u2026",
       "file_type": "rationale",
       "source_file": "backend/app/dl1_store.py",
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "norm_label": "per-job state for the deep learning 1.0 pipeline. why this exists instead of...",
+      "norm_label": "per-job state for the Deep Learning 2.0 pipeline. why this exists instead of...",
       "id": "backend_app_dl1_store_rationale_1",
       "community_name": "dl1_routes.py"
     },
     {
-      "label": "One end-to-end Deep Learning 1.0 run.",
+      "label": "One end-to-end Deep Learning 2.0 run.",
       "file_type": "rationale",
       "source_file": "backend/app/dl1_store.py",
       "source_location": "L39",
       "_origin": "ast",
       "community": 1,
-      "norm_label": "one end-to-end deep learning 1.0 run.",
+      "norm_label": "one end-to-end Deep Learning 2.0 run.",
       "id": "backend_app_dl1_store_rationale_39",
       "community_name": "dl1_routes.py"
     },
@@ -367,13 +367,13 @@
       "community_name": "deep_trainer.py"
     },
     {
-      "label": "Patterns the user picked from a Deep Learning 1.0 run.",
+      "label": "Patterns the user picked from a Deep Learning 2.0 run.",
       "file_type": "rationale",
       "source_file": "backend/app/models/schemas.py",
       "source_location": "L49",
       "_origin": "ast",
       "community": 0,
-      "norm_label": "patterns the user picked from a deep learning 1.0 run.",
+      "norm_label": "patterns the user picked from a Deep Learning 2.0 run.",
       "id": "backend_app_models_schemas_rationale_49",
       "community_name": "deep_trainer.py"
     },
@@ -796,13 +796,13 @@
       "community_name": "dl1_routes.py"
     },
     {
-      "label": "Deep Learning 1.0 routes \u2014 target-free training, pattern selection, reporting.\u2026",
+      "label": "Deep Learning 2.0 routes \u2014 target-free training, pattern selection, reporting.\u2026",
       "file_type": "rationale",
       "source_file": "backend/app/routes/dl1_routes.py",
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "norm_label": "deep learning 1.0 routes \u2014 target-free training, pattern selection, reporting....",
+      "norm_label": "Deep Learning 2.0 routes \u2014 target-free training, pattern selection, reporting....",
       "id": "backend_app_routes_dl1_routes_rationale_1",
       "community_name": "dl1_routes.py"
     },
@@ -1830,13 +1830,13 @@
       "community_name": "dl1_routes.py"
     },
     {
-      "label": "Deep Learning 1.0 \u2014 automatic modelling, pattern discovery and reporting.\u2026",
+      "label": "Deep Learning 2.0 \u2014 automatic modelling, pattern discovery and reporting.\u2026",
       "file_type": "rationale",
       "source_file": "backend/core/dl1/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "norm_label": "deep learning 1.0 \u2014 automatic modelling, pattern discovery and reporting....",
+      "norm_label": "Deep Learning 2.0 \u2014 automatic modelling, pattern discovery and reporting....",
       "id": "backend_core_dl1_init_rationale_1",
       "community_name": "dl1_routes.py"
     },
@@ -2798,13 +2798,13 @@
       "community_name": "dl1_routes.py"
     },
     {
-      "label": "Deep Learning 1.0 pipeline \u2014 the full target-free run, as one job. Stages, in\u2026",
+      "label": "Deep Learning 2.0 pipeline \u2014 the full target-free run, as one job. Stages, in\u2026",
       "file_type": "rationale",
       "source_file": "backend/core/dl1/pipeline.py",
       "source_location": "L1",
       "_origin": "ast",
       "community": 1,
-      "norm_label": "deep learning 1.0 pipeline \u2014 the full target-free run, as one job. stages, in...",
+      "norm_label": "Deep Learning 2.0 pipeline \u2014 the full target-free run, as one job. stages, in...",
       "id": "backend_core_dl1_pipeline_rationale_1",
       "community_name": "dl1_routes.py"
     },
@@ -2952,13 +2952,13 @@
       "community_name": "report.py"
     },
     {
-      "label": "Deep Learning 1.0 PDF report. Reuses the brand styling and table helpers from\u2026",
+      "label": "Deep Learning 2.0 PDF report. Reuses the brand styling and table helpers from\u2026",
       "file_type": "rationale",
       "source_file": "backend/core/dl1/report.py",
       "source_location": "L1",
       "_origin": "ast",
       "community": 8,
-      "norm_label": "deep learning 1.0 pdf report. reuses the brand styling and table helpers from...",
+      "norm_label": "Deep Learning 2.0 pdf report. reuses the brand styling and table helpers from...",
       "id": "backend_core_dl1_report_rationale_1",
       "community_name": "report.py"
     },
