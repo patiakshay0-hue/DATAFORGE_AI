@@ -103,12 +103,10 @@ const DeepLearning1View = ({ data }) => {
         failures = 0;
         setReconnecting(false);
         setJob(res.data);
-        if (res.data.status === "done") {
-          const full = await apiLong.get(`/dl1/result/${job.job_id}`);
-          if (!cancelled) setResult(full.data);
-        } else if (res.data.status === "error") {
+        if (res.data.status === "error") {
           setError(res.data.error || "The run failed.");
         }
+        // The finished run's payload is fetched by the effect below, not here.
       } catch (e) {
         if (cancelled) return;
 
@@ -150,6 +148,52 @@ const DeepLearning1View = ({ data }) => {
       clearInterval(pollRef.current);
     };
   }, [job?.job_id, job?.status]);
+
+  // Fetch the finished run's payload — deliberately its own effect.
+  //
+  // Doing this inside the poll does not work, and the way it fails is silent.
+  // The poll marks the run done by calling setJob, and `job.status` is one of
+  // that effect's dependencies, so React tears the effect down in the very
+  // commit the response triggers. Any request still awaiting inside it is
+  // abandoned mid-flight, the result never lands, and the UI shows a completed
+  // run with nothing under it. Here the "done" transition *creates* the effect
+  // that does the fetching instead of destroying it.
+  useEffect(() => {
+    if (job?.status !== "done" || result) return;
+
+    let cancelled = false;
+
+    (async () => {
+      // The payload is worth a few attempts: it arrives exactly when the box has
+      // just finished a CPU-heavy run, which is the moment it is least likely to
+      // answer promptly. Losing it means losing the whole run's output.
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const full = await apiLong.get(`/dl1/result/${job.job_id}`);
+          if (!cancelled) setResult(full.data);
+          return;
+        } catch (e) {
+          if (cancelled) return;
+          if (e?.response && e.response.status !== 409) {
+            // A definite answer other than "still running" — retrying is futile.
+            setError(errorMessage(e, "The run finished but its results could not be loaded."));
+            return;
+          }
+          await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+        }
+      }
+      if (!cancelled) {
+        setError(
+          "The run finished but its results could not be loaded. Reopening this " +
+            "tab or starting the run again should recover it.",
+        );
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [job?.job_id, job?.status, result]);
 
   const start = async (file) => {
     setBusy(true);
