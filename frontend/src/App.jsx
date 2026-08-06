@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { useTheme } from "./ThemeContext";
+import { wakeBackend } from "./api";
 import FileUpload from "./components/FileUpload";
 import EDAView from "./components/EDAView";
 import DashboardView from "./components/DashboardView";
@@ -58,8 +59,12 @@ const App = () => {
   const [exportError, setExportError] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Start the backend waking the moment the page loads. On a free-tier host the
+  // first request after an idle period takes the better part of a minute; doing
+  // it here means that minute is spent while the user is picking a file rather
+  // than inside their upload, where it is indistinguishable from a hang.
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/`).catch(() => {});
+    wakeBackend().catch(() => {});
   }, []);
 
   const handleUploadSuccess = (response) => {

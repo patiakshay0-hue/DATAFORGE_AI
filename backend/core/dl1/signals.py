@@ -22,8 +22,9 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
 from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
-from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import StandardScaler
+
+from core.sampling import safe_silhouette
 
 # Keep the heavy passes bounded regardless of dataset size.
 SAMPLE_CAP = 5_000
@@ -196,7 +197,7 @@ def _clusters(Xs: np.ndarray, names: list[str], y: np.ndarray, task: str):
         labels = km.fit_predict(Xs)
         elbow.append({"k": k, "inertia": round(_safe(km.inertia_), 2)})
         if len(set(labels)) > 1:
-            scored.append((k, _safe(silhouette_score(Xs, labels), -1.0)))
+            scored.append((k, safe_silhouette(Xs, labels)))
 
     if not scored:
         return {}

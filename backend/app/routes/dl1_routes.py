@@ -12,6 +12,7 @@ import io
 
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import run_in_threadpool
 
 from app import dl1_store
 from app.store import data_store
@@ -21,6 +22,12 @@ from app.models.schemas import DL1SelectRequest
 
 router = APIRouter()
 
+# Runs live in this process's memory, so they do not survive a restart — and a
+# small container restarts more often than one might expect. Naming both causes
+# saves the user guessing which one they hit.
+JOB_GONE = ("This run is no longer available — it either expired (runs are kept "
+            "for an hour) or the server restarted. Start it again.")
+
 
 @router.post("/dl1/run")
 async def dl1_run(file: UploadFile = File(None)):
@@ -29,9 +36,12 @@ async def dl1_run(file: UploadFile = File(None)):
     No target column is involved anywhere — that is the point of this module.
     """
     if file is not None:
+        content = await file.read()
         try:
-            content = await file.read()
-            df = load_data(content, file.filename)
+            # Parsing a spreadsheet is blocking CPU work. Off the event loop it
+            # goes, or a large upload here freezes the status polls of every run
+            # already in flight.
+            df = await run_in_threadpool(load_data, content, file.filename)
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc))
         filename = file.filename
@@ -60,8 +70,7 @@ async def dl1_run(file: UploadFile = File(None)):
 async def dl1_status(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(
-            status_code=404, detail="Run not found or expired.")
+        raise HTTPException(status_code=404, detail=JOB_GONE)
     return job.public()
 
 
@@ -69,8 +78,7 @@ async def dl1_status(job_id: str):
 async def dl1_result(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(
-            status_code=404, detail="Run not found or expired.")
+        raise HTTPException(status_code=404, detail=JOB_GONE)
     if job.status == "error":
         raise HTTPException(status_code=400, detail=job.error or "Run failed.")
     if job.status != "done":
@@ -83,8 +91,7 @@ async def dl1_result(job_id: str):
 async def dl1_select(job_id: str, request: DL1SelectRequest):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(
-            status_code=404, detail="Run not found or expired.")
+        raise HTTPException(status_code=404, detail=JOB_GONE)
     if job.status != "done":
         raise HTTPException(
             status_code=409, detail="Run is still in progress.")
@@ -105,8 +112,7 @@ async def dl1_select(job_id: str, request: DL1SelectRequest):
 async def dl1_recommendation(job_id: str):
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(
-            status_code=404, detail="Run not found or expired.")
+        raise HTTPException(status_code=404, detail=JOB_GONE)
     if job.status != "done":
         raise HTTPException(
             status_code=409, detail="Run is still in progress.")
@@ -114,11 +120,10 @@ async def dl1_recommendation(job_id: str):
 
 
 @router.get("/dl1/report/{job_id}")
-async def dl1_report_pdf(job_id: str):
+def dl1_report_pdf(job_id: str):        # sync: PDF rendering is blocking CPU work
     job = dl1_store.get(job_id)
     if job is None:
-        raise HTTPException(
-            status_code=404, detail="Run not found or expired.")
+        raise HTTPException(status_code=404, detail=JOB_GONE)
     if job.status != "done":
         raise HTTPException(
             status_code=409, detail="Run is still in progress.")

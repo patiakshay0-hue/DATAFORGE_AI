@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import {
   Sparkles,
   Play,
@@ -35,8 +34,17 @@ import {
   Cell,
 } from "recharts";
 import { useTheme } from "../ThemeContext";
+import { api, apiLong, errorMessage } from "../api";
 
-const API = import.meta.env.VITE_API_URL;
+// Polls are cheap but not free. At 700 ms a five-minute run is 430 requests, all
+// competing with the training thread for the same single CPU. A slower cadence
+// costs nothing visible — stages take seconds — and leaves the box to work.
+const POLL_INTERVAL_MS = 1500;
+
+// Consecutive unanswered polls before a run is declared lost. At the interval
+// above this is ~12 seconds of silence, comfortably longer than any hiccup and
+// short enough that a genuinely dead backend is reported promptly.
+const MAX_POLL_FAILURES = 8;
 
 // Mirrors the stage keys the backend reports, so progress stays in step with it.
 const STAGES = [
@@ -69,27 +77,78 @@ const DeepLearning1View = ({ data }) => {
   const [recommendation, setRecommendation] = useState(null);
   const [busy, setBusy] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const pollRef = useRef(null);
 
   // Poll the run while it is in flight; stop as soon as it settles.
+  //
+  // Every failure used to end the run instantly. That is wrong for a poll running
+  // twice a second against a small container: one dropped request during a
+  // CPU-heavy stage — a proxy hiccup, a GC pause, a momentarily saturated worker —
+  // killed a run that was still perfectly healthy. Transient failures are now
+  // absorbed, and only a sustained silence is reported as lost.
   useEffect(() => {
     if (!job || job.status === "done" || job.status === "error") return;
-    pollRef.current = setInterval(async () => {
+
+    let cancelled = false;
+    let inFlight = false;      // a slow poll must not stack up behind itself
+    let failures = 0;
+
+    const tick = async () => {
+      if (cancelled || inFlight) return;
+      inFlight = true;
       try {
-        const res = await axios.get(`${API}/dl1/status/${job.job_id}`);
+        const res = await api.get(`/dl1/status/${job.job_id}`);
+        if (cancelled) return;
+        failures = 0;
+        setReconnecting(false);
         setJob(res.data);
         if (res.data.status === "done") {
-          const full = await axios.get(`${API}/dl1/result/${job.job_id}`);
-          setResult(full.data);
+          const full = await apiLong.get(`/dl1/result/${job.job_id}`);
+          if (!cancelled) setResult(full.data);
         } else if (res.data.status === "error") {
           setError(res.data.error || "The run failed.");
         }
-      } catch {
-        setError("Lost contact with the server.");
-        setJob((j) => (j ? { ...j, status: "error" } : j));
+      } catch (e) {
+        if (cancelled) return;
+
+        // A 404 is a definite answer, not a blip: the job is genuinely gone.
+        // In-memory runs do not survive a backend restart, so say that plainly
+        // rather than leaving the user staring at a frozen progress bar.
+        if (e?.response?.status === 404) {
+          setError(
+            "This run is no longer on the server — it either expired or the backend " +
+              "restarted. Start it again to pick up where you left off.",
+          );
+          setJob((j) => (j ? { ...j, status: "error" } : j));
+          return;
+        }
+        if (e?.response) {
+          setError(errorMessage(e, "The run failed."));
+          setJob((j) => (j ? { ...j, status: "error" } : j));
+          return;
+        }
+
+        failures += 1;
+        setReconnecting(true);
+        if (failures >= MAX_POLL_FAILURES) {
+          setError(
+            "Lost contact with the server. The run may have been interrupted — " +
+              "check your connection and start it again.",
+          );
+          setJob((j) => (j ? { ...j, status: "error" } : j));
+        }
+      } finally {
+        inFlight = false;
       }
-    }, 700);
-    return () => clearInterval(pollRef.current);
+    };
+
+    pollRef.current = setInterval(tick, POLL_INTERVAL_MS);
+    tick();
+    return () => {
+      cancelled = true;
+      clearInterval(pollRef.current);
+    };
   }, [job?.job_id, job?.status]);
 
   const start = async (file) => {
@@ -99,11 +158,14 @@ const DeepLearning1View = ({ data }) => {
     setSelected([]);
     setPreferred(null);
     setRecommendation(null);
+    setReconnecting(false);
     try {
       const form = new FormData();
       if (file) form.append("file", file);
-      const res = await axios.post(
-        `${API}/dl1/run`,
+      // apiLong: this request carries the file and parses it server-side before
+      // returning a job id, so it is not a "quick" call.
+      const res = await apiLong.post(
+        `/dl1/run`,
         file ? form : undefined,
         file
           ? { headers: { "Content-Type": "multipart/form-data" } }
@@ -111,7 +173,7 @@ const DeepLearning1View = ({ data }) => {
       );
       setJob(res.data);
     } catch (e) {
-      setError(e.response?.data?.detail || "Could not start the run.");
+      setError(errorMessage(e, "Could not start the run."));
     } finally {
       setBusy(false);
     }
@@ -125,13 +187,13 @@ const DeepLearning1View = ({ data }) => {
   const confirm = async () => {
     setBusy(true);
     try {
-      const res = await axios.post(`${API}/dl1/select/${job.job_id}`, {
+      const res = await apiLong.post(`/dl1/select/${job.job_id}`, {
         pattern_ids: selected,
         preferred,
       });
       setRecommendation(res.data.recommendation);
     } catch (e) {
-      setError(e.response?.data?.detail || "Could not save your selection.");
+      setError(errorMessage(e, "Could not save your selection."));
     } finally {
       setBusy(false);
     }
@@ -140,7 +202,7 @@ const DeepLearning1View = ({ data }) => {
   const download = async () => {
     setDownloading(true);
     try {
-      const res = await axios.get(`${API}/dl1/report/${job.job_id}`, {
+      const res = await apiLong.get(`/dl1/report/${job.job_id}`, {
         responseType: "blob",
       });
       const url = URL.createObjectURL(
@@ -153,8 +215,8 @@ const DeepLearning1View = ({ data }) => {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-    } catch {
-      setError("Could not download the report.");
+    } catch (e) {
+      setError(errorMessage(e, "Could not download the report."));
     } finally {
       setDownloading(false);
     }
@@ -194,7 +256,14 @@ const DeepLearning1View = ({ data }) => {
         />
       )}
 
-      {running && <Progress job={job} card={card} isDark={isDark} />}
+      {running && (
+        <Progress
+          job={job}
+          card={card}
+          isDark={isDark}
+          reconnecting={reconnecting}
+        />
+      )}
 
       {result && (
         <>
@@ -375,7 +444,7 @@ const StartPanel = ({ data, onStart, busy, card, isDark }) => {
 };
 
 // ── Progress ──────────────────────────────────────────────────────────────────
-const Progress = ({ job, card, isDark }) => {
+const Progress = ({ job, card, isDark, reconnecting }) => {
   const activeIdx = STAGES.findIndex((s) => s.key === job.stage);
   return (
     <div className={card} style={{ background: "var(--df-card)" }}>
@@ -410,6 +479,14 @@ const Progress = ({ job, card, isDark }) => {
         <p className="text-xs mt-2 font-mono" style={{ color: "var(--df-t3)" }}>
           {job.progress}%
         </p>
+
+        {/* The run itself is unaffected — it lives on the server. Saying so keeps
+            a brief network wobble from reading as a failure. */}
+        {reconnecting && (
+          <p className="text-xs mt-3 text-amber-500">
+            Reconnecting to the server — the run is still going.
+          </p>
+        )}
 
         <div className="mt-7 space-y-2.5 text-left">
           {STAGES.map((s, i) => {
@@ -485,6 +562,19 @@ const Summary = ({ result, card, isDark }) => {
 
   return (
     <div className="space-y-5">
+      {/* Large datasets are analysed on a sample. Stated up front so the row
+          counts in the patterns below are read for what they are. */}
+      {p.sampled && (
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+          <AlertCircle size={16} className="text-amber-500 mt-0.5 shrink-0" />
+          <p className="text-amber-500 text-sm">
+            Analysed a random sample of {p.rows?.toLocaleString()} rows out of{" "}
+            {p.rows_total?.toLocaleString()}. The patterns below describe the
+            dataset as a whole — a sample this size estimates them well.
+          </p>
+        </div>
+      )}
+
       <div
         className="relative overflow-hidden rounded-2xl p-6"
         style={{

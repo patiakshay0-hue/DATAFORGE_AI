@@ -5,16 +5,21 @@ from app.models.schemas import SuggestRequest, TrainRequest
 
 router = APIRouter()
 
+# Sync `def`, not `async def` — same reasoning as data_routes. Model training is
+# seconds of blocking CPU work; on the event loop it would freeze every other
+# request for its whole duration, including the Deep Learning progress polls,
+# which the frontend reads as the server having gone away.
+
 
 @router.post("/suggest")
-async def suggest(request: SuggestRequest):
+def suggest(request: SuggestRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return suggest_models(data_store["current_df"], request.target_column)
 
 
 @router.post("/train")
-async def train(request: TrainRequest):
+def train(request: TrainRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     if not request.models:

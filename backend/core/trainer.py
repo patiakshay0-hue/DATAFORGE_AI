@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -11,9 +13,11 @@ from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.cluster import KMeans
 from sklearn.metrics import (
     accuracy_score, f1_score, precision_score, recall_score,
-    r2_score, mean_squared_error, mean_absolute_error, silhouette_score
+    r2_score, mean_squared_error, mean_absolute_error
 )
 import time
+
+from core.sampling import safe_silhouette, cap_training_rows
 
 try:
     import xgboost as xgb
@@ -95,6 +99,18 @@ def _prepare_data(df: pd.DataFrame, target_column: str):
     return X, y_enc, task
 
 
+# scikit-learn gives SVC/SVR a 200 MB kernel cache by default — nearly half of a
+# free-tier container, reserved by one model out of eight. A smaller cache means
+# more kernel recomputation, not a different fit.
+SVM_CACHE_MB = int(os.getenv("SVM_CACHE_MB", "64"))
+
+# Kernel SVM is between quadratic and cubic in sample count, in both time and the
+# size of that kernel cache. Measured here: 20,000 rows took 26s and 234 MB on a
+# fast desktop, which is minutes on a shared-CPU container — so it gets a tighter
+# sample than the other models, and the leaderboard says so on its row.
+SVM_MAX_ROWS = int(os.getenv("SVM_MAX_ROWS", "5000"))
+
+
 def _clf_factories(n_neighbors: int, n_classes: int):
     obj = "binary:logistic" if n_classes == 2 else "multi:softmax"
     return {
@@ -103,7 +119,7 @@ def _clf_factories(n_neighbors: int, n_classes: int):
         "Decision Tree":       lambda: DecisionTreeClassifier(random_state=42),
         "Random Forest":       lambda: RandomForestClassifier(n_estimators=100, random_state=42),
         "Naive Bayes":         lambda: GaussianNB(),
-        "SVM":                 lambda: SVC(random_state=42),
+        "SVM":                 lambda: SVC(random_state=42, cache_size=SVM_CACHE_MB),
         "KNN":                 lambda: KNeighborsClassifier(n_neighbors=n_neighbors),
         "XGBoost":             (lambda: xgb.XGBClassifier(random_state=42, verbosity=0, objective=obj)) if HAS_XGB else None,
     }
@@ -116,7 +132,7 @@ def _reg_factories(n_neighbors: int):
         "Decision Tree":       lambda: DecisionTreeRegressor(random_state=42),
         "Random Forest":       lambda: RandomForestRegressor(n_estimators=100, random_state=42),
         "Naive Bayes":         None,
-        "SVM":                 lambda: SVR(),
+        "SVM":                 lambda: SVR(cache_size=SVM_CACHE_MB),
         "KNN":                 lambda: KNeighborsRegressor(n_neighbors=n_neighbors),
         "XGBoost":             (lambda: xgb.XGBRegressor(random_state=42, verbosity=0)) if HAS_XGB else None,
     }
@@ -137,7 +153,9 @@ def _train_kmeans(df: pd.DataFrame) -> dict:
         labels = km.fit_predict(X)
         elapsed = round(time.time() - t0, 2)
 
-        sil = float(silhouette_score(X, labels)) if len(set(labels)) > 1 else 0.0
+        # Subsampled: silhouette holds an n x n distance matrix, which on a 50k-row
+        # dataset is 20 GB and takes the whole container down with it.
+        sil = max(0.0, safe_silhouette(X, labels, default=0.0))
 
         return {
             "model": "K-Means",
@@ -159,6 +177,12 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
     results = []
     selected = list(selected_models)
 
+    # Every model below is fitted inside one synchronous request, and SVM's cost
+    # grows faster than quadratically in row count — on a full-size dataset it
+    # does not finish at all. Capped once, up front, so the sample is the same
+    # for every model and the leaderboard stays a like-for-like comparison.
+    df, sample_note = cap_training_rows(df)
+
     # Unsupervised
     if "K-Means" in selected:
         results.append(_train_kmeans(df))
@@ -166,7 +190,10 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
 
     if not selected:
         best = next((r["model"] for r in results if r.get("status") == "success"), None)
-        return {"results": results, "best_model": best, "task": "clustering"}
+        out = {"results": results, "best_model": best, "task": "clustering"}
+        if sample_note:
+            out["sample_note"] = sample_note
+        return out
 
     # Supervised models need a target column
     if not target_column or target_column not in df.columns:
@@ -216,10 +243,23 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
             use_scaled = model_name in NEEDS_SCALING
             X_tr = X_train_s if use_scaled else X_train
             X_te = X_test_s if use_scaled else X_test
+            y_tr = y_train
+            model_note = None
+
+            # SVM alone gets a tighter sample: it is the one model here whose cost
+            # grows faster than the dataset does, so the shared cap that keeps the
+            # others comfortable still leaves it minutes behind the rest.
+            if model_name == "SVM" and len(X_tr) > SVM_MAX_ROWS:
+                idx = np.random.RandomState(42).choice(
+                    len(X_tr), SVM_MAX_ROWS, replace=False)
+                X_tr, y_tr = X_tr[idx], y_train[idx]
+                model_note = (f"Fitted on {SVM_MAX_ROWS:,} of {len(X_train):,} training rows "
+                              f"— kernel SVM scales quadratically. Scored on the same "
+                              f"test set as the others.")
 
             t0 = time.time()
             model = factory()
-            model.fit(X_tr, y_train)
+            model.fit(X_tr, y_tr)
             y_pred = model.predict(X_te)
             elapsed = round(time.time() - t0, 2)
 
@@ -239,10 +279,13 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
                 }
                 primary = "r2_score"
 
-            results.append({
+            entry = {
                 "model": model_name, "status": "success", "task": task,
                 "metrics": metrics, "training_time": f"{elapsed}s", "primary_metric": primary,
-            })
+            }
+            if model_note:
+                entry["note"] = model_note
+            results.append(entry)
 
         except Exception as e:
             results.append({"model": model_name, "status": "error", "note": str(e)[:300], "metrics": None})
@@ -260,4 +303,8 @@ def train_selected_models(df: pd.DataFrame, selected_models: list, target_column
     else:
         best_model = None
 
-    return {"results": supervised_ok + clustering_ok + others, "best_model": best_model, "task": task}
+    out = {"results": supervised_ok + clustering_ok + others,
+           "best_model": best_model, "task": task}
+    if sample_note:
+        out["sample_note"] = sample_note
+    return out

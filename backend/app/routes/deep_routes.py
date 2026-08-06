@@ -10,16 +10,20 @@ from app.models.schemas import (
 
 router = APIRouter()
 
+# Sync `def` throughout: every one of these blocks on CPU-bound training or
+# analysis. Declared async they would run on the event loop and stall the whole
+# server — health checks and progress polls included — until they returned.
+
 
 @router.post("/deep/suggest")
-async def deep_suggest(request: DeepSuggestRequest):
+def deep_suggest(request: DeepSuggestRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return suggest_config(data_store["current_df"], request.target_column)
 
 
 @router.post("/deep/train")
-async def deep_train(request: DeepTrainRequest):
+def deep_train(request: DeepTrainRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     if not request.target_column:
@@ -31,14 +35,14 @@ async def deep_train(request: DeepTrainRequest):
 
 
 @router.get("/deep/recommend-targets")
-async def deep_recommend_targets():
+def deep_recommend_targets():
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return recommend_targets(data_store["current_df"])
 
 
 @router.post("/deep/predict")
-async def deep_predict_route(request: DeepPredictRequest):
+def deep_predict_route(request: DeepPredictRequest):
     result = deep_predict(request.inputs)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Prediction failed"))
@@ -46,7 +50,7 @@ async def deep_predict_route(request: DeepPredictRequest):
 
 
 @router.post("/deep/auto-config")
-async def deep_auto_config(request: AutoConfigRequest):
+def deep_auto_config(request: AutoConfigRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     config = auto_optimize_config(data_store["current_df"], request.target_column)

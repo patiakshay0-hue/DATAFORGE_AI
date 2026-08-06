@@ -120,7 +120,15 @@ async def stream_chat_response(
     except anthropic.RateLimitError:
         yield f"data: {json.dumps({'error': 'Rate limit reached. Please wait a moment and try again.'})}\n\n"
     except Exception as e:
-        yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        # str(e) on an API error is the whole response dict — status code, nested
+        # error object, request id — rendered straight into the chat bubble. The
+        # one case a user can actually act on is an empty account, so name it.
+        text = str(e)
+        if "credit balance is too low" in text:
+            text = ("This Anthropic account has no credit left, so Chat with Data "
+                    "cannot answer. Add credit at console.anthropic.com — every "
+                    "other tab works without it.")
+        yield f"data: {json.dumps({'error': text})}\n\n"
 
     yield "data: [DONE]\n\n"
 

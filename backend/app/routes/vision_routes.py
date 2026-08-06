@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
+from starlette.concurrency import run_in_threadpool
 from core.vision_trainer import (
     load_image_zip, train_classifier, predict_image, current_dataset as vision_dataset,
     VISION_AVAILABLE as VISION_READY, HAS_TORCH, ENGINE_NAME as VISION_ENGINE,
@@ -14,7 +15,7 @@ def _vision_has_dataset():
 
 
 @router.get("/vision/status")
-async def vision_status():
+def vision_status():
     return {
         "ready": VISION_READY,
         "engine": VISION_ENGINE,
@@ -30,14 +31,15 @@ async def vision_upload(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".zip"):
         raise HTTPException(status_code=400, detail="Please upload a .zip archive of labelled image folders.")
     content = await file.read()
-    result = load_image_zip(content)
+    # Decoding and resizing a zip of images is blocking CPU work.
+    result = await run_in_threadpool(load_image_zip, content)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Could not read the image archive"))
     return result
 
 
 @router.post("/vision/train")
-async def vision_train(request: VisionTrainRequest):
+def vision_train(request: VisionTrainRequest):
     if not VISION_READY:
         raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
     result = train_classifier(request.config)
@@ -49,13 +51,13 @@ async def vision_train(request: VisionTrainRequest):
 @router.post("/vision/predict")
 async def vision_predict(file: UploadFile = File(...)):
     content = await file.read()
-    result = predict_image(content)
+    result = await run_in_threadpool(predict_image, content)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Prediction failed"))
     return result
 
 
 @router.get("/vision/dataset")
-async def vision_get_dataset():
+def vision_get_dataset():
     ds = vision_dataset()
     return ds if ds else {"status": "empty"}

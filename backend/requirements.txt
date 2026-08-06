@@ -1,21 +1,47 @@
-fastapi
-uvicorn
-pandas
-numpy
-scikit-learn
-python-multipart
-openpyxl
-xgboost
-plotly
-reportlab
-python-dotenv
-scipy
-anthropic
+# Version ranges, not bare names. An unpinned deploy resolves to whatever was
+# published the day it built, so a redeploy that changes nothing in this repo can
+# still come up broken — and the release that breaks it is usually a major one
+# that landed between two deploys. Lower bounds are what the code is written
+# against; upper bounds stop the next major version from arriving unannounced.
+#
+# Verified together against Python 3.11.
+
+fastapi>=0.115,<0.123
+uvicorn>=0.30,<0.39
+python-multipart>=0.0.9,<0.1
+
+# Pinned explicitly even though FastAPI pulls it in: FastAPI accepts anything
+# from 0.40 up, and GZipMiddleware only learned to leave text/event-stream alone
+# in later releases. On an older one it compresses the chat stream into a single
+# buffered blob, so answers appear all at once at the end instead of token by
+# token — a regression that would show up only in a fresh deploy's dependency
+# resolution, never in an existing environment.
+starlette>=0.47,<0.50
+
+# pandas 3 renamed the default string dtype from "object" to "str"; the loaders
+# and trainers use the pandas type API rather than dtype-name matching so both
+# 2.x and 3.x work. numpy stays below 2.0 for xgboost/scipy wheel compatibility.
+pandas>=2.2,<3.1
+numpy>=1.26,<2.0
+scipy>=1.11,<2.0
+scikit-learn>=1.4,<1.9
+
+openpyxl>=3.1,<4.0
+xgboost>=2.0,<4.0
+plotly>=5.20,<7.0
+reportlab>=4.0,<5.0
+python-dotenv>=1.0,<2.0
+anthropic>=0.40,<1.0
+
 # Pillow enables image-metadata CSV export in the converter (lightweight, deploy-safe).
-Pillow
+Pillow>=10.0,<13.0
+
 # Deep learning (tabular) uses torch when available and falls back to scikit-learn
 # otherwise. The Image Classifier requires torch. torch + torchvision are omitted
 # here because they exceed Render free-tier limits; install them for full local/
 # self-hosted use:  pip install torch torchvision
+#
+# Note that this makes the deployed code path different from a local dev machine
+# that has torch installed — the scikit-learn fallbacks are what production runs.
 # torch
 # torchvision

@@ -36,6 +36,7 @@ except ImportError:
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 
 from core.dl1.config import infer_task
+from core.sampling import cap_training_rows, TRAIN_TIME_BUDGET
 
 
 # ── Config ───────────────────────────────────────────────────────────────────
@@ -467,10 +468,14 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
 
     best_score, best_epoch, best_state, stale = None, 0, None, 0
     stopped_early = False
+    stopped_on_time = False
 
     history = []
     t0 = time.time()
     for epoch in range(cfg["epochs"]):
+        if time.time() - t0 > TRAIN_TIME_BUDGET:
+            stopped_on_time = True
+            break
         model.train()
         perm = torch.randperm(len(xt))
         epoch_loss, nb = 0.0, 0
@@ -520,11 +525,17 @@ def _train_torch(X, y, task, cfg, feature_names, target_meta):
     evaluation = _evaluation(task, y_test, y_pred, proba, target_meta)
     metrics, primary = _final_metrics(task, y_test, y_pred)
 
-    return _assemble(model, scaler, "PyTorch", task, metrics, primary, history,
-                     X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
-                     feature_names, target_meta, predict_scaled,
-                     loss_name=loss_name, stopped_early=stopped_early,
-                     best_epoch=best_epoch or len(history))
+    out = _assemble(model, scaler, "PyTorch", task, metrics, primary, history,
+                    X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
+                    feature_names, target_meta, predict_scaled,
+                    loss_name=loss_name, stopped_early=stopped_early,
+                    best_epoch=best_epoch or len(history))
+    if stopped_on_time:
+        out["time_note"] = (
+            f"Training stopped after {elapsed}s ({len(history)} of "
+            f"{cfg['epochs']} epochs) to stay within the request timeout. "
+            f"The loss curve below shows whether it had settled.")
+    return out
 
 
 # ── scikit-learn fallback ────────────────────────────────────────────────────
@@ -576,10 +587,14 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
 
     best_score, best_epoch, best_weights, stale = None, 0, None, 0
     stopped_early = False
+    stopped_on_time = False
 
     history = []
     t0 = time.time()
     for epoch in range(cfg["epochs"]):
+        if time.time() - t0 > TRAIN_TIME_BUDGET:
+            stopped_on_time = True
+            break
         if classes is not None:
             model.partial_fit(X_tr, y_tr, classes=classes)
             vm = accuracy_score(y_val, model.predict(X_val))
@@ -619,11 +634,17 @@ def _train_sklearn(X, y, task, cfg, feature_names, target_meta):
     out_dim = len(np.unique(y)) if task == "classification" else 1
     n_params = int(sum(c.size for c in model.coefs_) +
                    sum(b.size for b in model.intercepts_))
-    return _assemble(model, scaler, "scikit-learn", task, metrics, primary, history,
-                     X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
-                     feature_names, target_meta, predict_scaled,
-                     loss_name=loss_name, stopped_early=stopped_early,
-                     best_epoch=best_epoch or len(history))
+    out = _assemble(model, scaler, "scikit-learn", task, metrics, primary, history,
+                    X.shape[1], cfg, out_dim, n_params, elapsed, importance, evaluation,
+                    feature_names, target_meta, predict_scaled,
+                    loss_name=loss_name, stopped_early=stopped_early,
+                    best_epoch=best_epoch or len(history))
+    if stopped_on_time:
+        out["time_note"] = (
+            f"Training stopped after {elapsed}s ({len(history)} of "
+            f"{cfg['epochs']} epochs) to stay within the request timeout. "
+            f"The loss curve below shows whether it had settled.")
+    return out
 
 
 def _assemble(model, scaler, engine, task, metrics, primary, history, in_dim, cfg,
@@ -660,6 +681,8 @@ def train_neural_network(df, target_column, config=None):
     if not target_column or target_column not in df.columns:
         return {"status": "error", "note": "A target column is required to train a neural network."}
     cfg = _clean_config(config)
+    # Bounded so the request returns before any proxy in front of us gives up.
+    df, sample_note = cap_training_rows(df)
     try:
         X, y, task, feats, spec, encoders, target_meta = _prepare_rich(
             df, target_column)
@@ -679,6 +702,8 @@ def train_neural_network(df, target_column, config=None):
                       "target_column": target_column})
     result["feature_spec"] = spec
     result["target_column"] = target_column
+    if sample_note:
+        result["sample_note"] = sample_note
     return result
 
 
@@ -798,13 +823,13 @@ def discover_patterns(df: pd.DataFrame) -> dict:
     vals = sample_df.values
     ks = range(2, min(10, len(sample_df)))
     if len(sample_df) >= 10:
-        from sklearn.metrics import silhouette_score
+        from core.sampling import safe_silhouette
         for k in ks:
             km = KMeans(n_clusters=k, random_state=42, n_init=3)
             labels = km.fit_predict(vals)
             elbow.append({"k": k, "inertia": round(float(km.inertia_), 2)})
             if len(set(labels)) > 1:
-                s = silhouette_score(vals, labels)
+                s = safe_silhouette(vals, labels)
                 if s > best_score:
                     best_score, best_k = s, k
 

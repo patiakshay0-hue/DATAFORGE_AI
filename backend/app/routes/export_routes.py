@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.get("/export")
-async def export_report():
+def export_report():
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded. Upload a file first.")
     try:

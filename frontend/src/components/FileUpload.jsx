@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { Upload, AlertCircle, Loader2, FileSpreadsheet, FileJson, Table2 } from 'lucide-react'
 import { useTheme } from '../ThemeContext'
+import { apiLong, errorMessage, isNetworkError, wakeBackend } from '../api'
+
+const MAX_UPLOAD_MB = 50
+const ALLOWED = ['csv', 'xlsx', 'xls', 'json']
 
 const formats = [
   { ext: 'CSV',  icon: Table2,        color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
@@ -28,21 +31,53 @@ const FileUpload = ({ onUploadSuccess }) => {
     if (e.dataTransfer.files?.[0]) processFile(e.dataTransfer.files[0])
   }
 
+  // Rejected here rather than after a pointless upload: the backend enforces the
+  // same limits, but sending 200 MB across a slow link only to be told no is a
+  // minute of the user's time spent to learn something we already knew.
+  const validate = (file) => {
+    const ext = file.name.split('.').pop()?.toLowerCase()
+    if (!ALLOWED.includes(ext))
+      return `'${file.name}' is not a supported format. Upload a CSV, XLSX, XLS or JSON file.`
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024)
+      return `That file is ${(file.size / 1024 / 1024).toFixed(0)} MB, over the ${MAX_UPLOAD_MB} MB limit. Try a sample of the rows.`
+    if (file.size === 0) return 'That file is empty.'
+    return null
+  }
+
+  const send = (file, onProgress) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return apiLong.post('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (e) => e.total && onProgress(Math.round((e.loaded * 100) / e.total)),
+    })
+  }
+
   const processFile = async (file) => {
+    const invalid = validate(file)
+    if (invalid) { setError(invalid); return }
+
     setLoading(true); setError(null); setProgress(0); setSlow(false)
     // A sleeping free-tier backend answers nothing for ~a minute. Say so rather
     // than leaving the user watching a bar that has already reached 100%.
     const slowTimer = setTimeout(() => setSlow(true), 8000)
-    const formData = new FormData()
-    formData.append('file', file)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: (e) => setProgress(Math.round((e.loaded * 100) / e.total))
-      })
+      let response
+      try {
+        response = await send(file, setProgress)
+      } catch (err) {
+        // One retry, and only when the server never answered. A cold container
+        // drops the request that wakes it; the next one succeeds. A 4xx is a
+        // real answer and is never retried — the file would fail again.
+        if (!isNetworkError(err)) throw err
+        setSlow(true)
+        setProgress(0)
+        await wakeBackend()
+        response = await send(file, setProgress)
+      }
       onUploadSuccess(response.data)
     } catch (err) {
-      setError(err.response?.data?.detail || 'Upload failed. Check your file format and try again.')
+      setError(errorMessage(err, 'Upload failed. Check your file format and try again.'))
     } finally {
       clearTimeout(slowTimer)
       setLoading(false)
@@ -103,7 +138,7 @@ const FileUpload = ({ onUploadSuccess }) => {
                 or <span className="font-semibold cursor-pointer" style={{ color: 'var(--df-primary)' }}>browse files</span>
               </p>
               <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
-                Supports CSV, XLSX, and JSON up to 50 MB
+                Supports CSV, XLSX, and JSON up to {MAX_UPLOAD_MB} MB
               </p>
             </>
           )}

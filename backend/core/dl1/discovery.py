@@ -24,7 +24,8 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import mutual_info_regression
-from sklearn.metrics import silhouette_score
+
+from core.sampling import safe_silhouette, CLUSTER_FIT_ROWS
 
 MIN_CLUSTER_MEMBERS = 20
 MAX_CLUSTER_K = 8
@@ -32,7 +33,10 @@ SILHOUETTE_TOLERANCE = 0.03
 ANOMALY_PERCENTILE = 97.5
 MAX_MI_FEATURES = 12
 MAX_MI_ROWS = 5000
-MAX_CLUSTER_ROWS = 10000
+# Rows the k-sweep is fitted on. Was 10,000, which put 10,000^2 doubles (800 MB)
+# through silhouette_score on every k and OOM-killed the 512 MB container.
+# See core/sampling.py; scoring is now subsampled independently of this.
+MAX_CLUSTER_ROWS = CLUSTER_FIT_ROWS
 
 
 def _clamp(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
@@ -91,7 +95,7 @@ def _cluster_latent(latent: np.ndarray, names: list[str], X: np.ndarray):
         labels = km.fit_predict(latent_sample)
         elbow.append({"k": k, "inertia": round(_safe(km.inertia_), 2)})
         if len(set(labels)) > 1:
-            scored.append((k, _safe(silhouette_score(latent_sample, labels), -1.0)))
+            scored.append((k, safe_silhouette(latent_sample, labels)))
 
     if not scored:
         return {}

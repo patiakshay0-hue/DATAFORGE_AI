@@ -17,6 +17,7 @@ would need its own buffering and reconnect handling for a run that lasts seconds
 
 from __future__ import annotations
 
+import os
 import threading
 import traceback
 
@@ -24,6 +25,18 @@ import pandas as pd
 
 from app import dl1_store
 from . import discovery, unsupervised
+
+# Rows the autoencoder is trained on. Above this the run is done on a random sample.
+#
+# This is a deployment guard, not a quality trade-off. Every claim this module makes
+# is a distributional one — which columns carry information, how many clusters there
+# are, what fraction of rows are anomalous — and 25k rows estimate all of them to
+# more precision than the report displays. What the cap actually buys is a run that
+# finishes: at 300k rows the fallback autoencoder took 42s and ~300 MB of headroom on
+# a fast desktop, which on a 512 MB / 0.1-CPU container is minutes of wall clock and
+# a real chance of being OOM-killed mid-run. Raise it with DL1_MAX_TRAIN_ROWS on a
+# bigger box.
+MAX_TRAIN_ROWS = int(os.getenv("DL1_MAX_TRAIN_ROWS", "25000"))
 
 # Weight of each stage in the overall progress bar. Training dominates wall-clock
 # time, so it owns the widest span.
@@ -48,10 +61,24 @@ def run(job_id: str, df: pd.DataFrame) -> None:
         # ── 1. Preprocess ────────────────────────────────────────────────────
         _set(job_id, "preprocess",
              "Detecting column types and handling missing values")
+
+        rows_total = int(len(df))
+        sampled = rows_total > MAX_TRAIN_ROWS
+        if sampled:
+            # Sample before encoding, not after, so every array downstream — the
+            # feature matrix, per-row reconstruction error, the latent code — is
+            # indexed the same way. Sampling later would leave the anomaly and
+            # cluster detectors comparing arrays of different lengths.
+            _set(job_id, "preprocess",
+                 f"Sampling {MAX_TRAIN_ROWS:,} of {rows_total:,} rows for analysis")
+            df = df.sample(n=MAX_TRAIN_ROWS, random_state=42)
+
         encoded = unsupervised.prepare(df)
 
         profile = {
             "rows": encoded.n_rows,
+            "rows_total": rows_total,
+            "sampled": sampled,
             "columns_total": int(len(df.columns)),
             "columns_used": len(encoded.feature_names),
             "columns_dropped": len(encoded.dropped),
@@ -114,8 +141,12 @@ def run(job_id: str, df: pd.DataFrame) -> None:
 def start(df: pd.DataFrame, filename: str) -> dl1_store.DL1Job:
     """Create a job and run the pipeline on a background thread."""
     job = dl1_store.create(filename=filename, target_column="")
-    thread = threading.Thread(
-        target=run, args=(job.id, df.copy()), daemon=True)
+    # Passed by reference, not copied. `run` only reads the frame (sampling and
+    # encoding both return new objects), and duplicating a large dataset is the
+    # kind of avoidable allocation that gets the container OOM-killed. Callers
+    # that replace data_store["current_df"] rebind it rather than mutating, so a
+    # concurrent upload cannot change the frame this job is holding.
+    thread = threading.Thread(target=run, args=(job.id, df), daemon=True)
     thread.start()
     return job
 

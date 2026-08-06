@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import axios from 'axios'
 import {
   Brain, Play, Trophy, CheckCircle2, Loader2, Target, Sparkles,
-  AlertCircle, RotateCcw, Check, Clock
+  AlertCircle, RotateCcw, Check, Clock, Info
 } from 'lucide-react'
 import { useTheme } from '../ThemeContext'
 
@@ -320,7 +320,7 @@ const MLView = ({ data }) => {
 // ── Results Panel ─────────────────────────────────────────────────────────────
 const ResultsView = ({ results, onRetrain }) => {
   const { isDark } = useTheme()
-  const { results: modelResults = [], best_model, task } = results
+  const { results: modelResults = [], best_model, task, sample_note } = results
 
   const successful = [...modelResults.filter(r => r.status === 'success')].sort((a, b) => {
     const pm = a.primary_metric
@@ -338,6 +338,15 @@ const ResultsView = ({ results, onRetrain }) => {
 
   return (
     <div className="space-y-8">
+      {/* Scores come from a sample when the dataset is large — say so, so nobody
+          reads these metrics as coming from every row. */}
+      {sample_note && (
+        <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+          <Info size={16} className="text-amber-500 mt-0.5 shrink-0" />
+          <p className="text-amber-500 text-sm">{sample_note}</p>
+        </div>
+      )}
+
       {/* Best model banner */}
       {best_model && bestResult && (
         <div className="relative overflow-hidden rounded-2xl p-6"
@@ -417,6 +426,14 @@ const ResultsView = ({ results, onRetrain }) => {
                     </div>
                   ))}
                 </div>
+                {/* A model that had to be fitted differently from the rest says
+                    so here, so its position on the leaderboard can be read fairly. */}
+                {result.note && (
+                  <p className="text-xs mt-4 pt-3 leading-relaxed"
+                    style={{ color: 'var(--df-t3)', borderTop: '1px solid var(--df-border)' }}>
+                    {result.note}
+                  </p>
+                )}
               </div>
             )
           })}

@@ -1,6 +1,7 @@
 import io
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import run_in_threadpool
 from core import converter
 from app.store import data_store
 from core.loader import get_schema
@@ -13,14 +14,19 @@ from app.models.schemas import ConvertChoice
 router = APIRouter()
 
 
+# Handlers that only read an upload stay async; the blocking work they trigger is
+# pushed to the threadpool. Handlers with no upload to await are plain `def`, which
+# FastAPI already runs off the event loop.
+
+
 @router.post("/convert/inspect")
 async def convert_inspect(file: UploadFile = File(...)):
     content = await file.read()
-    return converter.inspect_upload(content, file.filename)
+    return await run_in_threadpool(converter.inspect_upload, content, file.filename)
 
 
 @router.post("/convert/convert")
-async def convert_run(request: ConvertChoice):
+def convert_run(request: ConvertChoice):
     result = converter.convert(request.choice)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Conversion failed"))
@@ -28,7 +34,7 @@ async def convert_run(request: ConvertChoice):
 
 
 @router.post("/convert/image-metadata")
-async def convert_image_metadata():
+def convert_image_metadata():
     result = converter.image_metadata()
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Could not build metadata"))
@@ -36,7 +42,7 @@ async def convert_image_metadata():
 
 
 @router.get("/convert/download")
-async def convert_download():
+def convert_download():
     csv_bytes, name, _ = converter.get_converted()
     if csv_bytes is None:
         raise HTTPException(status_code=404, detail="Nothing converted yet")
@@ -47,7 +53,7 @@ async def convert_download():
 
 
 @router.post("/convert/load")
-async def convert_load():
+def convert_load():
     csv_bytes, name, df = converter.get_converted()
     if df is None:
         raise HTTPException(status_code=400, detail="Convert a file to CSV first")
@@ -64,7 +70,7 @@ async def convert_load():
 
 
 @router.post("/convert/send-to-vision")
-async def convert_send_to_vision():
+def convert_send_to_vision():
     if not VISION_READY:
         raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
     content = converter.get_stored_zip()

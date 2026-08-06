@@ -310,7 +310,8 @@ const ResultsView = ({ result, onReset, isDark }) => {
   const {
     metrics = {}, history = [], task, engine, n_params, training_time,
     architecture = [], primary_metric, metric_label,
-    feature_importance = [], evaluation = {}, feature_spec = [],
+    feature_importance = [], evaluation = {}, feature_spec = [], sample_note,
+    time_note,
   } = result
   const hasValLoss = history.some(h => h.val_loss != null)
 
@@ -325,6 +326,15 @@ const ResultsView = ({ result, onReset, isDark }) => {
 
   return (
     <div className="space-y-8">
+      {/* Metrics below come from a sample, or a shortened run, when the dataset
+          is large enough that a full one would not fit in a single request. */}
+      {[sample_note, time_note].filter(Boolean).map((note) => (
+        <div key={note} className="flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+          <AlertCircle size={16} className="text-amber-500 mt-0.5 shrink-0" />
+          <p className="text-amber-500 text-sm">{note}</p>
+        </div>
+      ))}
+
       {/* Banner */}
       <div className="relative overflow-hidden rounded-2xl p-6"
         style={{
