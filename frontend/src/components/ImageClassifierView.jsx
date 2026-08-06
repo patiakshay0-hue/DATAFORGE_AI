@@ -78,12 +78,12 @@ const ImageClassifierView = () => {
     <div className="max-w-lg mx-auto py-16 text-center space-y-8">
       <div className="relative w-20 h-20 mx-auto">
         <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'var(--df-border)' }} />
-        <div className="absolute inset-0 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
-        <ScanEye size={24} className="absolute inset-0 m-auto text-violet-400" />
+        <div className="absolute inset-0 rounded-full border-2 border-teal-400 border-t-transparent animate-spin" />
+        <ScanEye size={24} className="absolute inset-0 m-auto text-teal-400" />
       </div>
       <div>
         <h3 className="text-xl font-bold" style={{ color: 'var(--df-t1)' }}>Training Image Classifier</h3>
-        <p className="text-violet-400 text-sm mt-2 font-medium">{trainStep}</p>
+        <p className="text-teal-400 text-sm mt-2 font-medium">{trainStep}</p>
         <p className="text-xs mt-3" style={{ color: 'var(--df-t3)' }}>
           {dataset?.total} images · {dataset?.classes?.length} classes · {epochs} epochs
         </p>
@@ -99,10 +99,10 @@ const ImageClassifierView = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="relative overflow-hidden rounded-2xl p-6" style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
-        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 0%, #8b5cf6, transparent 60%)' }} />
+        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)' }} />
         <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-violet-500/10 border border-violet-500/20 rounded-xl shrink-0">
-            <Images size={22} className="text-violet-400" />
+          <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+            <Images size={22} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>Image Classifier</h3>
@@ -124,23 +124,23 @@ const ImageClassifierView = () => {
         style={{ borderColor: 'var(--df-border)', background: 'var(--df-card)' }}>
         {uploading ? (
           <div className="flex flex-col items-center gap-3">
-            <Loader2 size={32} className="text-violet-400 animate-spin" />
+            <Loader2 size={32} className="text-teal-400 animate-spin" />
             <p className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>Unpacking & validating images…</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-              <UploadCloud size={26} className="text-violet-400" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)' }}>
+              <UploadCloud size={26} className="text-teal-400" />
             </div>
             <p className="text-base font-bold" style={{ color: 'var(--df-t1)' }}>Drop a .zip of images here</p>
-            <p className="text-xs" style={{ color: 'var(--df-t3)' }}>or <span className="text-violet-400 font-semibold">browse files</span></p>
+            <p className="text-xs" style={{ color: 'var(--df-t3)' }}>or <span className="text-teal-400 font-semibold">browse files</span></p>
           </div>
         )}
       </div>
 
       {/* Zip structure hint */}
       <div className="flex items-start gap-3 p-4 rounded-xl" style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)' }}>
-        <FolderTree size={16} className="text-violet-400 mt-0.5 shrink-0" />
+        <FolderTree size={16} className="text-teal-400 mt-0.5 shrink-0" />
         <div className="text-xs" style={{ color: 'var(--df-t3)' }}>
           <span className="font-semibold" style={{ color: 'var(--df-t2)' }}>Expected structure:</span> one folder per class, each holding that class's images.
           <code className="block mt-1.5 font-mono" style={{ color: 'var(--df-t2)' }}>
@@ -197,20 +197,20 @@ const ImageClassifierView = () => {
               <div className="flex-1 min-w-[200px]">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--df-t2)' }}>
-                    <Layers size={14} className="text-violet-400" /> Training epochs
+                    <Layers size={14} className="text-teal-400" /> Training epochs
                   </span>
-                  <span className="text-sm font-bold font-mono text-violet-400">{epochs}</span>
+                  <span className="text-sm font-bold font-mono text-teal-400">{epochs}</span>
                 </div>
                 <input type="range" min={5} max={40} step={1} value={epochs}
                   onChange={e => setEpochs(parseInt(e.target.value))}
-                  className="w-full accent-violet-500 cursor-pointer" />
+                  className="w-full accent-teal-500 cursor-pointer" />
                 <p className="text-[11px] mt-1" style={{ color: 'var(--df-t3)' }}>
                   Transfer learning on a frozen MobileNetV2 backbone — fast even on CPU
                 </p>
               </div>
               <button onClick={train}
                 className="flex items-center gap-2.5 px-7 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+                style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
                 <Play size={15} fill="currentColor" /> Train Classifier
               </button>
             </div>
@@ -239,12 +239,12 @@ const VisionResults = ({ result, dataset, isDark, onReset, onNewData }) => {
       {/* Banner */}
       <div className="relative overflow-hidden rounded-2xl p-6" style={{
         background: isDark
-          ? 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, var(--df-card) 50%, rgba(99,102,241,0.1) 100%)'
+          ? 'linear-gradient(135deg, rgba(20,184,166,0.1) 0%, var(--df-card) 50%, rgba(45,212,191,0.1) 100%)'
           : 'linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)',
-        border: '1px solid rgba(139,92,246,0.25)' }}>
+        border: '1px solid rgba(20,184,166,0.25)' }}>
         <div className="flex items-center gap-5 flex-wrap">
-          <div className="p-4 bg-violet-500/15 border border-violet-500/25 rounded-2xl shrink-0">
-            <Images size={28} className="text-violet-400" />
+          <div className="p-4 bg-teal-500/15 border border-teal-500/25 rounded-2xl shrink-0">
+            <Images size={28} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'var(--df-t3)' }}>Image Classifier Trained</p>
@@ -257,7 +257,7 @@ const VisionResults = ({ result, dataset, isDark, onReset, onNewData }) => {
               <span className="flex items-center gap-1"><Clock size={12} /> {training_time}</span>
             </p>
           </div>
-          <span className="hidden md:inline-block text-violet-400 font-bold text-sm bg-violet-500/10 px-3 py-1.5 rounded-lg border border-violet-500/20 shrink-0">
+          <span className="hidden md:inline-block text-teal-400 font-bold text-sm bg-teal-500/10 px-3 py-1.5 rounded-lg border border-teal-500/20 shrink-0">
             {classes.length} classes · {n_train}/{n_val} split
           </span>
         </div>
@@ -267,7 +267,7 @@ const VisionResults = ({ result, dataset, isDark, onReset, onNewData }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={15} className="text-sky-400" />
+            <TrendingUp size={15} className="text-teal-400" />
             <h4 className="font-bold text-sm" style={{ color: 'var(--df-t1)' }}>Training Progress</h4>
           </div>
           <ResponsiveContainer width="100%" height={240}>
@@ -277,7 +277,7 @@ const VisionResults = ({ result, dataset, isDark, onReset, onNewData }) => {
               <YAxis stroke={axis} fontSize={11} tickLine={false} width={44} />
               <Tooltip contentStyle={tip} labelFormatter={v => `Epoch ${v}`} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line type="monotone" dataKey="train_loss" name="Train loss" stroke="#0ea5e9" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+              <Line type="monotone" dataKey="train_loss" name="Train loss" stroke="#14b8a6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
               <Line type="monotone" dataKey="val_loss" name="Val loss" stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
               <Line type="monotone" dataKey="val_metric" name="Val accuracy" stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
             </LineChart>
@@ -318,13 +318,13 @@ const VisionResults = ({ result, dataset, isDark, onReset, onNewData }) => {
       {/* Architecture */}
       <div className={card} style={{ background: 'var(--df-card)' }}>
         <h4 className="font-bold text-sm mb-4 flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
-          <Layers size={14} className="text-violet-400" /> Architecture
+          <Layers size={14} className="text-teal-400" /> Architecture
         </h4>
         <div className="flex flex-wrap gap-2">
           {architecture.map((layer, i) => (
             <React.Fragment key={i}>
               <span className="text-xs px-3 py-2 rounded-lg" style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)', color: 'var(--df-t2)' }}>{layer}</span>
-              {i < architecture.length - 1 && <span className="self-center text-violet-400">→</span>}
+              {i < architecture.length - 1 && <span className="self-center text-teal-400">→</span>}
             </React.Fragment>
           ))}
         </div>
@@ -372,7 +372,7 @@ const VisionPredict = ({ classes, isDark }) => {
   return (
     <div className={card} style={{ background: 'var(--df-card)' }}>
       <div className="flex items-center gap-2 mb-1">
-        <ImagePlus size={15} className="text-violet-400" />
+        <ImagePlus size={15} className="text-teal-400" />
         <h4 className="font-bold text-sm" style={{ color: 'var(--df-t1)' }}>Classify a New Image</h4>
       </div>
       <p className="text-[11px] mb-4 ml-6" style={{ color: 'var(--df-t3)' }}>
@@ -385,7 +385,7 @@ const VisionPredict = ({ classes, isDark }) => {
       <div className="flex items-center gap-6 flex-wrap">
         <button onClick={() => imgInput.current?.click()} disabled={loading}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+          style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
           {loading ? <Loader2 size={14} className="animate-spin" /> : <ImagePlus size={14} />}
           {loading ? 'Classifying…' : 'Upload Image'}
         </button>
@@ -406,7 +406,7 @@ const VisionPredict = ({ classes, isDark }) => {
                 <div key={d.class} className="flex items-center gap-3">
                   <span className="text-xs font-mono w-20 truncate shrink-0" style={{ color: 'var(--df-t2)' }}>{d.class}</span>
                   <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'var(--df-input-bg)' }}>
-                    <div className="h-full rounded-full" style={{ width: `${d.prob * 100}%`, background: 'linear-gradient(90deg, #7c3aed, #6366f1)' }} />
+                    <div className="h-full rounded-full" style={{ width: `${d.prob * 100}%`, background: 'linear-gradient(90deg, #0d9488, #2dd4bf)' }} />
                   </div>
                   <span className="text-xs font-mono w-12 text-right shrink-0" style={{ color: 'var(--df-t3)' }}>{(d.prob * 100).toFixed(1)}%</span>
                 </div>

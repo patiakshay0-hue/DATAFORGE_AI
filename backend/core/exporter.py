@@ -14,8 +14,8 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 
 # ── Brand colours ──────────────────────────────────────────────────────────────
 DARK_BG   = colors.HexColor('#0d1523')
-BLUE      = colors.HexColor('#0ea5e9')
-PURPLE    = colors.HexColor('#6366f1')
+BLUE      = colors.HexColor('#14b8a6')
+PURPLE    = colors.HexColor('#2dd4bf')
 EMERALD   = colors.HexColor('#10b981')
 AMBER     = colors.HexColor('#f59e0b')
 RED       = colors.HexColor('#ef4444')

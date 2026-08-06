@@ -15,7 +15,7 @@ const DbIcon = () => (
   </svg>
 )
 
-const COLORS = ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1']
+const COLORS = ['#14b8a6', '#14b8a6', '#ec4899', '#f59e0b', '#10b981', '#2dd4bf']
 
 const DashboardView = ({ data }) => {
   const { isDark } = useTheme()
@@ -51,10 +51,10 @@ const DashboardView = ({ data }) => {
   const card = `rounded-2xl p-6 border ${isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'}`
 
   const kpis = [
-    { label: 'Total Records',  value: Number(rows).toLocaleString(), icon: DbIcon,  colorClass: 'text-sky-400',     bgClass: 'bg-sky-500/10',     trend: '+12%',  up: true  },
+    { label: 'Total Records',  value: Number(rows).toLocaleString(), icon: DbIcon,  colorClass: 'text-teal-400',     bgClass: 'bg-teal-500/10',     trend: '+12%',  up: true  },
     { label: 'Total Features', value: columns,                       icon: Layers,  colorClass: 'text-emerald-400', bgClass: 'bg-emerald-500/10', trend: 'Stable',up: true  },
     { label: 'Quality Score',  value: '94%',                         icon: Zap,     colorClass: 'text-amber-400',   bgClass: 'bg-amber-500/10',   trend: '+5%',   up: true  },
-    { label: 'Data Coverage',  value: '98.2%',                       icon: Globe,   colorClass: 'text-violet-400',  bgClass: 'bg-violet-500/10',  trend: '-1%',   up: false },
+    { label: 'Data Coverage',  value: '98.2%',                       icon: Globe,   colorClass: 'text-teal-400',  bgClass: 'bg-teal-500/10',  trend: '-1%',   up: false },
   ]
 
   return (
@@ -94,9 +94,9 @@ const DashboardView = ({ data }) => {
               <h3 className="font-bold text-lg" style={{ color: 'var(--df-t1)' }}>Distribution Trend</h3>
               <p className="text-xs mt-0.5" style={{ color: 'var(--df-t3)' }}>Primary numeric feature analysis</p>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 border border-sky-500/20 rounded-lg">
-              <TrendingUp size={13} className="text-sky-400" />
-              <span className="text-sky-400 text-xs font-semibold">Live Data</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500/10 border border-teal-500/20 rounded-lg">
+              <TrendingUp size={13} className="text-teal-400" />
+              <span className="text-teal-400 text-xs font-semibold">Live Data</span>
             </div>
           </div>
           <div className="h-72">
@@ -104,16 +104,16 @@ const DashboardView = ({ data }) => {
               <AreaChart data={areaData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                 <defs>
                   <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#0ea5e9" stopOpacity={isDark ? 0.25 : 0.15} />
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="#14b8a6" stopOpacity={isDark ? 0.25 : 0.15} />
+                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                 <XAxis dataKey="bin" stroke={axisColor} fontSize={10} tickLine={false} />
                 <YAxis stroke={axisColor} fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="count" stroke="#0ea5e9" strokeWidth={2.5}
-                  fillOpacity={1} fill="url(#grad1)" dot={false} activeDot={{ r: 5, fill: '#0ea5e9' }} />
+                <Area type="monotone" dataKey="count" stroke="#14b8a6" strokeWidth={2.5}
+                  fillOpacity={1} fill="url(#grad1)" dot={false} activeDot={{ r: 5, fill: '#14b8a6' }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -192,7 +192,7 @@ const DashboardView = ({ data }) => {
                       <XAxis dataKey="bin" stroke={axisColor} fontSize={9} tickLine={false} />
                       <YAxis stroke={axisColor} fontSize={9} tickLine={false} axisLine={false} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="count" fill="#8b5cf6" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="count" fill="#14b8a6" radius={[3, 3, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

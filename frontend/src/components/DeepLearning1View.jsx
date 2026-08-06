@@ -48,14 +48,14 @@ const STAGES = [
 ];
 
 const TYPE_COLORS = {
-  information_value: "#8b5cf6",
-  compressibility: "#0ea5e9",
+  information_value: "#14b8a6",
+  compressibility: "#14b8a6",
   non_linear: "#f59e0b",
   clusters: "#10b981",
   segments: "#14b8a6",
   anomalies: "#ef4444",
   coupling: "#ec4899",
-  correlation: "#6366f1",
+  correlation: "#2dd4bf",
   redundancy: "#94a3b8",
 };
 
@@ -236,7 +236,7 @@ const DeepLearning1View = ({ data }) => {
                 disabled={busy || !selected.length}
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:scale-100"
                 style={{
-                  background: "linear-gradient(135deg, #7c3aed, #6366f1)",
+                  background: "linear-gradient(135deg, #0d9488, #2dd4bf)",
                 }}
               >
                 {busy ? (
@@ -278,12 +278,12 @@ const Header = ({ isDark }) => (
       className="absolute inset-0 opacity-10"
       style={{
         background:
-          "radial-gradient(circle at 50% 0%, #8b5cf6, transparent 60%)",
+          "radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)",
       }}
     />
     <div className="relative flex items-center gap-4">
-      <div className="p-3 bg-violet-500/10 border border-violet-500/20 rounded-xl shrink-0">
-        <Sparkles size={22} className="text-violet-400" />
+      <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+        <Sparkles size={22} className="text-teal-400" />
       </div>
       <div className="flex-1 min-w-0">
         <h3 className="text-lg font-black" style={{ color: "var(--df-t1)" }}>
@@ -304,8 +304,8 @@ const StartPanel = ({ data, onStart, busy, card, isDark }) => {
   return (
     <div className={card} style={{ background: "var(--df-card)" }}>
       <div className="text-center py-8">
-        <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mx-auto mb-5">
-          <Upload size={26} className="text-violet-400" />
+        <div className="w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center mx-auto mb-5">
+          <Upload size={26} className="text-teal-400" />
         </div>
         <p className="text-xl font-bold mb-2" style={{ color: "var(--df-t1)" }}>
           Add your data and train
@@ -326,7 +326,7 @@ const StartPanel = ({ data, onStart, busy, card, isDark }) => {
               disabled={busy}
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #7c3aed, #6366f1)",
+                background: "linear-gradient(135deg, #0d9488, #2dd4bf)",
               }}
             >
               {busy ? (
@@ -385,10 +385,10 @@ const Progress = ({ job, card, isDark }) => {
             className="absolute inset-0 rounded-full border-2"
             style={{ borderColor: "var(--df-border)" }}
           />
-          <div className="absolute inset-0 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
+          <div className="absolute inset-0 rounded-full border-2 border-teal-400 border-t-transparent animate-spin" />
           <Sparkles
             size={20}
-            className="absolute inset-0 m-auto text-violet-400"
+            className="absolute inset-0 m-auto text-teal-400"
           />
         </div>
         <p className="font-bold" style={{ color: "var(--df-t1)" }}>
@@ -403,7 +403,7 @@ const Progress = ({ job, card, isDark }) => {
             className="h-full rounded-full transition-all duration-500"
             style={{
               width: `${job.progress}%`,
-              background: "linear-gradient(90deg,#7c3aed,#6366f1)",
+              background: "linear-gradient(90deg,#0d9488,#2dd4bf)",
             }}
           />
         </div>
@@ -423,9 +423,9 @@ const Progress = ({ job, card, isDark }) => {
                     background: done
                       ? "#10b981"
                       : active
-                        ? "rgba(139,92,246,0.2)"
+                        ? "rgba(20,184,166,0.2)"
                         : "var(--df-input-bg)",
-                    border: `1px solid ${done ? "#10b981" : active ? "#8b5cf6" : "var(--df-border)"}`,
+                    border: `1px solid ${done ? "#10b981" : active ? "#14b8a6" : "var(--df-border)"}`,
                   }}
                 >
                   {done ? (
@@ -433,7 +433,7 @@ const Progress = ({ job, card, isDark }) => {
                   ) : active ? (
                     <Loader2
                       size={11}
-                      className="animate-spin text-violet-400"
+                      className="animate-spin text-teal-400"
                     />
                   ) : null}
                 </div>
@@ -489,14 +489,14 @@ const Summary = ({ result, card, isDark }) => {
         className="relative overflow-hidden rounded-2xl p-6"
         style={{
           background: isDark
-            ? "linear-gradient(135deg, rgba(139,92,246,0.1) 0%, var(--df-card) 50%, rgba(99,102,241,0.1) 100%)"
+            ? "linear-gradient(135deg, rgba(20,184,166,0.1) 0%, var(--df-card) 50%, rgba(45,212,191,0.1) 100%)"
             : "linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)",
-          border: "1px solid rgba(139,92,246,0.25)",
+          border: "1px solid rgba(20,184,166,0.25)",
         }}
       >
         <div className="flex items-center gap-5 flex-wrap">
-          <div className="p-4 bg-violet-500/15 border border-violet-500/25 rounded-2xl shrink-0">
-            <Boxes size={26} className="text-violet-400" />
+          <div className="p-4 bg-teal-500/15 border border-teal-500/25 rounded-2xl shrink-0">
+            <Boxes size={26} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p
@@ -574,7 +574,7 @@ const Summary = ({ result, card, isDark }) => {
             className="font-bold text-sm mb-3 flex items-center gap-2"
             style={{ color: "var(--df-t1)" }}
           >
-            <Layers size={14} className="text-violet-400" /> Why these settings
+            <Layers size={14} className="text-teal-400" /> Why these settings
           </h4>
           <ul className="space-y-1.5">
             {cfg.rationale.map((r, i) => (
@@ -583,7 +583,7 @@ const Summary = ({ result, card, isDark }) => {
                 className="text-xs flex gap-2"
                 style={{ color: "var(--df-t2)" }}
               >
-                <span className="text-violet-400">•</span>
+                <span className="text-teal-400">•</span>
                 {r}
               </li>
             ))}
@@ -626,7 +626,7 @@ const LossChart = ({ result, card, isDark }) => {
             type="monotone"
             dataKey="train_loss"
             name="Train"
-            stroke="#0ea5e9"
+            stroke="#14b8a6"
             strokeWidth={2}
             dot={false}
           />
@@ -696,7 +696,7 @@ const FeatureInfo = ({ result, card, isDark }) => {
             }}
             formatter={(v) => [`${v}%`, "Unique information"]}
           />
-          <Bar dataKey="error_pct" radius={[0, 4, 4, 0]} fill="#8b5cf6" />
+          <Bar dataKey="error_pct" radius={[0, 4, 4, 0]} fill="#14b8a6" />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -740,7 +740,7 @@ const Patterns = ({
         {patterns.map((p) => {
           const on = selected.includes(p.id);
           const star = preferred === p.id;
-          const colour = TYPE_COLORS[p.type] || "#8b5cf6";
+          const colour = TYPE_COLORS[p.type] || "#14b8a6";
           return (
             <div
               key={p.id}
@@ -749,18 +749,18 @@ const Patterns = ({
               style={{
                 background: on
                   ? isDark
-                    ? "rgba(139,92,246,0.08)"
-                    : "rgba(139,92,246,0.04)"
+                    ? "rgba(20,184,166,0.08)"
+                    : "rgba(20,184,166,0.04)"
                   : "var(--df-card)",
-                borderColor: on ? "rgba(139,92,246,0.5)" : "var(--df-border)",
+                borderColor: on ? "rgba(20,184,166,0.5)" : "var(--df-border)",
               }}
             >
               <div className="flex items-start gap-3">
                 <div
                   className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5"
                   style={{
-                    background: on ? "#8b5cf6" : "transparent",
-                    border: `1.5px solid ${on ? "#8b5cf6" : "var(--df-border)"}`,
+                    background: on ? "#14b8a6" : "transparent",
+                    border: `1.5px solid ${on ? "#14b8a6" : "var(--df-border)"}`,
                   }}
                 >
                   {on && <Check size={12} className="text-white" />}
@@ -899,7 +899,7 @@ const PatternVisualization = ({ pattern, isDark }) => {
           <Bar
             dataKey="error_pct"
             radius={[0, 4, 4, 0]}
-            fill={TYPE_COLORS[type] || "#8b5cf6"}
+            fill={TYPE_COLORS[type] || "#14b8a6"}
           />
         </BarChart>
       </ResponsiveContainer>
@@ -912,12 +912,12 @@ const PatternVisualization = ({ pattern, isDark }) => {
     const hasClusters = labels.length > 0 && type !== "anomalies";
 
     const clusterColors = [
-      "#8b5cf6",
+      "#14b8a6",
       "#06b6d4",
       "#f43f5e",
       "#10b981",
       "#f59e0b",
-      "#6366f1",
+      "#2dd4bf",
       "#ec4899",
       "#14b8a6",
     ];
@@ -935,7 +935,7 @@ const PatternVisualization = ({ pattern, isDark }) => {
         ? labelColorMap[labels[i]]
         : highlightIndices.has(i)
           ? "#ef4444"
-          : "#8b5cf6",
+          : "#14b8a6",
     }));
 
     return (
@@ -972,7 +972,7 @@ const PatternVisualization = ({ pattern, isDark }) => {
               name === "x" ? "PC1" : "PC2",
             ]}
           />
-          <Scatter data={scatterData} fill="#8b5cf6">
+          <Scatter data={scatterData} fill="#14b8a6">
             {scatterData.map((entry, i) => (
               <Cell
                 key={`cell-${i}`}
@@ -1044,9 +1044,9 @@ const SelectedPatternDetail = ({ pattern, result, isDark }) => {
         <span
           className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
           style={{
-            color: TYPE_COLORS[type] || "#8b5cf6",
-            background: `${TYPE_COLORS[type] || "#8b5cf6"}1a`,
-            border: `1px solid ${TYPE_COLORS[type] || "#8b5cf6"}33`,
+            color: TYPE_COLORS[type] || "#14b8a6",
+            background: `${TYPE_COLORS[type] || "#14b8a6"}1a`,
+            border: `1px solid ${TYPE_COLORS[type] || "#14b8a6"}33`,
           }}
         >
           {type.replace(/_/g, " ")}
@@ -1191,7 +1191,7 @@ const SelectedPatternDetail = ({ pattern, result, isDark }) => {
             </p>
           </div>
           <div>
-            <p className="text-lg font-black text-violet-400">
+            <p className="text-lg font-black text-teal-400">
               {data.latent_dim || 0}
             </p>
             <p
@@ -1296,7 +1296,7 @@ const Report = ({
             className="font-bold text-base flex items-center gap-2 mb-4"
             style={{ color: "var(--df-t1)" }}
           >
-            <Sparkles size={16} className="text-violet-400" /> Selected Patterns
+            <Sparkles size={16} className="text-teal-400" /> Selected Patterns
           </h4>
           {selectedPatterns.map((p) => (
             <SelectedPatternDetail
@@ -1437,7 +1437,7 @@ const Report = ({
                   style={{
                     width: `${Math.min(100, r.information_pct)}%`,
                     background: r.in_selected_pattern
-                      ? "linear-gradient(90deg,#7c3aed,#6366f1)"
+                      ? "linear-gradient(90deg,#0d9488,#2dd4bf)"
                       : "#475569",
                   }}
                 />

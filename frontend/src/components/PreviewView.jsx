@@ -5,8 +5,8 @@ import { useTheme } from '../ThemeContext'
 const PAGE_SIZE = 10
 
 const typeMap = {
-  numeric:     { icon: Hash,       color: 'text-sky-400',    bg: 'bg-sky-500/10',    label: 'Numeric' },
-  categorical: { icon: Type,       color: 'text-violet-400', bg: 'bg-violet-500/10', label: 'Text'    },
+  numeric:     { icon: Hash,       color: 'text-teal-400',    bg: 'bg-teal-500/10',    label: 'Numeric' },
+  categorical: { icon: Type,       color: 'text-teal-400', bg: 'bg-teal-500/10', label: 'Text'    },
   datetime:    { icon: Calendar,   color: 'text-emerald-400',bg: 'bg-emerald-500/10',label: 'Date'    },
   boolean:     { icon: ToggleLeft, color: 'text-amber-400',  bg: 'bg-amber-500/10',  label: 'Bool'    },
 }
@@ -153,7 +153,7 @@ const PreviewView = ({ data }) => {
                 <button key={i} onClick={() => setPage(i)}
                   className={`w-7 h-7 rounded-lg text-xs font-semibold transition-colors ${
                     i === page
-                      ? 'bg-sky-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : isDark
                         ? 'bg-slate-800 border border-slate-700 text-slate-400 hover:text-white'
                         : 'bg-white border border-slate-200 text-slate-500 hover:text-slate-900'

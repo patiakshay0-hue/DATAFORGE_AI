@@ -21,13 +21,13 @@ const ALL_MODELS = [
 const CATEGORIES = ['All', 'Regression', 'Classification', 'Both', 'Clustering']
 
 const CAT_STYLE = {
-  'Regression':    { text: 'text-sky-400',     bg: 'bg-sky-500/10',     border: 'border-sky-500/20'   },
-  'Classification':{ text: 'text-violet-400',  bg: 'bg-violet-500/10',  border: 'border-violet-500/20' },
+  'Regression':    { text: 'text-teal-400',     bg: 'bg-teal-500/10',     border: 'border-teal-500/20'   },
+  'Classification':{ text: 'text-teal-400',  bg: 'bg-teal-500/10',  border: 'border-teal-500/20' },
   'Both':          { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20'},
   'Clustering':    { text: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20'  },
 }
 
-const MODEL_COLORS = ['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ec4899','#6366f1','#14b8a6','#f97316']
+const MODEL_COLORS = ['#14b8a6', '#14b8a6', '#10b981', '#f59e0b', '#ec4899', '#2dd4bf', '#14b8a6', '#f97316']
 const PERCENT_KEYS = new Set(['accuracy','f1_score','precision','recall','silhouette_score','r2_score'])
 
 const PercentBar = ({ value, color, isDark }) => (
@@ -109,19 +109,19 @@ const MLView = ({ data }) => {
     <div className="max-w-lg mx-auto py-16 text-center space-y-8">
       <div className="relative w-20 h-20 mx-auto">
         <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'var(--df-border)' }} />
-        <div className="absolute inset-0 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
-        <Brain size={24} className="absolute inset-0 m-auto text-sky-400" />
+        <div className="absolute inset-0 rounded-full border-2 border-teal-400 border-t-transparent animate-spin" />
+        <Brain size={24} className="absolute inset-0 m-auto text-teal-400" />
       </div>
       <div>
         <h3 className="text-xl font-bold" style={{ color: 'var(--df-t1)' }}>Training Models</h3>
-        <p className="text-sky-400 text-sm mt-2 font-medium">{trainingStep}</p>
+        <p className="text-teal-400 text-sm mt-2 font-medium">{trainingStep}</p>
       </div>
       <div className="space-y-2 text-left rounded-2xl p-4"
         style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
         {[...selectedModels].map(m => (
           <div key={m} className="flex items-center gap-3 px-3 py-2 rounded-lg"
             style={{ background: isDark ? 'rgba(30,41,59,0.5)' : '#f1f5f9' }}>
-            <Loader2 size={13} className="animate-spin text-sky-400 shrink-0" />
+            <Loader2 size={13} className="animate-spin text-teal-400 shrink-0" />
             <span className="text-sm" style={{ color: 'var(--df-t2)' }}>{m}</span>
           </div>
         ))}
@@ -143,10 +143,10 @@ const MLView = ({ data }) => {
       <div className="relative overflow-hidden rounded-2xl p-6"
         style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
         <div className="absolute inset-0 opacity-10"
-          style={{ background: 'radial-gradient(circle at 50% 0%, #0ea5e9, transparent 60%)' }} />
+          style={{ background: 'radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)' }} />
         <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl shrink-0">
-            <Brain size={22} className="text-sky-400" />
+          <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+            <Brain size={22} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>Automated ML Engine</h3>
@@ -166,7 +166,7 @@ const MLView = ({ data }) => {
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <label className="flex items-center gap-2 font-semibold text-sm mb-3"
             style={{ color: 'var(--df-t1)' }}>
-            <Target size={14} className="text-sky-400" /> Target Column
+            <Target size={14} className="text-teal-400" /> Target Column
           </label>
           <select
             value={targetColumn}
@@ -187,7 +187,7 @@ const MLView = ({ data }) => {
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <label className="flex items-center gap-2 font-semibold text-sm mb-3"
             style={{ color: 'var(--df-t1)' }}>
-            <Sparkles size={14} className="text-violet-400" /> AI Suggestion
+            <Sparkles size={14} className="text-teal-400" /> AI Suggestion
           </label>
           {suggestion ? (
             <div className="space-y-2">
@@ -203,13 +203,13 @@ const MLView = ({ data }) => {
                   <span key={m} className="text-[10px] font-semibold px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full">{m}</span>
                 ))}
               </div>
-              <button onClick={handleSuggest} className="text-xs text-violet-400 hover:text-violet-300 underline underline-offset-2 mt-1">
+              <button onClick={handleSuggest} className="text-xs text-teal-400 hover:text-teal-300 underline underline-offset-2 mt-1">
                 Re-analyse
               </button>
             </div>
           ) : (
             <button onClick={handleSuggest} disabled={loadingSuggestion}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-400 transition-colors disabled:opacity-50">
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 text-teal-400 transition-colors disabled:opacity-50">
               {loadingSuggestion ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
               {loadingSuggestion ? 'Analysing…' : 'Suggest Best Models'}
             </button>
@@ -225,7 +225,7 @@ const MLView = ({ data }) => {
             <button key={cat} onClick={() => setActiveCategory(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
                 activeCategory === cat
-                  ? 'bg-sky-500/20 border-sky-500/40 text-sky-400'
+                  ? 'bg-teal-500/20 border-teal-500/40 text-teal-400'
                   : isDark
                     ? 'border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700'
                     : 'border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300'
@@ -262,15 +262,15 @@ const MLView = ({ data }) => {
               className="relative text-left p-5 rounded-xl border transition-all duration-200 group hover:scale-[1.01]"
               style={{
                 background: isSelected
-                  ? isDark ? 'rgba(14,165,233,0.05)' : 'rgba(14,165,233,0.04)'
+                  ? isDark ? 'rgba(20,184,166,0.05)' : 'rgba(20,184,166,0.04)'
                   : 'var(--df-card)',
                 border: isSelected
-                  ? '1px solid rgba(14,165,233,0.4)'
+                  ? '1px solid rgba(20,184,166,0.4)'
                   : `1px solid var(--df-border)`,
-                boxShadow: isSelected ? '0 4px 20px rgba(14,165,233,0.08)' : undefined,
+                boxShadow: isSelected ? '0 4px 20px rgba(20,184,166,0.08)' : undefined,
               }}>
               <div className={`absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${
-                isSelected ? 'bg-sky-500 border-sky-500' : isDark ? 'border-slate-600' : 'border-slate-300'
+                isSelected ? 'bg-teal-500 border-teal-500' : isDark ? 'border-slate-600' : 'border-slate-300'
               }`}>
                 {isSelected && <Check size={10} className="text-white" strokeWidth={3} />}
               </div>
@@ -304,11 +304,11 @@ const MLView = ({ data }) => {
           {selectedModels.size === 0
             ? 'Select at least one model to continue'
             : `${selectedModels.size} model${selectedModels.size > 1 ? 's' : ''} ready to train`}
-          {targetColumn && <span> · target: <span className="text-sky-400">{targetColumn}</span></span>}
+          {targetColumn && <span> · target: <span className="text-teal-400">{targetColumn}</span></span>}
         </p>
         <button onClick={handleTrain} disabled={selectedModels.size === 0}
           className="flex items-center gap-2.5 px-7 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
-          style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}>
+          style={{ background: 'linear-gradient(135deg, #0284c7, #2dd4bf)' }}>
           <Play size={15} fill="currentColor" />
           Train {selectedModels.size > 0 ? selectedModels.size : ''} Model{selectedModels.size !== 1 ? 's' : ''}
         </button>
@@ -343,9 +343,9 @@ const ResultsView = ({ results, onRetrain }) => {
         <div className="relative overflow-hidden rounded-2xl p-6"
           style={{
             background: isDark
-              ? 'linear-gradient(135deg, rgba(14,165,233,0.08) 0%, var(--df-card) 50%, rgba(99,102,241,0.08) 100%)'
+              ? 'linear-gradient(135deg, rgba(20,184,166,0.08) 0%, var(--df-card) 50%, rgba(45,212,191,0.08) 100%)'
               : 'linear-gradient(135deg, #eff6ff 0%, #ffffff 50%, #f5f3ff 100%)',
-            border: '1px solid rgba(14,165,233,0.25)',
+            border: '1px solid rgba(20,184,166,0.25)',
           }}>
           <div className="flex items-center gap-5 flex-wrap">
             <div className="p-4 bg-amber-500/15 border border-amber-500/25 rounded-2xl shrink-0">
@@ -361,7 +361,7 @@ const ResultsView = ({ results, onRetrain }) => {
             </div>
             <div className="hidden md:block text-right shrink-0">
               <p className="text-xs mb-1" style={{ color: 'var(--df-t3)' }}>Task Type</p>
-              <span className="capitalize text-sky-400 font-bold text-sm bg-sky-500/10 px-3 py-1.5 rounded-lg border border-sky-500/20">
+              <span className="capitalize text-teal-400 font-bold text-sm bg-teal-500/10 px-3 py-1.5 rounded-lg border border-teal-500/20">
                 {task}
               </span>
             </div>
@@ -379,7 +379,7 @@ const ResultsView = ({ results, onRetrain }) => {
               <div key={result.model}
                 className={`rounded-2xl p-6 border transition-all ${
                   isBest
-                    ? 'border-sky-500/40 shadow-lg shadow-sky-500/5'
+                    ? 'border-teal-500/40 shadow-lg shadow-teal-500/5'
                     : isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'
                 }`}
                 style={{ background: 'var(--df-card)' }}>

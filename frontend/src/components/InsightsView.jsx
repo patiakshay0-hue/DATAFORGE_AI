@@ -9,8 +9,8 @@ import { useTheme } from '../ThemeContext'
 const typeConfig = {
   success: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', accent: 'bg-emerald-500' },
   warning: { icon: AlertTriangle,color: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20',  accent: 'bg-amber-500'   },
-  insight: { icon: Lightbulb,    color: 'text-sky-400',     bg: 'bg-sky-500/10',     border: 'border-sky-500/20',    accent: 'bg-sky-500'     },
-  info:    { icon: Info,         color: 'text-violet-400',  bg: 'bg-violet-500/10',  border: 'border-violet-500/20', accent: 'bg-violet-500'  },
+  insight: { icon: Lightbulb,    color: 'text-teal-400',    bg: 'bg-teal-500/10',    border: 'border-teal-500/20',   accent: 'bg-teal-500'    },
+  info:    { icon: Info,         color: 'text-teal-400',  bg: 'bg-teal-500/10',  border: 'border-teal-500/20', accent: 'bg-teal-500'  },
 }
 
 const InsightsView = ({ data, onNavigate }) => {
@@ -38,7 +38,7 @@ const InsightsView = ({ data, onNavigate }) => {
     <div className="flex flex-col items-center justify-center py-32 gap-6">
       <div className="relative">
         <div className="w-16 h-16 rounded-full" style={{ border: '2px solid var(--df-border)' }} />
-        <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-sky-500 border-t-transparent animate-spin" />
+        <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: 'var(--df-primary)', borderTopColor: 'transparent' }} />
       </div>
       <div className="text-center">
         <p className="font-semibold text-lg" style={{ color: 'var(--df-t1)' }}>Generating AI Insights</p>
@@ -65,13 +65,13 @@ const InsightsView = ({ data, onNavigate }) => {
       <div className="relative overflow-hidden rounded-2xl p-8"
         style={{
           background: isDark
-            ? 'linear-gradient(135deg, #0d1523 0%, rgba(14,165,233,0.08) 50%, #0d1523 100%)'
-            : 'linear-gradient(135deg, #eff6ff 0%, #e0f2fe 50%, #eff6ff 100%)',
-          border: '1px solid rgba(14,165,233,0.25)',
+            ? 'linear-gradient(135deg, #0d1523 0%, rgba(20,184,166,0.08) 50%, #0d1523 100%)'
+            : 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 50%, #f0fdfa 100%)',
+          border: '1px solid rgba(20,184,166,0.25)',
         }}>
         <div className="relative flex items-center gap-5">
-          <div className="p-4 bg-sky-500/20 backdrop-blur rounded-2xl border border-sky-500/30">
-            <Sparkles className="text-sky-400 w-8 h-8" />
+          <div className="p-4 backdrop-blur rounded-2xl" style={{ background: 'rgba(20,184,166,0.2)', border: '1px solid rgba(20,184,166,0.3)' }}>
+            <Sparkles className="w-8 h-8" style={{ color: 'var(--df-primary)' }} />
           </div>
           <div>
             <h3 className="text-2xl font-bold" style={{ color: 'var(--df-t1)' }}>AI-Powered Insights</h3>
@@ -102,7 +102,7 @@ const InsightsView = ({ data, onNavigate }) => {
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
                       <h4 className="font-bold" style={{ color: 'var(--df-t1)' }}>{insight.title}</h4>
-                      {insight.type === 'insight' && <Sparkles size={13} className="text-sky-400" />}
+                      {insight.type === 'insight' && <Sparkles size={13} style={{ color: 'var(--df-primary)' }} />}
                     </div>
                     <p className="text-sm leading-relaxed" style={{ color: 'var(--df-t2)' }}>{insight.text}</p>
                   </div>
@@ -126,10 +126,11 @@ const InsightsView = ({ data, onNavigate }) => {
           border: '1px solid var(--df-border)',
         }}>
         <div className="absolute right-0 top-0 bottom-0 w-64 opacity-10"
-          style={{ background: 'radial-gradient(circle at 80% 50%, #8b5cf6, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle at 80% 50%, #14b8a6, transparent 70%)' }} />
         <div className="relative flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-violet-400 bg-violet-500/10 px-3 py-1 rounded-full border border-violet-500/20">
+            <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+              style={{ color: 'var(--df-primary)', background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)' }}>
               Pro Feature
             </span>
             <h3 className="text-xl font-bold" style={{ color: 'var(--df-t1)' }}>Chat with your Data</h3>
@@ -138,13 +139,14 @@ const InsightsView = ({ data, onNavigate }) => {
             </p>
             <button
               onClick={() => onNavigate?.('chat')}
-              className="mt-2 px-6 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-semibold text-sm transition-colors"
+              className="mt-2 px-6 py-2.5 text-white rounded-xl font-semibold text-sm"
+              style={{ background: 'var(--df-primary)' }}
             >
               Unlock LLM Engine →
             </button>
           </div>
-          <div className="shrink-0 w-32 h-32 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center">
-            <Sparkles size={48} className="text-violet-400" />
+          <div className="shrink-0 w-32 h-32 rounded-full flex items-center justify-center" style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)' }}>
+            <Sparkles size={48} style={{ color: 'var(--df-primary)' }} />
           </div>
         </div>
       </div>

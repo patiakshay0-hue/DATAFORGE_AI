@@ -88,10 +88,10 @@ const DeepLearningView = ({ data }) => {
       <div className="relative overflow-hidden rounded-2xl p-6"
         style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
         <div className="absolute inset-0 opacity-10"
-          style={{ background: 'radial-gradient(circle at 50% 0%, #8b5cf6, transparent 60%)' }} />
+          style={{ background: 'radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)' }} />
         <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-violet-500/10 border border-violet-500/20 rounded-xl shrink-0">
-            <Network size={22} className="text-violet-400" />
+          <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+            <Network size={22} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>Deep Learning Studio</h3>
@@ -106,7 +106,7 @@ const DeepLearningView = ({ data }) => {
       {recs.length > 0 && (
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <label className="flex items-center gap-2 font-semibold text-sm mb-3" style={{ color: 'var(--df-t1)' }}>
-            <Wand2 size={14} className="text-violet-400" /> Recommended Targets
+            <Wand2 size={14} className="text-teal-400" /> Recommended Targets
             <span className="text-xs font-normal" style={{ color: 'var(--df-t3)' }}>— what's worth predicting in this dataset</span>
           </label>
           <div className="flex flex-wrap gap-2.5">
@@ -116,21 +116,21 @@ const DeepLearningView = ({ data }) => {
                 <button key={r.column} onClick={() => pickTarget(r.column)}
                   className="group flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border text-left transition-all"
                   style={{
-                    background: active ? (isDark ? 'rgba(139,92,246,0.12)' : 'rgba(139,92,246,0.06)') : 'var(--df-input-bg)',
-                    borderColor: active ? 'rgba(139,92,246,0.5)' : 'var(--df-border)',
+                    background: active ? (isDark ? 'rgba(20,184,166,0.12)' : 'rgba(20,184,166,0.06)') : 'var(--df-input-bg)',
+                    borderColor: active ? 'rgba(20,184,166,0.5)' : 'var(--df-border)',
                   }}>
                   <div>
                     <div className="flex items-center gap-1.5">
                       <span className="font-semibold text-sm" style={{ color: 'var(--df-t1)' }}>{r.column}</span>
                       {r.recommended && (
-                        <span className="text-[8px] font-black uppercase tracking-wider text-violet-400 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[8px] font-black uppercase tracking-wider text-teal-400 bg-teal-500/10 border border-teal-500/20 px-1.5 py-0.5 rounded-full">
                           Best
                         </span>
                       )}
                     </div>
                     <p className="text-[11px]" style={{ color: 'var(--df-t3)' }}>{r.reason}</p>
                   </div>
-                  <ArrowRight size={14} className="opacity-0 group-hover:opacity-60 transition-opacity text-violet-400 shrink-0" />
+                  <ArrowRight size={14} className="opacity-0 group-hover:opacity-60 transition-opacity text-teal-400 shrink-0" />
                 </button>
               )
             })}
@@ -142,7 +142,7 @@ const DeepLearningView = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <label className="flex items-center gap-2 font-semibold text-sm mb-3" style={{ color: 'var(--df-t1)' }}>
-            <Target size={14} className="text-violet-400" /> Target Column
+            <Target size={14} className="text-teal-400" /> Target Column
           </label>
           <select value={targetColumn}
             onChange={e => { setTargetColumn(e.target.value); setSuggestion(null); if (e.target.value) handleSuggest(e.target.value) }}
@@ -156,7 +156,7 @@ const DeepLearningView = ({ data }) => {
 
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <label className="flex items-center gap-2 font-semibold text-sm mb-3" style={{ color: 'var(--df-t1)' }}>
-            <Sparkles size={14} className="text-violet-400" /> Detected Setup
+            <Sparkles size={14} className="text-teal-400" /> Detected Setup
           </label>
           {loadingSug ? (
             <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--df-t3)' }}>
@@ -166,7 +166,7 @@ const DeepLearningView = ({ data }) => {
             <div className="space-y-1.5">
               <p className="text-sm" style={{ color: 'var(--df-t2)' }}>
                 <span className="font-semibold capitalize" style={{ color: 'var(--df-t1)' }}>{suggestion.task}</span> task ·{' '}
-                <span className="text-violet-400 font-semibold">{suggestion.n_features} features</span>
+                <span className="text-teal-400 font-semibold">{suggestion.n_features} features</span>
                 {suggestion.n_classes ? <> · {suggestion.n_classes} classes</> : null}
               </p>
               <p className="text-xs flex items-center gap-1.5" style={{ color: 'var(--df-t3)' }}>
@@ -182,7 +182,7 @@ const DeepLearningView = ({ data }) => {
       {/* Architecture presets */}
       <div className={card} style={{ background: 'var(--df-card)' }}>
         <label className="flex items-center gap-2 font-semibold text-sm mb-3" style={{ color: 'var(--df-t1)' }}>
-          <Layers size={14} className="text-violet-400" /> Network Depth
+          <Layers size={14} className="text-teal-400" /> Network Depth
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {LAYER_PRESETS.map(preset => {
@@ -191,12 +191,12 @@ const DeepLearningView = ({ data }) => {
               <button key={preset.label} onClick={() => setCfg('hidden_layers', preset.value)}
                 className="text-left p-4 rounded-xl border transition-all"
                 style={{
-                  background: active ? (isDark ? 'rgba(139,92,246,0.08)' : 'rgba(139,92,246,0.05)') : 'var(--df-input-bg)',
-                  borderColor: active ? 'rgba(139,92,246,0.5)' : 'var(--df-border)',
+                  background: active ? (isDark ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.05)') : 'var(--df-input-bg)',
+                  borderColor: active ? 'rgba(20,184,166,0.5)' : 'var(--df-border)',
                 }}>
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-sm" style={{ color: 'var(--df-t1)' }}>{preset.label}</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
                     {preset.value.join('→')}
                   </span>
                 </div>
@@ -209,24 +209,53 @@ const DeepLearningView = ({ data }) => {
 
       {/* Hyperparameters */}
       <div className={card} style={{ background: 'var(--df-card)' }}>
-        <label className="flex items-center gap-2 font-semibold text-sm mb-4" style={{ color: 'var(--df-t1)' }}>
-          <Gauge size={14} className="text-violet-400" /> Hyperparameters
+        <label className="flex items-center gap-2 font-semibold text-sm mb-5" style={{ color: 'var(--df-t1)' }}>
+          <Gauge size={14} className="text-teal-400" /> Hyperparameters
         </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-          {HYPERS.map(h => (
-            <div key={h.key}>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>{h.label}</span>
-                <span className="text-sm font-bold font-mono text-violet-400">
-                  {h.key === 'learning_rate' ? config[h.key].toFixed(4) : config[h.key]}
-                </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+          {HYPERS.map(h => {
+            const val = config[h.key]
+            const pct = ((val - h.min) / (h.max - h.min)) * 100
+            const isInt = h.key === 'batch_size' || h.key === 'epochs'
+            const onChange = (e) => setCfg(h.key, isInt ? parseInt(e.target.value) : parseFloat(e.target.value))
+            const displayVal = h.key === 'learning_rate' ? val.toFixed(4) : val
+
+            return (
+              <div key={h.key} className="group">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>{h.label}</span>
+                  <span className="text-sm font-bold font-mono px-2.5 py-1 rounded-lg"
+                    style={{ color: 'var(--df-primary)', background: 'rgba(20,184,166,0.08)' }}>
+                    {displayVal}
+                  </span>
+                </div>
+                <div className="relative h-8 flex items-center">
+                  <div className="absolute inset-x-0 h-2 rounded-full overflow-hidden"
+                    style={{ background: isDark ? 'rgba(30,41,59,0.8)' : '#e2e8f0' }}>
+                    <div className="h-full rounded-full transition-all duration-150 ease-out"
+                      style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #0d9488, #14b8a6, #2dd4bf)' }} />
+                  </div>
+                  <input type="range" min={h.min} max={h.max} step={h.step} value={val}
+                    onChange={onChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    style={{ margin: 0 }} />
+                  <div className="absolute z-0 pointer-events-none transition-all duration-150 ease-out"
+                    style={{ left: `calc(${pct}% - 8px)`, top: '50%', transform: 'translateY(-50%)' }}>
+                    <div className="w-4 h-4 rounded-full shadow-md border-2 border-white"
+                      style={{
+                        background: 'linear-gradient(135deg, #0d9488, #14b8a6)',
+                        boxShadow: '0 2px 8px rgba(20,184,166,0.35), 0 0 0 4px rgba(20,184,166,0.08)',
+                      }} />
+                  </div>
+                </div>
+                <div className="flex justify-between mt-1.5">
+                  <span className="text-[10px] font-mono" style={{ color: 'var(--df-t4)' }}>{h.min}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--df-t3)' }}>{h.hint}</span>
+                  <span className="text-[10px] font-mono" style={{ color: 'var(--df-t4)' }}>{h.max}</span>
+                </div>
               </div>
-              <input type="range" min={h.min} max={h.max} step={h.step} value={config[h.key]}
-                onChange={e => setCfg(h.key, h.key === 'batch_size' || h.key === 'epochs' ? parseInt(e.target.value) : parseFloat(e.target.value))}
-                className="w-full accent-violet-500 cursor-pointer" />
-              <p className="text-[11px] mt-1" style={{ color: 'var(--df-t3)' }}>{h.hint}</p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
@@ -239,12 +268,12 @@ const DeepLearningView = ({ data }) => {
       <div className="flex items-center justify-between pt-2 flex-wrap gap-4" style={{ borderTop: '1px solid var(--df-border)' }}>
         <p className="text-sm" style={{ color: 'var(--df-t3)' }}>
           {targetColumn
-            ? <>Network ready · target: <span className="text-violet-400">{targetColumn}</span></>
+            ? <>Network ready · target: <span className="text-teal-400">{targetColumn}</span></>
             : 'Select a target column to continue'}
         </p>
         <button onClick={handleTrain} disabled={!targetColumn}
           className="flex items-center gap-2.5 px-7 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+          style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
           <Play size={15} fill="currentColor" /> Train Network
         </button>
       </div>
@@ -257,12 +286,12 @@ const TrainingScreen = ({ config, columns, step }) => (
   <div className="max-w-lg mx-auto py-16 text-center space-y-8">
     <div className="relative w-20 h-20 mx-auto">
       <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'var(--df-border)' }} />
-      <div className="absolute inset-0 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
-      <Network size={24} className="absolute inset-0 m-auto text-violet-400" />
+      <div className="absolute inset-0 rounded-full border-2 border-teal-400 border-t-transparent animate-spin" />
+      <Network size={24} className="absolute inset-0 m-auto text-teal-400" />
     </div>
     <div>
       <h3 className="text-xl font-bold" style={{ color: 'var(--df-t1)' }}>Training Neural Network</h3>
-      <p className="text-violet-400 text-sm mt-2 font-medium">{step}</p>
+      <p className="text-teal-400 text-sm mt-2 font-medium">{step}</p>
     </div>
     <div className="rounded-2xl p-4 text-left space-y-2"
       style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
@@ -300,13 +329,13 @@ const ResultsView = ({ result, onReset, isDark }) => {
       <div className="relative overflow-hidden rounded-2xl p-6"
         style={{
           background: isDark
-            ? 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, var(--df-card) 50%, rgba(99,102,241,0.1) 100%)'
+            ? 'linear-gradient(135deg, rgba(20,184,166,0.1) 0%, var(--df-card) 50%, rgba(45,212,191,0.1) 100%)'
             : 'linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #eef2ff 100%)',
-          border: '1px solid rgba(139,92,246,0.25)',
+          border: '1px solid rgba(20,184,166,0.25)',
         }}>
         <div className="flex items-center gap-5 flex-wrap">
-          <div className="p-4 bg-violet-500/15 border border-violet-500/25 rounded-2xl shrink-0">
-            <Network size={28} className="text-violet-400" />
+          <div className="p-4 bg-teal-500/15 border border-teal-500/25 rounded-2xl shrink-0">
+            <Network size={28} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs uppercase tracking-widest font-semibold" style={{ color: 'var(--df-t3)' }}>Neural Network Trained</p>
@@ -319,7 +348,7 @@ const ResultsView = ({ result, onReset, isDark }) => {
               <span className="flex items-center gap-1"><Clock size={12} /> {training_time}</span>
             </p>
           </div>
-          <span className="hidden md:inline-block capitalize text-violet-400 font-bold text-sm bg-violet-500/10 px-3 py-1.5 rounded-lg border border-violet-500/20 shrink-0">
+          <span className="hidden md:inline-block capitalize text-teal-400 font-bold text-sm bg-teal-500/10 px-3 py-1.5 rounded-lg border border-teal-500/20 shrink-0">
             {task}
           </span>
         </div>
@@ -328,7 +357,7 @@ const ResultsView = ({ result, onReset, isDark }) => {
       {/* Loss + metric curves */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className={card} style={{ background: 'var(--df-card)' }}>
-          <ChartTitle icon={TrendingUp} color="text-sky-400" title="Training Loss" />
+          <ChartTitle icon={TrendingUp} color="text-teal-400" title="Training Loss" />
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={history} margin={{ top: 5, right: 8, left: -8, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={grid} vertical={false} />
@@ -336,7 +365,7 @@ const ResultsView = ({ result, onReset, isDark }) => {
               <YAxis stroke={axis} fontSize={11} tickLine={false} width={44} />
               <Tooltip contentStyle={tip} labelFormatter={v => `Epoch ${v}`} />
               {hasValLoss && <Legend wrapperStyle={{ fontSize: 12 }} />}
-              <Line type="monotone" dataKey="train_loss" name="Train loss" stroke="#0ea5e9" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+              <Line type="monotone" dataKey="train_loss" name="Train loss" stroke="#14b8a6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
               {hasValLoss && <Line type="monotone" dataKey="val_loss" name="Validation loss" stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />}
             </LineChart>
           </ResponsiveContainer>
@@ -358,15 +387,15 @@ const ResultsView = ({ result, onReset, isDark }) => {
       {/* Feature importance + evaluation */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className={card} style={{ background: 'var(--df-card)' }}>
-          <ChartTitle icon={BarChart3} color="text-violet-400" title="Feature Importance"
+          <ChartTitle icon={BarChart3} color="text-teal-400" title="Feature Importance"
             sub="How much each input drives predictions (permutation)" />
           <ResponsiveContainer width="100%" height={Math.max(180, feature_importance.length * 34)}>
             <BarChart data={feature_importance} layout="vertical" margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={grid} horizontal={false} />
               <XAxis type="number" stroke={axis} fontSize={11} tickLine={false} unit="%" />
               <YAxis type="category" dataKey="feature" stroke={axis} fontSize={11} tickLine={false} width={90} />
-              <Tooltip contentStyle={tip} formatter={v => [`${v}%`, 'Importance']} cursor={{ fill: isDark ? 'rgba(139,92,246,0.08)' : 'rgba(139,92,246,0.05)' }} />
-              <Bar dataKey="importance_pct" radius={[0, 4, 4, 0]} fill="#8b5cf6" />
+              <Tooltip contentStyle={tip} formatter={v => [`${v}%`, 'Importance']} cursor={{ fill: isDark ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.05)' }} />
+              <Bar dataKey="importance_pct" radius={[0, 4, 4, 0]} fill="#14b8a6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -398,13 +427,13 @@ const ResultsView = ({ result, onReset, isDark }) => {
         </div>
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <h4 className="font-bold text-sm mb-4 flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
-            <Layers size={14} className="text-violet-400" /> Architecture
+            <Layers size={14} className="text-teal-400" /> Architecture
           </h4>
           <div className="space-y-2">
             {architecture.map((layer, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0"
-                  style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)', color: '#a78bfa' }}>{i + 1}</div>
+                  style={{ background: 'rgba(20,184,166,0.12)', border: '1px solid rgba(20,184,166,0.25)', color: '#2dd4bf' }}>{i + 1}</div>
                 <span className="text-xs" style={{ color: 'var(--df-t2)' }}>{layer}</span>
               </div>
             ))}
@@ -475,7 +504,7 @@ const ClassificationEval = ({ evaluation, isDark, tip, grid, axis }) => {
         <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--df-border)' }}>
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold" style={{ color: 'var(--df-t2)' }}>ROC Curve</span>
-            <span className="text-xs font-bold text-sky-400">AUC {roc.auc}</span>
+            <span className="text-xs font-bold text-teal-400">AUC {roc.auc}</span>
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={roc.points} margin={{ top: 5, right: 8, left: -12, bottom: 0 }}>
@@ -484,7 +513,7 @@ const ClassificationEval = ({ evaluation, isDark, tip, grid, axis }) => {
               <YAxis dataKey="tpr" type="number" domain={[0, 1]} stroke={axis} fontSize={10} tickLine={false} />
               <Tooltip contentStyle={tip} formatter={(v, n) => [v, n.toUpperCase()]} />
               <ReferenceLine segment={[{ x: 0, y: 0 }, { x: 1, y: 1 }]} stroke={axis} strokeDasharray="4 4" />
-              <Line type="monotone" dataKey="tpr" stroke="#0ea5e9" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="tpr" stroke="#14b8a6" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -539,7 +568,7 @@ const PredictionPlayground = ({ featureSpec = [], target, isDark }) => {
 
   return (
     <div className={card} style={{ background: 'var(--df-card)' }}>
-      <ChartTitle icon={Wand2} color="text-violet-400" title="Prediction Playground"
+      <ChartTitle icon={Wand2} color="text-teal-400" title="Prediction Playground"
         sub={`Enter feature values and the network predicts ${target}`} />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">
         {featureSpec.map(f => (
@@ -564,7 +593,7 @@ const PredictionPlayground = ({ featureSpec = [], target, isDark }) => {
       <div className="flex items-center gap-4 flex-wrap">
         <button onClick={run} disabled={loading}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+          style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
           {loading ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
           {loading ? 'Predicting…' : 'Run Prediction'}
         </button>
@@ -592,7 +621,7 @@ const PredictionPlayground = ({ featureSpec = [], target, isDark }) => {
             <div key={d.class} className="flex items-center gap-3">
               <span className="text-xs font-mono w-20 truncate shrink-0" style={{ color: 'var(--df-t2)' }}>{d.class}</span>
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'var(--df-input-bg)' }}>
-                <div className="h-full rounded-full" style={{ width: `${d.prob * 100}%`, background: 'linear-gradient(90deg, #7c3aed, #6366f1)' }} />
+                <div className="h-full rounded-full" style={{ width: `${d.prob * 100}%`, background: 'linear-gradient(90deg, #0d9488, #2dd4bf)' }} />
               </div>
               <span className="text-xs font-mono w-12 text-right shrink-0" style={{ color: 'var(--df-t3)' }}>{(d.prob * 100).toFixed(1)}%</span>
             </div>

@@ -5,8 +5,8 @@ import { useTheme } from '../ThemeContext'
 
 const formats = [
   { ext: 'CSV',  icon: Table2,        color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-  { ext: 'XLSX', icon: FileSpreadsheet,color: 'text-sky-400',    bg: 'bg-sky-500/10'     },
-  { ext: 'JSON', icon: FileJson,       color: 'text-violet-400', bg: 'bg-violet-500/10'  },
+  { ext: 'XLSX', icon: FileSpreadsheet,color: 'text-teal-400',   bg: 'bg-teal-500/10'    },
+  { ext: 'JSON', icon: FileJson,       color: 'text-cyan-400',   bg: 'bg-cyan-500/10'    },
 ]
 
 const FileUpload = ({ onUploadSuccess }) => {
@@ -50,11 +50,11 @@ const FileUpload = ({ onUploadSuccess }) => {
   }
 
   const dropBorderColor = dragActive
-    ? '#0ea5e9'
+    ? 'var(--df-primary)'
     : isDark ? '#1e293b' : '#e2e8f0'
 
   const dropBg = dragActive
-    ? isDark ? 'rgba(14,165,233,0.08)' : 'rgba(14,165,233,0.04)'
+    ? isDark ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.04)'
     : 'var(--df-card)'
 
   return (
@@ -76,13 +76,12 @@ const FileUpload = ({ onUploadSuccess }) => {
         <div className="py-16 px-8 flex flex-col items-center text-center">
           {loading ? (
             <>
-              <Loader2 size={40} className="text-sky-400 animate-spin mb-4" />
+              <Loader2 size={40} className="animate-spin mb-4" style={{ color: 'var(--df-primary)' }} />
               <p className="font-semibold mb-3" style={{ color: 'var(--df-t1)' }}>
                 {progress < 100 ? 'Uploading…' : 'Analyzing your dataset…'}
               </p>
               <div className="w-48 h-1.5 rounded-full overflow-hidden" style={{ background: isDark ? '#1e293b' : '#e2e8f0' }}>
-                <div className="h-full bg-sky-500 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }} />
+                <div className="h-full rounded-full transition-all duration-300" style={{ background: 'var(--df-primary)', width: `${progress}%` }} />
               </div>
               <p className="text-xs mt-2" style={{ color: 'var(--df-t3)' }}>{progress}%</p>
               {slow && (
@@ -94,14 +93,14 @@ const FileUpload = ({ onUploadSuccess }) => {
             </>
           ) : (
             <>
-              <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-5">
-                <Upload size={28} className="text-sky-400" />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)' }}>
+                <Upload size={28} style={{ color: 'var(--df-primary)' }} />
               </div>
               <p className="text-xl font-bold mb-2" style={{ color: 'var(--df-t1)' }}>
                 Drop your dataset here
               </p>
               <p className="text-sm mb-1" style={{ color: 'var(--df-t2)' }}>
-                or <span className="text-sky-400 font-semibold cursor-pointer hover:text-sky-300">browse files</span>
+                or <span className="font-semibold cursor-pointer" style={{ color: 'var(--df-primary)' }}>browse files</span>
               </p>
               <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
                 Supports CSV, XLSX, and JSON up to 50 MB

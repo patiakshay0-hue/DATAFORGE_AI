@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { useTheme } from '../ThemeContext'
 
-const COLORS = ['#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1']
+const COLORS = ['#14b8a6', '#14b8a6', '#ec4899', '#f59e0b', '#10b981', '#2dd4bf']
 
 const EDAView = ({ data, onDataUpdated }) => {
   const { isDark } = useTheme()
@@ -49,8 +49,8 @@ const EDAView = ({ data, onDataUpdated }) => {
       {/* Overview strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Rows',       value: rows?.toLocaleString() ?? 0,       color: 'text-sky-400' },
-          { label: 'Total Columns',    value: columns,                            color: 'text-violet-400' },
+          { label: 'Total Rows',       value: rows?.toLocaleString() ?? 0,       color: 'text-teal-400' },
+          { label: 'Total Columns',    value: columns,                            color: 'text-teal-400' },
           { label: 'Numeric Features', value: barCharts.length,                   color: 'text-emerald-400' },
           { label: 'Missing Cells',    value: Object.values(missing).reduce((a,b)=>a+b,0),
             color: missingEntries.length > 0 ? 'text-amber-400' : 'text-emerald-400' },
@@ -71,7 +71,7 @@ const EDAView = ({ data, onDataUpdated }) => {
         style={cardStyle}>
         <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid var(--df-border)' }}>
           <div className="flex items-center gap-3">
-            <Table size={18} className="text-sky-400" />
+            <Table size={18} className="text-teal-400" />
             <h3 className="font-bold" style={{ color: 'var(--df-t1)' }}>Statistical Summary</h3>
           </div>
           <div className="flex text-xs">
@@ -79,8 +79,8 @@ const EDAView = ({ data, onDataUpdated }) => {
               <button key={t} onClick={() => setActiveStatTab(t)}
                 className={`px-4 py-1.5 rounded-lg capitalize font-medium ${
                   activeStatTab === t
-                    ? 'bg-sky-500/20 text-sky-400'
-                    : 'hover:text-sky-400'
+                    ? 'bg-teal-500/20 text-teal-400'
+                    : 'hover:text-teal-400'
                 }`}
                 style={{ color: activeStatTab === t ? undefined : 'var(--df-t3)' }}>
                 {t}
@@ -150,7 +150,7 @@ const EDAView = ({ data, onDataUpdated }) => {
       {barCharts.length > 0 && (
         <div>
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
-            <BarChart3 size={18} className="text-sky-400" /> Distributions
+            <BarChart3 size={18} className="text-teal-400" /> Distributions
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {barCharts.map(([key, cfg]) => (
@@ -164,7 +164,7 @@ const EDAView = ({ data, onDataUpdated }) => {
                       <XAxis dataKey="bin" stroke={axisColor} fontSize={9} tickLine={false} />
                       <YAxis stroke={axisColor} fontSize={9} tickLine={false} axisLine={false} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="count" fill="#0ea5e9" radius={[3, 3, 0, 0]}>
+                      <Bar dataKey="count" fill="#14b8a6" radius={[3, 3, 0, 0]}>
                         {cfg.data.map((_, i) => (
                           <Cell key={i} fill={COLORS[i % COLORS.length]} fillOpacity={0.85} />
                         ))}
@@ -182,7 +182,7 @@ const EDAView = ({ data, onDataUpdated }) => {
       {pieCharts.length > 0 && (
         <div>
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2" style={{ color: 'var(--df-t1)' }}>
-            <PieIcon size={18} className="text-violet-400" /> Categorical Breakdown
+            <PieIcon size={18} className="text-teal-400" /> Categorical Breakdown
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {pieCharts.map(([key, cfg]) => (
@@ -303,7 +303,7 @@ const CleaningPanel = ({ isDark, missing, rows, onDataUpdated }) => {
         <div className="flex items-center gap-2.5">
           <button onClick={autoClean} disabled={applying || !report}
             className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #10b981, #0ea5e9)' }}>
+            style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
             {applying ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
             Auto-clean
           </button>
@@ -336,7 +336,7 @@ const CleaningPanel = ({ isDark, missing, rows, onDataUpdated }) => {
                   <div className="flex-1 min-w-[140px]">
                     <p className="font-semibold text-sm" style={{ color: 'var(--df-t1)' }}>{c.column}</p>
                     <p className="text-[11px]" style={{ color: 'var(--df-t3)' }}>
-                      <span className={c.kind === 'numeric' ? 'text-sky-400' : 'text-violet-400'}>{c.kind}</span>
+                      <span className={c.kind === 'numeric' ? 'text-teal-400' : 'text-teal-400'}>{c.kind}</span>
                       {' · '}{c.missing} missing ({c.pct}%)
                     </p>
                   </div>
@@ -358,7 +358,7 @@ const CleaningPanel = ({ isDark, missing, rows, onDataUpdated }) => {
           </div>
           <button onClick={applyPerColumn} disabled={applying}
             className="mt-4 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+            style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
             {applying ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
             Apply choices
           </button>

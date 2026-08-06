@@ -38,7 +38,7 @@ const renderText = (text) => {
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
       elements.push(
         <div key={i} className="flex gap-2 my-0.5">
-          <span className="text-sky-400 mt-1 shrink-0">•</span>
+          <span className="text-teal-400 mt-1 shrink-0">•</span>
           <span className="text-sm leading-relaxed" style={{ color: 'var(--df-t2)' }}>{inlineFormat(line.slice(2))}</span>
         </div>
       )
@@ -46,7 +46,7 @@ const renderText = (text) => {
       const num = line.match(/^(\d+)\./)[1]
       elements.push(
         <div key={i} className="flex gap-2 my-0.5">
-          <span className="text-sky-400 shrink-0 w-5 text-sm">{num}.</span>
+          <span className="text-teal-400 shrink-0 w-5 text-sm">{num}.</span>
           <span className="text-sm leading-relaxed" style={{ color: 'var(--df-t2)' }}>{inlineFormat(line.replace(/^\d+\.\s/, ''))}</span>
         </div>
       )
@@ -90,13 +90,13 @@ const MessageBubble = ({ msg }) => {
       <div className="max-w-[75%]">
         <div className="rounded-2xl rounded-tr-md px-5 py-3"
           style={{
-            background: isDark ? 'rgba(14,165,233,0.15)' : '#e0f2fe',
-            border: `1px solid ${isDark ? 'rgba(14,165,233,0.25)' : '#bae6fd'}`,
+            background: isDark ? 'rgba(20,184,166,0.15)' : '#e0f2fe',
+            border: `1px solid ${isDark ? 'rgba(20,184,166,0.25)' : '#bae6fd'}`,
           }}>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--df-t1)' }}>{msg.content}</p>
         </div>
       </div>
-      <div className="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center shrink-0 mt-1">
+      <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shrink-0 mt-1">
         <User size={14} className="text-white" />
       </div>
     </div>
@@ -105,14 +105,14 @@ const MessageBubble = ({ msg }) => {
   return (
     <div className="flex gap-3 group">
       <div className="w-8 h-8 rounded-full shrink-0 mt-1 flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
+        style={{ background: 'linear-gradient(135deg, #14b8a6, #2dd4bf)' }}>
         <Bot size={14} className="text-white" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="rounded-2xl rounded-tl-md px-5 py-4"
           style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
           {msg.streaming
-            ? <div className="space-y-1">{renderText(msg.content)}<span className="inline-block w-1.5 h-4 bg-sky-400 animate-pulse ml-0.5 rounded-sm align-middle" /></div>
+            ? <div className="space-y-1">{renderText(msg.content)}<span className="inline-block w-1.5 h-4 bg-teal-400 animate-pulse ml-0.5 rounded-sm align-middle" /></div>
             : <div className="space-y-1">{renderText(msg.content)}</div>
           }
         </div>
@@ -143,7 +143,7 @@ const ApiKeyBanner = () => (
         ANTHROPIC_API_KEY=sk-ant-...
       </pre>
       <p className="text-xs mt-2" style={{ color: 'var(--df-t3)' }}>
-        Get a key at <span className="text-sky-400">console.anthropic.com</span>, then restart the backend.
+        Get a key at <span className="text-teal-400">console.anthropic.com</span>, then restart the backend.
       </p>
     </div>
   </div>
@@ -278,13 +278,13 @@ const ChatView = ({ data }) => {
       <div className="shrink-0 flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl shrink-0"
-            style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.15), rgba(99,102,241,0.15))' }}>
-            <Sparkles size={18} className="text-violet-400" />
+            style={{ background: 'linear-gradient(135deg, rgba(20,184,166,0.15), rgba(45,212,191,0.15))' }}>
+            <Sparkles size={18} className="text-teal-400" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold" style={{ color: 'var(--df-t1)' }}>Chat with your Data</h3>
-              <span className="text-[9px] font-black uppercase tracking-widest text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-full">Pro</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-full">Pro</span>
             </div>
             <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
               {data?.filename ? `Analysing: ${data.filename} · ${data.eda?.rows?.toLocaleString()} rows` : 'Ask anything about your dataset'}
@@ -323,12 +323,12 @@ const ChatView = ({ data }) => {
             <div className="relative overflow-hidden rounded-2xl p-8 text-center mb-8"
               style={{
                 background: isDark
-                  ? 'linear-gradient(135deg, #0d1523 0%, rgba(14,165,233,0.06) 50%, #0d1523 100%)'
+                  ? 'linear-gradient(135deg, #0d1523 0%, rgba(20,184,166,0.06) 50%, #0d1523 100%)'
                   : 'linear-gradient(135deg, #eff6ff 0%, #e0f2fe 50%, #eff6ff 100%)',
                 border: '1px solid var(--df-border)',
               }}>
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
+                style={{ background: 'linear-gradient(135deg, #14b8a6, #2dd4bf)' }}>
                 <MessageSquare size={28} className="text-white" />
               </div>
               <h4 className="font-bold text-lg" style={{ color: 'var(--df-t1)' }}>Ask anything about your data</h4>
@@ -351,7 +351,7 @@ const ChatView = ({ data }) => {
                     border: '1px solid var(--df-border)',
                     color: 'var(--df-t2)',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(14,165,233,0.4)'; e.currentTarget.style.color = 'var(--df-t1)' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(20,184,166,0.4)'; e.currentTarget.style.color = 'var(--df-t1)' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--df-border)'; e.currentTarget.style.color = 'var(--df-t2)' }}>
                   {s}
                 </button>
@@ -369,7 +369,7 @@ const ChatView = ({ data }) => {
         <div className="flex gap-3 items-end rounded-2xl px-4 py-3 transition-colors"
           style={{
             background: 'var(--df-card)',
-            border: `1px solid ${loading ? 'rgba(14,165,233,0.4)' : 'var(--df-border)'}`,
+            border: `1px solid ${loading ? 'rgba(20,184,166,0.4)' : 'var(--df-border)'}`,
           }}>
           <textarea
             ref={inputRef}
@@ -394,7 +394,7 @@ const ChatView = ({ data }) => {
             onClick={() => sendMessage()}
             disabled={!input.trim() || loading || !apiStatus?.configured}
             className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #0284c7, #6366f1)' }}
+            style={{ background: 'linear-gradient(135deg, #0284c7, #2dd4bf)' }}
           >
             {loading
               ? <Loader2 size={16} className="text-white animate-spin" />

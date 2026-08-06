@@ -96,12 +96,12 @@ const SmartConfigView = ({ data }) => {
           className="absolute inset-0 opacity-10"
           style={{
             background:
-              "radial-gradient(circle at 50% 0%, #0ea5e9, transparent 60%)",
+              "radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)",
           }}
         />
         <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl shrink-0">
-            <Brain size={22} className="text-sky-400" />
+          <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+            <Brain size={22} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3
@@ -126,10 +126,10 @@ const SmartConfigView = ({ data }) => {
                 className="absolute inset-0 rounded-full border-2"
                 style={{ borderColor: "var(--df-border)" }}
               />
-              <div className="absolute inset-0 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-teal-400 border-t-transparent animate-spin" />
               <Brain
                 size={20}
-                className="absolute inset-0 m-auto text-sky-400"
+                className="absolute inset-0 m-auto text-teal-400"
               />
             </div>
             <p
@@ -152,7 +152,7 @@ const SmartConfigView = ({ data }) => {
         <>
           <div className={card} style={{ background: "var(--df-card)" }}>
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={16} className="text-sky-400" />
+              <Sparkles size={16} className="text-teal-400" />
               <h4
                 className="font-bold text-sm"
                 style={{ color: "var(--df-t1)" }}
@@ -168,13 +168,13 @@ const SmartConfigView = ({ data }) => {
                 label="Hidden Layers"
                 value={cfg?.hidden_layers?.join(" → ")}
                 icon={Layers}
-                color="text-violet-400"
+                color="text-teal-400"
               />
               <ConfigCard
                 label="Epochs"
                 value={cfg?.epochs}
                 icon={TrendingUp}
-                color="text-sky-400"
+                color="text-teal-400"
               />
               <ConfigCard
                 label="Learning Rate"
@@ -221,14 +221,14 @@ const SmartConfigView = ({ data }) => {
 
           <div className={card} style={{ background: "var(--df-card)" }}>
             <div className="flex items-center gap-2 mb-4">
-              <Eye size={16} className="text-violet-400" />
+              <Eye size={16} className="text-teal-400" />
               <h4
                 className="font-bold text-sm"
                 style={{ color: "var(--df-t1)" }}
               >
                 Hidden Patterns in Data
               </h4>
-              <span className="text-[9px] font-black uppercase tracking-widest text-violet-400 bg-violet-500/10 border border-violet-500/20 px-1.5 py-0.5 rounded-full ml-2">
+              <span className="text-[9px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 border border-teal-500/20 px-1.5 py-0.5 rounded-full ml-2">
                 Select Best Fit
               </span>
             </div>
@@ -258,7 +258,7 @@ const SmartConfigView = ({ data }) => {
                     ? `PC1 explains ${(patterns.pca.explained_variance_ratio[0] * 100).toFixed(1)}% variance — data has clear directional spread`
                     : "Analyzing principal components"
                 }
-                color="#0ea5e9"
+                color="#14b8a6"
               />
               <PatternChartCard
                 title={`Natural Groups (k=${patterns?.clusters?.n_clusters || "?"})`}
@@ -354,7 +354,7 @@ const SmartConfigView = ({ data }) => {
 
           <div className={card} style={{ background: "var(--df-card)" }}>
             <div className="flex items-center gap-2 mb-3">
-              <Target size={16} className="text-sky-400" />
+              <Target size={16} className="text-teal-400" />
               <h4
                 className="font-bold text-sm"
                 style={{ color: "var(--df-t1)" }}
@@ -376,18 +376,18 @@ const SmartConfigView = ({ data }) => {
                     background:
                       selectedPattern === columns.indexOf(col)
                         ? isDark
-                          ? "rgba(14,165,233,0.12)"
-                          : "rgba(14,165,233,0.06)"
+                          ? "rgba(20,184,166,0.12)"
+                          : "rgba(20,184,166,0.06)"
                         : "var(--df-input-bg)",
                     borderColor:
                       selectedPattern === columns.indexOf(col)
-                        ? "rgba(14,165,233,0.5)"
+                        ? "rgba(20,184,166,0.5)"
                         : "var(--df-border)",
                   }}
                 >
                   {col}
                   {selectedPattern === columns.indexOf(col) && (
-                    <CheckCircle2 size={14} className="text-sky-400" />
+                    <CheckCircle2 size={14} className="text-teal-400" />
                   )}
                 </button>
               ))}
@@ -400,7 +400,7 @@ const SmartConfigView = ({ data }) => {
               disabled={selectedPattern == null}
               className="flex items-center gap-2.5 px-7 py-3 rounded-xl font-bold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
               style={{
-                background: "linear-gradient(135deg, #0ea5e9, #6366f1)",
+                background: "linear-gradient(135deg, #14b8a6, #2dd4bf)",
               }}
             >
               <FileText size={15} /> Generate Summarized Report
@@ -446,7 +446,7 @@ const PatternChartCard = ({
     },
     theme: { mode: isDark ? "dark" : "light" },
     colors:
-      chartType === "bar" && series?.length > 1 ? [color, "#6366f1"] : [color],
+      chartType === "bar" && series?.length > 1 ? [color, "#2dd4bf"] : [color],
     ...(categories ? { xaxis: { categories } } : {}),
     ...(chartType === "scatter"
       ? {
@@ -598,7 +598,7 @@ const ReportView = ({
         background: "transparent",
       },
       theme: apexTheme,
-      colors: ["#0ea5e9"],
+      colors: ["#14b8a6"],
       xaxis: {
         labels: { show: false },
         axisBorder: { show: false },
@@ -644,14 +644,14 @@ const ReportView = ({
         className="relative overflow-hidden rounded-2xl p-6"
         style={{
           background: isDark
-            ? "linear-gradient(135deg, rgba(14,165,233,0.1) 0%, var(--df-card) 50%, rgba(99,102,241,0.1) 100%)"
+            ? "linear-gradient(135deg, rgba(20,184,166,0.1) 0%, var(--df-card) 50%, rgba(45,212,191,0.1) 100%)"
             : "linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #eef2ff 100%)",
-          border: "1px solid rgba(14,165,233,0.25)",
+          border: "1px solid rgba(20,184,166,0.25)",
         }}
       >
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="p-4 bg-sky-500/15 border border-sky-500/25 rounded-2xl shrink-0">
-            <FileText size={28} className="text-sky-400" />
+          <div className="p-4 bg-teal-500/15 border border-teal-500/25 rounded-2xl shrink-0">
+            <FileText size={28} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p
@@ -668,7 +668,7 @@ const ReportView = ({
             </h3>
             <p className="text-sm mt-0.5" style={{ color: "var(--df-t2)" }}>
               Target:{" "}
-              <span className="text-sky-400 font-semibold">{target}</span> ·{" "}
+              <span className="text-teal-400 font-semibold">{target}</span> ·{" "}
               {profile?.n_samples} rows · {profile?.n_features} features ·{" "}
               <span className="capitalize">{task}</span>
             </p>
@@ -687,7 +687,7 @@ const ReportView = ({
           className="font-bold text-sm flex items-center gap-2 mb-4"
           style={{ color: "var(--df-t1)" }}
         >
-          <Sparkles size={15} className="text-sky-400" /> Recommended
+          <Sparkles size={15} className="text-teal-400" /> Recommended
           Hyperparameters
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -746,7 +746,7 @@ const ReportView = ({
         </div>
         <p className="text-xs mt-3" style={{ color: "var(--df-t3)" }}>
           Selected based on variance, PCA loadings, and relevance to target{" "}
-          <strong className="text-sky-400">{target}</strong>
+          <strong className="text-teal-400">{target}</strong>
         </p>
       </div>
 
@@ -761,7 +761,7 @@ const ReportView = ({
           className="font-bold text-sm flex items-center gap-2 mb-4"
           style={{ color: "var(--df-t1)" }}
         >
-          <BarChart3 size={15} className="text-violet-400" /> All Features &
+          <BarChart3 size={15} className="text-teal-400" /> All Features &
           Column Details
         </h4>
         <div className="overflow-x-auto">
@@ -813,7 +813,7 @@ const ReportView = ({
                     >
                       {col}{" "}
                       {isTarget && (
-                        <span className="text-[8px] font-black text-sky-400 bg-sky-500/10 px-1 py-0.5 rounded-full ml-1">
+                        <span className="text-[8px] font-black text-teal-400 bg-teal-500/10 px-1 py-0.5 rounded-full ml-1">
                           TARGET
                         </span>
                       )}
@@ -824,7 +824,7 @@ const ReportView = ({
                     </td>
                     <td className="py-2">
                       {isTarget ? (
-                        <span className="text-sky-400">Target variable</span>
+                        <span className="text-teal-400">Target variable</span>
                       ) : isRecommended ? (
                         <span className="text-emerald-400 font-semibold">
                           Use as feature
@@ -867,7 +867,7 @@ const ReportView = ({
               className="text-xs font-semibold mb-2 flex items-center gap-1.5"
               style={{ color: "var(--df-t2)" }}
             >
-              <ScatterIcon size={12} className="text-sky-400" /> PCA Projection
+              <ScatterIcon size={12} className="text-teal-400" /> PCA Projection
             </p>
             <ReactApexChart
               options={pcaChart.options}

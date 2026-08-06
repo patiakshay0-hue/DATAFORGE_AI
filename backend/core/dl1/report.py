@@ -28,14 +28,14 @@ from core.exporter import (
     WHITE, DARK_BG, W, H,
 )
 
-VIOLET = colors.HexColor("#8b5cf6")
+VIOLET = colors.HexColor("#14b8a6")
 ROSE = colors.HexColor("#f43f5e")
 CYAN = colors.HexColor("#06b6d4")
 ORANGE = colors.HexColor("#f97316")
 LIME = colors.HexColor("#84cc16")
 PINK = colors.HexColor("#ec4899")
 TEAL = colors.HexColor("#14b8a6")
-INDIGO = colors.HexColor("#6366f1")
+INDIGO = colors.HexColor("#2dd4bf")
 
 CLUSTER_PALETTE = [VIOLET, CYAN, ROSE, EMERALD, AMBER, INDIGO, PINK, TEAL]
 
@@ -79,14 +79,14 @@ class LossCurve(Flowable):
                 path.moveTo(x, y) if i == 0 else path.lineTo(x, y)
             c.drawPath(path)
 
-        series(train, BLUE)
+        series(train, TEAL)  # Use teal for training loss
         series(val, AMBER)
 
         c.setFillColor(SLATE_400)
         c.setFont("Helvetica", 6)
         c.drawString(pad, 2 * mm, "epoch 1")
         c.drawRightString(pad + plot_w, 2 * mm, f"epoch {len(self.history)}")
-        c.setFillColor(BLUE)
+        c.setFillColor(TEAL)
         c.drawString(pad, self.height - 3 * mm, "— train")
         c.setFillColor(AMBER)
         c.drawString(pad + 16 * mm, self.height - 3 * mm, "— validation")
@@ -110,7 +110,7 @@ class ArchitectureDiagram(Flowable):
             y = self.height - (i + 1) * row_h
             is_latent = "Latent" in label
             bar_w = self.width * (0.32 if is_latent else 0.62)
-            c.setFillColor(VIOLET if is_latent else colors.HexColor("#1e293b"))
+            c.setFillColor(TEAL if is_latent else colors.HexColor("#1e293b"))
             c.roundRect((self.width - bar_w) / 2, y, bar_w,
                         row_h - 1.6 * mm, 1.5, fill=1, stroke=0)
             c.setFillColor(WHITE if is_latent else SLATE_400)
@@ -159,7 +159,7 @@ class BarChart(Flowable):
             val = item.get(self.value_key, 0) or 0
             bar_w = plot_w * val / max_val
 
-            c.setFillColor(VIOLET)
+            c.setFillColor(TEAL)  # Use teal for bar charts
             c.roundRect(pad_left, y, bar_w, bar_h, 1.5, fill=1, stroke=0)
 
             c.setFillColor(SLATE_700)
@@ -225,7 +225,7 @@ class ScatterPlot(Flowable):
                 c.setFillColor(label_colors[self.labels[i]])
                 c.circle(px, py, 1.5, fill=1, stroke=0)
             else:
-                c.setFillColor(VIOLET)
+                c.setFillColor(TEAL)  # Use teal for default scatter points
                 c.circle(px, py, 1.5, fill=1, stroke=0)
 
         c.setFillColor(SLATE_400)
@@ -308,7 +308,7 @@ def _header(canvas, doc):
     canvas.saveState()
     canvas.setFillColor(DARK_BG)
     canvas.rect(0, H - 52 * mm, W, 52 * mm, fill=1, stroke=0)
-    canvas.setFillColor(VIOLET)
+    canvas.setFillColor(TEAL)  # Use teal for header accent
     canvas.rect(0, H - 52 * mm, W, 1.5, fill=1, stroke=0)
     canvas.restoreState()
 

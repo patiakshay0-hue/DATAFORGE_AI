@@ -86,10 +86,10 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
     <div className="space-y-6">
       {/* Header */}
       <div className="relative overflow-hidden rounded-2xl p-6" style={{ background: 'var(--df-card)', border: '1px solid var(--df-border)' }}>
-        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 0%, #0ea5e9, transparent 60%)' }} />
+        <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(circle at 50% 0%, #14b8a6, transparent 60%)' }} />
         <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl shrink-0">
-            <FileCog size={22} className="text-sky-400" />
+          <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl shrink-0">
+            <FileCog size={22} className="text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-black" style={{ color: 'var(--df-t1)' }}>Import & Convert</h3>
@@ -111,17 +111,17 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
         style={{ borderColor: 'var(--df-border)', background: 'var(--df-card)' }}>
         {inspecting ? (
           <div className="flex flex-col items-center gap-3">
-            <Loader2 size={32} className="text-sky-400 animate-spin" />
+            <Loader2 size={32} className="text-teal-400 animate-spin" />
             <p className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>Inspecting file…</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)' }}>
-              <UploadCloud size={26} className="text-sky-400" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(20,184,166,0.1)', border: '1px solid rgba(20,184,166,0.2)' }}>
+              <UploadCloud size={26} className="text-teal-400" />
             </div>
             <p className="text-base font-bold" style={{ color: 'var(--df-t1)' }}>Drop any file to convert</p>
             <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
-              .xlsx · .json · .tsv · .txt · .parquet · .zip (data or images) · or <span className="text-sky-400 font-semibold">browse</span>
+              .xlsx · .json · .tsv · .txt · .parquet · .zip (data or images) · or <span className="text-teal-400 font-semibold">browse</span>
             </p>
           </div>
         )}
@@ -174,7 +174,7 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
 
           <button onClick={runConvert} disabled={busy === 'convert'}
             className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)' }}>
+            style={{ background: 'linear-gradient(135deg, #14b8a6, #2dd4bf)' }}>
             {busy === 'convert' ? <Loader2 size={14} className="animate-spin" /> : <Table2 size={14} />}
             {info.already_csv ? 'Load CSV' : 'Convert to CSV'}
           </button>
@@ -185,7 +185,7 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
       {info && info.kind === 'image_zip' && (
         <div className={card} style={{ background: 'var(--df-card)' }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20"><Images size={16} className="text-violet-400" /></div>
+            <div className="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20"><Images size={16} className="text-teal-400" /></div>
             <div>
               <p className="font-bold text-sm" style={{ color: 'var(--df-t1)' }}>Image dataset detected</p>
               <p className="text-xs" style={{ color: 'var(--df-t3)' }}>{info.total} images · {Object.keys(info.classes).length} classes</p>
@@ -194,7 +194,7 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
           <div className="flex flex-wrap gap-2 mb-5">
             {Object.entries(info.classes).map(([c, n]) => (
               <span key={c} className="text-xs px-3 py-1.5 rounded-lg" style={{ background: 'var(--df-input-bg)', border: '1px solid var(--df-border)', color: 'var(--df-t2)' }}>
-                {c} · <span className="text-violet-400 font-semibold">{n}</span>
+                {c} · <span className="text-teal-400 font-semibold">{n}</span>
               </span>
             ))}
           </div>
@@ -206,7 +206,7 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
           <div className="flex flex-wrap gap-3">
             <button onClick={trainClassifier} disabled={!info.trainable || busy === 'vision'}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #6366f1)' }}>
+              style={{ background: 'linear-gradient(135deg, #0d9488, #2dd4bf)' }}>
               {busy === 'vision' ? <Loader2 size={14} className="animate-spin" /> : <ScanEye size={14} />}
               Train Classifier
             </button>
@@ -261,7 +261,7 @@ const ImportConvertView = ({ onDataLoaded, onNavigate }) => {
             </button>
             <button onClick={loadForAnalysis} disabled={busy === 'load'}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #10b981, #0ea5e9)' }}>
+              style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}>
               {busy === 'load' ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />}
               Load for Analysis
             </button>
@@ -277,7 +277,7 @@ const DetectedRow = ({ info, isDark }) => {
   const label = info.kind === 'data_zip' ? 'Zip archive of data files' : `${(info.format || '').toUpperCase()} file`
   return (
     <div className="flex items-center gap-3">
-      <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20"><Icon size={16} className="text-sky-400" /></div>
+      <div className="p-2 rounded-lg bg-teal-500/10 border border-teal-500/20"><Icon size={16} className="text-teal-400" /></div>
       <div>
         <p className="font-bold text-sm" style={{ color: 'var(--df-t1)' }}>{info.filename}</p>
         <p className="text-xs" style={{ color: 'var(--df-t3)' }}>
