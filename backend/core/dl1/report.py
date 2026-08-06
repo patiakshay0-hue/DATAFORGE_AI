@@ -383,7 +383,7 @@ def generate(job, recommendation: dict) -> bytes:
     ]
     t = Table(cfg_rows, colWidths=[usable * 0.26,
               usable * 0.24] * 2, repeatRows=1)
-    t.setStyle(_table_style(header_color=PURPLE))
+    t.setStyle(_table_style(header_color=TEAL))  # Use teal for table headers
     els += [t, Spacer(1, 5 * mm)]
 
     if config.get("rationale"):
@@ -564,7 +564,7 @@ def generate(job, recommendation: dict) -> bytes:
                          "yes" if r["in_selected_pattern"] else ""])
         t = Table(rows, colWidths=[usable * 0.08, usable * 0.42, usable * 0.25, usable * 0.25],
                   repeatRows=1)
-        t.setStyle(_table_style(header_color=VIOLET))
+        t.setStyle(_table_style(header_color=TEAL))  # Use teal for table headers
         els += [t, Spacer(1, 5 * mm)]
 
     excluded = recommendation.get("excluded_at_load", [])
