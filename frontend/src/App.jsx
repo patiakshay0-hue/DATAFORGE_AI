@@ -56,6 +56,13 @@ const App = () => {
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState(null);
 
+  // Free hosting tiers idle the backend out and take up to ~1 min to spin it
+  // back up. Ping it the moment the page loads so it is already warming while
+  // the user is still picking a file, instead of starting on first upload.
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/`).catch(() => {});
+  }, []);
+
   const handleUploadSuccess = (response) => {
     setData(response);
     setActiveTab("preview");

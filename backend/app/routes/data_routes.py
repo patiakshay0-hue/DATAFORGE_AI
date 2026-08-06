@@ -8,11 +8,17 @@ from app.models.schemas import CleanRequest
 
 router = APIRouter()
 
+# These handlers are deliberately sync `def`, not `async def`. Every one of them
+# does blocking CPU work (pandas parsing, describe, correlations). An `async def`
+# handler runs directly on the event loop, so that work would stall every other
+# request — including the health check — until it finished. Declared sync,
+# FastAPI runs them in its threadpool and the server stays responsive.
+
 
 @router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+def upload_file(file: UploadFile = File(...)):
     try:
-        content = await file.read()
+        content = file.file.read()
         df = load_data(content, file.filename)
         schema = get_schema(df)
         eda_results = perform_eda(df)
@@ -33,28 +39,28 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 @router.get("/insights")
-async def get_data_insights():
+def get_data_insights():
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return generate_insights(data_store["current_df"])
 
 
 @router.get("/analyze")
-async def analyze_data():
+def analyze_data():
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return perform_eda(data_store["current_df"])
 
 
 @router.get("/clean/missing-report")
-async def clean_missing_report():
+def clean_missing_report():
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     return missing_report(data_store["current_df"])
 
 
 @router.post("/clean/apply")
-async def clean_apply(request: CleanRequest):
+def clean_apply(request: CleanRequest):
     if "current_df" not in data_store:
         raise HTTPException(status_code=404, detail="No data uploaded")
     cleaned, summary = handle_missing(data_store["current_df"], request.strategies)

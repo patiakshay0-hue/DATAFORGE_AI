@@ -15,6 +15,7 @@ const FileUpload = ({ onUploadSuccess }) => {
   const [loading,    setLoading]    = useState(false)
   const [error,      setError]      = useState(null)
   const [progress,   setProgress]   = useState(0)
+  const [slow,       setSlow]       = useState(false)
 
   const handleDrag = (e) => {
     e.preventDefault(); e.stopPropagation()
@@ -28,7 +29,10 @@ const FileUpload = ({ onUploadSuccess }) => {
   }
 
   const processFile = async (file) => {
-    setLoading(true); setError(null); setProgress(0)
+    setLoading(true); setError(null); setProgress(0); setSlow(false)
+    // A sleeping free-tier backend answers nothing for ~a minute. Say so rather
+    // than leaving the user watching a bar that has already reached 100%.
+    const slowTimer = setTimeout(() => setSlow(true), 8000)
     const formData = new FormData()
     formData.append('file', file)
     try {
@@ -40,6 +44,7 @@ const FileUpload = ({ onUploadSuccess }) => {
     } catch (err) {
       setError(err.response?.data?.detail || 'Upload failed. Check your file format and try again.')
     } finally {
+      clearTimeout(slowTimer)
       setLoading(false)
     }
   }
@@ -72,12 +77,20 @@ const FileUpload = ({ onUploadSuccess }) => {
           {loading ? (
             <>
               <Loader2 size={40} className="text-sky-400 animate-spin mb-4" />
-              <p className="font-semibold mb-3" style={{ color: 'var(--df-t1)' }}>Uploading & analyzing…</p>
+              <p className="font-semibold mb-3" style={{ color: 'var(--df-t1)' }}>
+                {progress < 100 ? 'Uploading…' : 'Analyzing your dataset…'}
+              </p>
               <div className="w-48 h-1.5 rounded-full overflow-hidden" style={{ background: isDark ? '#1e293b' : '#e2e8f0' }}>
                 <div className="h-full bg-sky-500 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }} />
               </div>
               <p className="text-xs mt-2" style={{ color: 'var(--df-t3)' }}>{progress}%</p>
+              {slow && (
+                <p className="text-xs mt-3 max-w-xs" style={{ color: 'var(--df-t3)' }}>
+                  The server may be waking from sleep — the first request after a quiet
+                  period can take up to a minute. Later uploads are much faster.
+                </p>
+              )}
             </>
           ) : (
             <>

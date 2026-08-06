@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 import uvicorn
 
 from app.config import APP_TITLE, CORS_CONFIG
@@ -16,6 +17,10 @@ from app.routes.dl1_routes import router as dl1_router
 app = FastAPI(title=APP_TITLE)
 
 app.add_middleware(CORSMiddleware, **CORS_CONFIG)
+# The EDA payload (summary + correlation matrix + chart series) is mostly
+# repeated numbers and column names, which gzip flattens to a fraction of the
+# wire size. Skips small responses so short JSON isn't compressed for nothing.
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 app.include_router(health_router)
 app.include_router(data_router)
