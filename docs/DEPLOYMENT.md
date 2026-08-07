@@ -10,6 +10,72 @@ be raised with the environment variables listed at the end.
 [`backend/Dockerfile`](../backend/Dockerfile) builds the image. Koyeb clones the
 repo and builds it, so nothing needs pushing to a registry.
 
+### First deploy, step by step
+
+Control panel route — no CLI needed, which is the easier path on Windows since
+Koyeb documents CLI installation only for macOS and Linux.
+
+**1. Store the API key as a secret before creating the service.**
+Go to [Secrets](https://app.koyeb.com/secrets) → *Create Secret*.
+Name it `anthropic-api-key`, paste the key from `backend/.env` as the value.
+Doing this first means it is selectable in step 4 instead of being pasted as
+plain text. ([Secrets docs](https://www.koyeb.com/docs/reference/secrets))
+
+**2. Create the service.** [Control panel](https://app.koyeb.com) → *Create Web
+Service* → **GitHub** → authorise Koyeb if prompted → pick
+`patiakshay0-hue/DATAFORGE_AI`, branch `main`.
+([Deploy from Git docs](https://www.koyeb.com/docs/build-and-deploy/deploy-with-git))
+
+**3. Set the builder.** In *Builder*, switch from Buildpack to **Dockerfile**.
+Then open the builder options and set:
+
+- **Work directory** → `backend`
+- **Dockerfile location** → `Dockerfile`
+
+Both are required. Without the work directory Koyeb builds from the repo root,
+where there is no Dockerfile and no `requirements.txt`, and the build fails.
+
+**4. Environment variables.**
+
+- `PORT` = `8000` — plain value. Koyeb does not inject this; the container
+  defaults to 8000 but the service must agree with it.
+- `ANTHROPIC_API_KEY` — choose **Secret** as the type, then pick
+  `anthropic-api-key`.
+  ([Env var docs](https://www.koyeb.com/docs/build-and-deploy/environment-variables))
+
+**5. Instance and region.** *Free* instance type. Region **Frankfurt** or
+**Washington, D.C.** — the Free instance runs nowhere else.
+([Instance specs](https://www.koyeb.com/docs/reference/instances))
+
+**6. Exposed port and route.** Port `8000`, protocol `HTTP`, path `/`.
+
+**7. Health check.** On the port entry, switch the protocol from **TCP** to
+**HTTP** and set the path to `/health`. Then open the advanced settings and
+raise **Grace period** to `120` seconds.
+
+This step is the one people skip, and it is the one that will fail the deploy.
+The default grace period is 5 seconds; importing pandas, scipy and scikit-learn
+on a 0.1 vCPU instance measured **97 seconds** here. Leave it at 5 and Koyeb
+kills the container before it has finished booting, over and over, and the
+deploy never goes healthy. ([Health check docs](https://www.koyeb.com/docs/run-and-scale/health-checks))
+
+**8. Deploy.** First build takes a few minutes — it installs the whole
+scientific Python stack. Watch the runtime logs for
+`Uvicorn running on http://0.0.0.0:8000`.
+
+**9. Verify** at `https://<service>-<org>.koyeb.app/health`. A JSON body with
+`status: ok` and a `boot_id` means it is up. Call it twice: if `boot_id` changes
+between calls, more than one instance is answering and the per-process state
+this app relies on will misbehave — see "One worker" below.
+
+**10. Point the frontend at it.** In the Vercel project, set `VITE_API_URL` to
+the Koyeb URL with no trailing slash, then **redeploy** — Vite bakes env vars in
+at build time, so changing the variable alone does nothing until the frontend is
+rebuilt. ([Vercel env vars](https://vercel.com/docs/environment-variables))
+
+CORS already allows any origin, so nothing else needs changing. Set
+`CORS_ORIGINS` to the Vercel domain if you want to lock it down.
+
 ### Service settings
 
 | Setting | Value |
@@ -48,7 +114,8 @@ koyeb app init dataforge \
 ```
 
 (`@name` references a Koyeb secret. Create it first with
-`koyeb secret create anthropic-api-key`.)
+`koyeb secrets create anthropic-api-key`. `--env KEY={{secret.name}}` is an
+equivalent syntax.)
 
 ### After it is up
 
