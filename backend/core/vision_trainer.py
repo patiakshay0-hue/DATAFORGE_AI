@@ -15,6 +15,7 @@ All heavy imports are guarded so the module loads even without torch installed.
 """
 
 import io
+import os
 import time
 import base64
 import zipfile
@@ -51,6 +52,25 @@ MAX_PER_CLASS = 200
 MAX_TOTAL = 1200
 THUMBS_PER_CLASS = 4
 
+# Longest edge kept for each decoded image. Everything downstream shrinks these
+# further — the CNN transform to IMG_SIZE (128), the scikit-learn descriptor to
+# 32, thumbnails to 96 — so anything above 128 is headroom, not detail. It used
+# to be 256, which is four times the pixels of the largest consumer and, at the
+# 1,200-image cap, 236 MB of resident images on a 512 MB box. 160 leaves margin
+# above IMG_SIZE while costing 92 MB at the same cap.
+STORE_SIZE = 160
+
+# Ceiling on the *uncompressed* contents of an archive. A zip stores this in its
+# own index, so it can be checked before decompressing anything — which is the
+# point: a small archive that expands to gigabytes would otherwise be discovered
+# only by running out of memory.
+MAX_UNCOMPRESSED_MB = int(os.getenv("MAX_UNCOMPRESSED_MB", "2048"))
+
+# Pillow refuses images beyond this many pixels rather than allocating for them.
+# Its own default is ~178 M pixels, which is far more than a 512 MB box survives.
+if HAS_PIL:
+    Image.MAX_IMAGE_PIXELS = 64_000_000
+
 # In-memory dataset + trained model (single-user app, mirrors data_store)
 VISION_STORE = {}   # {classes, counts, images:[(PIL,label_idx)], total, thumbnails, warnings}
 VISION_MODEL = {}   # {backbone, head, transform, classes, mode}
@@ -68,24 +88,59 @@ def _thumb_data_uri(img, size=96) -> str:
 
 
 def _clean_parts(name: str):
-    parts = [p for p in name.replace("\\", "/").split("/") if p and not p.startswith("__MACOSX")]
+    """Split an archive path into components, or return [] for entries to ignore.
+
+    Archives made on macOS carry a parallel `__MACOSX/` tree of AppleDouble
+    resource forks — `__MACOSX/cats/._1.jpg` shadowing `cats/1.jpg`. They end in
+    .jpg but are not images. Stripping only the `__MACOSX` component left the
+    rest looking like a perfectly good `cats/._1.jpg`, so every one of them was
+    decoded, failed, and produced a warning; a real macOS export would fill the
+    warning list with them and misreport how many images were used. Rejecting
+    the whole path is the fix. Backslashes are normalised because zips written
+    on Windows sometimes use them as separators.
+    """
+    parts = [p for p in name.replace("\\", "/").split("/") if p]
+    if any(p == "__MACOSX" for p in parts):
+        return []
+    if parts and (parts[-1].startswith("._") or parts[-1] == ".DS_Store"):
+        return []
     return parts
 
 
-def load_image_zip(content: bytes) -> dict:
+def load_image_zip(source) -> dict:
     """Unpack a zip of images. The immediate parent folder of each image is its
-    class label — robust to an extra wrapper folder (dataset/cats/1.jpg)."""
+    class label — robust to an extra wrapper folder (dataset/cats/1.jpg).
+
+    `source` may be raw bytes or any seekable file object. Prefer the file
+    object: a large archive is already spooled to disk by the time it gets here,
+    and zipfile reads what it needs from there, so the whole thing never has to
+    be resident. Passing bytes for a 290 MB upload is what used to get the
+    container OOM-killed before a single image had been decoded.
+    """
     if not HAS_PIL:
         return {"status": "error", "note": "Image tools need Pillow installed on the backend."}
 
     try:
-        zf = zipfile.ZipFile(io.BytesIO(content))
+        zf = zipfile.ZipFile(io.BytesIO(source) if isinstance(source, (bytes, bytearray)) else source)
     except zipfile.BadZipFile:
         return {"status": "error", "note": "That file isn't a valid .zip archive."}
+    except Exception as exc:
+        return {"status": "error", "note": f"Could not open that archive: {exc}"}
+
+    entries = zf.infolist()
+
+    # Checked against the zip index, before decompressing anything.
+    declared = sum(i.file_size for i in entries)
+    if declared > MAX_UNCOMPRESSED_MB * 1024 * 1024:
+        return {"status": "error",
+                "note": f"That archive expands to {declared / 1024 / 1024:.0f} MB, over the "
+                        f"{MAX_UNCOMPRESSED_MB} MB limit. Upload fewer or smaller images."}
 
     by_class = {}
     warnings = []
-    for info in zf.infolist():
+    n_images_seen = 0
+    hit_cap = False
+    for info in entries:
         if info.is_dir():
             continue
         parts = _clean_parts(info.filename)
@@ -95,17 +150,32 @@ def load_image_zip(content: bytes) -> dict:
         ext = "." + fname.rsplit(".", 1)[-1].lower() if "." in fname else ""
         if ext not in IMG_EXTS:
             continue
+        n_images_seen += 1
         label = parts[-2]
         by_class.setdefault(label, [])
+        # Past the per-class cap the entry is skipped without being decompressed,
+        # so an archive of 10,000 images costs no more memory than one of 400.
         if len(by_class[label]) >= MAX_PER_CLASS:
+            hit_cap = True
             continue
         try:
             with zf.open(info) as fh:
                 img = Image.open(io.BytesIO(fh.read())).convert("RGB")
-            img.thumbnail((256, 256))
+            img.thumbnail((STORE_SIZE, STORE_SIZE))
             by_class[label].append(img)
         except Exception:
             warnings.append(f"Skipped unreadable image: {fname}")
+
+    if n_images_seen == 0:
+        return {"status": "error",
+                "note": "No images found in that archive. It should contain one folder per "
+                        "class, each holding image files — for example cats/1.jpg, dogs/1.jpg. "
+                        f"Supported types: {', '.join(sorted(e.lstrip('.') for e in IMG_EXTS))}."}
+
+    if hit_cap:
+        warnings.append(
+            f"Used {sum(len(v) for v in by_class.values())} of {n_images_seen} images — "
+            f"capped at {MAX_PER_CLASS} per class to stay within memory.")
 
     # keep only classes with enough images
     by_class = {c: imgs for c, imgs in by_class.items() if len(imgs) >= 2}

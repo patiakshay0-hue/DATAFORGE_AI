@@ -1,7 +1,6 @@
-import os
-
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.store import data_store
+from app.uploads import read_capped, MAX_UPLOAD_MB
 from core.loader import load_data, get_schema
 from core.analyzer import perform_eda
 from core.insights import generate_insights
@@ -10,34 +9,7 @@ from app.models.schemas import CleanRequest
 
 router = APIRouter()
 
-# Hard ceiling on an upload, matching what the UI advertises. Enforced while
-# reading rather than after, so a 2 GB file is rejected at ~50 MB instead of
-# being buffered in full and taking the container's memory with it.
-MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "50"))
-MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
-_CHUNK = 1024 * 1024
-
 ALLOWED_EXTENSIONS = ("csv", "xlsx", "xls", "json")
-
-
-def _read_capped(upload: UploadFile) -> bytes:
-    """Read the upload, refusing anything over the size cap."""
-    chunks, total = [], 0
-    while True:
-        chunk = upload.file.read(_CHUNK)
-        if not chunk:
-            break
-        total += len(chunk)
-        if total > MAX_UPLOAD_BYTES:
-            raise HTTPException(
-                status_code=413,
-                detail=f"That file is larger than the {MAX_UPLOAD_MB} MB limit. "
-                       f"Try a sample of the rows, or split it into smaller files.",
-            )
-        chunks.append(chunk)
-    if total == 0:
-        raise HTTPException(status_code=400, detail="That file is empty.")
-    return b"".join(chunks)
 
 # These handlers are deliberately sync `def`, not `async def`. Every one of them
 # does blocking CPU work (pandas parsing, describe, correlations). An `async def`
@@ -57,7 +29,7 @@ def upload_file(file: UploadFile = File(...)):
                    f"Upload a CSV, XLSX, XLS or JSON file.",
         )
 
-    content = _read_capped(file)
+    content = read_capped(file, MAX_UPLOAD_MB)
 
     try:
         df = load_data(content, filename)

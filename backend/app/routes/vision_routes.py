@@ -1,5 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from starlette.concurrency import run_in_threadpool
+
+from app.uploads import enforce_size, rewound, read_capped, MAX_ZIP_MB
 from core.vision_trainer import (
     load_image_zip, train_classifier, predict_image, current_dataset as vision_dataset,
     VISION_AVAILABLE as VISION_READY, HAS_TORCH, ENGINE_NAME as VISION_ENGINE,
@@ -28,11 +30,15 @@ def vision_status():
 async def vision_upload(file: UploadFile = File(...)):
     if not VISION_READY:
         raise HTTPException(status_code=400, detail="Image tools need Pillow installed on the backend.")
-    if not file.filename.lower().endswith(".zip"):
+    if not (file.filename or "").lower().endswith(".zip"):
         raise HTTPException(status_code=400, detail="Please upload a .zip archive of labelled image folders.")
-    content = await file.read()
-    # Decoding and resizing a zip of images is blocking CPU work.
-    result = await run_in_threadpool(load_image_zip, content)
+
+    enforce_size(file, MAX_ZIP_MB, "archive")
+    # The archive is handed over as a file object rather than as bytes. Starlette
+    # has already spooled it to disk, so this reads it from there instead of
+    # loading a second copy into memory — which is what used to take the
+    # container down on a large upload.
+    result = await run_in_threadpool(load_image_zip, rewound(file))
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Could not read the image archive"))
     return result
@@ -50,7 +56,8 @@ def vision_train(request: VisionTrainRequest):
 
 @router.post("/vision/predict")
 async def vision_predict(file: UploadFile = File(...)):
-    content = await file.read()
+    # One image: small enough to hold, but still bounded rather than unlimited.
+    content = await run_in_threadpool(read_capped, file, 25, "image")
     result = await run_in_threadpool(predict_image, content)
     if result.get("status") == "error":
         raise HTTPException(status_code=400, detail=result.get("note", "Prediction failed"))

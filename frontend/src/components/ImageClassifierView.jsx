@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
 import {
   Images, UploadCloud, Loader2, Play, RotateCcw, AlertCircle, CheckCircle2,
   Cpu, Zap, Clock, Layers, TrendingUp, Grid3x3, ImagePlus, FolderTree, ScanEye
@@ -8,8 +7,11 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts'
 import { useTheme } from '../ThemeContext'
+import { api, apiLong, errorMessage, isNetworkError, wakeBackend } from '../api'
 
-const API = import.meta.env.VITE_API_URL
+// Mirrors MAX_ZIP_MB on the backend. Checked here as well so a 400 MB archive
+// fails immediately instead of after the minutes it takes to upload one.
+const MAX_ZIP_MB = 300
 
 const ImageClassifierView = () => {
   const { isDark } = useTheme()
@@ -21,28 +23,68 @@ const ImageClassifierView = () => {
   const [epochs,    setEpochs]    = useState(15)
   const [result,    setResult]    = useState(null)
   const [error,     setError]     = useState(null)
+  const [progress,  setProgress]  = useState(0)
+  const [slow,      setSlow]      = useState(false)
   const zipInput = useRef(null)
 
   useEffect(() => {
-    axios.get(`${API}/vision/status`).then(r => setReady(r.data.ready)).catch(() => setReady(false))
+    api.get(`/vision/status`).then(r => setReady(r.data.ready)).catch(() => setReady(false))
     // pick up a dataset handed over from the Import & Convert tab
-    axios.get(`${API}/vision/dataset`)
+    api.get(`/vision/dataset`)
       .then(r => { if (r.data?.status === 'success') setDataset(r.data) })
       .catch(() => {})
   }, [])
 
   const card = `rounded-2xl p-6 border ${isDark ? 'border-slate-800' : 'border-slate-200 shadow-sm'}`
 
+  const send = (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return apiLong.post('/vision/upload', fd, {
+      // Without this the bar sits at nothing for the whole transfer of a large
+      // archive, which is indistinguishable from the page having hung — and is
+      // most of what "I can't upload the zip" turns out to mean.
+      onUploadProgress: (e) => e.total && setProgress(Math.round((e.loaded * 100) / e.total)),
+    })
+  }
+
   const uploadZip = async (file) => {
     if (!file) return
+
+    const name = (file.name || '').toLowerCase()
+    if (!name.endsWith('.zip')) {
+      setError('That needs to be a .zip archive of labelled image folders — one folder per class.')
+      return
+    }
+    if (file.size > MAX_ZIP_MB * 1024 * 1024) {
+      setError(`That archive is ${(file.size / 1024 / 1024).toFixed(0)} MB, over the ${MAX_ZIP_MB} MB limit. ` +
+               `Upload fewer images per class — only the first 200 of each are used anyway.`)
+      return
+    }
+    if (file.size === 0) { setError('That archive is empty.'); return }
+
     setUploading(true); setError(null); setDataset(null); setResult(null)
+    setProgress(0); setSlow(false)
+    const slowTimer = setTimeout(() => setSlow(true), 10000)
     try {
-      const fd = new FormData(); fd.append('file', file)
-      const res = await axios.post(`${API}/vision/upload`, fd)
+      let res
+      try {
+        res = await send(file)
+      } catch (e) {
+        // Retried only when the server never answered — a container asleep or
+        // still booting drops the request that wakes it. A rejection is final.
+        if (!isNetworkError(e)) throw e
+        setSlow(true); setProgress(0)
+        await wakeBackend()
+        res = await send(file)
+      }
       setDataset(res.data)
     } catch (e) {
-      setError(e.response?.data?.detail || 'Could not read the image archive.')
-    } finally { setUploading(false) }
+      setError(errorMessage(e, 'Could not read the image archive.'))
+    } finally {
+      clearTimeout(slowTimer)
+      setUploading(false)
+    }
   }
 
   const train = async () => {
@@ -51,10 +93,10 @@ const ImageClassifierView = () => {
     let i = 0; setTrainStep(steps[0])
     const iv = setInterval(() => { i++; if (i < steps.length) setTrainStep(steps[i]) }, 1200)
     try {
-      const res = await axios.post(`${API}/vision/train`, { config: { epochs } })
+      const res = await apiLong.post(`/vision/train`, { config: { epochs } })
       setResult(res.data)
     } catch (e) {
-      setError(e.response?.data?.detail || 'Training failed.')
+      setError(errorMessage(e, 'Training failed.'))
     } finally { clearInterval(iv); setTraining(false) }
   }
 
@@ -125,7 +167,22 @@ const ImageClassifierView = () => {
         {uploading ? (
           <div className="flex flex-col items-center gap-3">
             <Loader2 size={32} className="text-teal-400 animate-spin" />
-            <p className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>Unpacking & validating images…</p>
+            {/* Two distinct phases, and they feel very different: the transfer has
+                a percentage, the server-side decode does not. Saying which one is
+                happening is the difference between "working" and "frozen". */}
+            <p className="text-sm font-medium" style={{ color: 'var(--df-t2)' }}>
+              {progress < 100 ? `Uploading… ${progress}%` : 'Unpacking & validating images…'}
+            </p>
+            <div className="w-56 h-1.5 rounded-full overflow-hidden" style={{ background: isDark ? '#1e293b' : '#e2e8f0' }}>
+              <div className="h-full rounded-full transition-all duration-300"
+                style={{ background: 'var(--df-primary)', width: `${progress}%` }} />
+            </div>
+            {slow && (
+              <p className="text-xs max-w-sm" style={{ color: 'var(--df-t3)' }}>
+                Large archives take a while — the server decodes every image. If it has
+                been idle it may also be waking from sleep, which adds up to a minute.
+              </p>
+            )}
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
@@ -134,6 +191,9 @@ const ImageClassifierView = () => {
             </div>
             <p className="text-base font-bold" style={{ color: 'var(--df-t1)' }}>Drop a .zip of images here</p>
             <p className="text-xs" style={{ color: 'var(--df-t3)' }}>or <span className="text-teal-400 font-semibold">browse files</span></p>
+            <p className="text-[11px]" style={{ color: 'var(--df-t4)' }}>
+              up to {MAX_ZIP_MB} MB · first 200 images per class are used
+            </p>
           </div>
         )}
       </div>
@@ -362,7 +422,7 @@ const VisionPredict = ({ classes, isDark }) => {
     setLoading(true); setError(null); setPred(null)
     try {
       const fd = new FormData(); fd.append('file', file)
-      const res = await axios.post(`${API}/vision/predict`, fd)
+      const res = await apiLong.post(`/vision/predict`, fd)
       setPred(res.data)
     } catch (e) {
       setError(e.response?.data?.detail || 'Prediction failed.')

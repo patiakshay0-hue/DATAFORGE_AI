@@ -2,6 +2,8 @@ import io
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import StreamingResponse
 from starlette.concurrency import run_in_threadpool
+
+from app.uploads import read_capped, MAX_UPLOAD_MB, MAX_ZIP_MB
 from core import converter
 from app.store import data_store
 from core.loader import get_schema
@@ -21,7 +23,14 @@ router = APIRouter()
 
 @router.post("/convert/inspect")
 async def convert_inspect(file: UploadFile = File(...)):
-    content = await file.read()
+    # The converter keeps these bytes in CONVERT_STORE for the follow-up convert
+    # step, so this upload is held for the rest of the session rather than freed
+    # when the request ends. Bounded accordingly — and an image zip gets the
+    # larger archive allowance, since that is a legitimate thing to convert.
+    is_zip = (file.filename or "").lower().endswith(".zip")
+    content = await run_in_threadpool(
+        read_capped, file, MAX_ZIP_MB if is_zip else MAX_UPLOAD_MB,
+        "archive" if is_zip else "file")
     return await run_in_threadpool(converter.inspect_upload, content, file.filename)
 
 
