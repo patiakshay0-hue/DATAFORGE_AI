@@ -1,21 +1,141 @@
 # Deploying DataForge AI
 
-Written against a 512 MB / shared-CPU container (Render free tier), which is the
-constraint every number below comes from. On a larger box the limits can be
-raised with the environment variables listed at the end.
+Written against a 512 MB / shared-CPU container, which is the constraint every
+number below comes from. Koyeb Free and Render Free are the same shape — 512 MB
+RAM, ~0.1 vCPU — so the tuning applies to both. On a larger box the limits can
+be raised with the environment variables listed at the end.
 
-## Start command
+## Backend on Koyeb (Docker)
+
+[`backend/Dockerfile`](../backend/Dockerfile) builds the image. Koyeb clones the
+repo and builds it, so nothing needs pushing to a registry.
+
+### Service settings
+
+| Setting | Value |
+|---|---|
+| Builder | **Dockerfile** |
+| Work directory | `backend` |
+| Dockerfile location | `Dockerfile` (relative to the work directory) |
+| Exposed port | `8000`, protocol `http` |
+| Route | `/` → `8000` |
+| Health check | **HTTP**, path `/health` |
+| Environment | `PORT=8000`, `ANTHROPIC_API_KEY` (as a **secret**) |
+
+`PORT` is not injected automatically on Koyeb — you set it yourself, and it must
+match the port you expose. The `CMD` falls back to 8000 if it is unset.
+
+Set the health check to HTTP `/health` rather than leaving it on the default TCP
+probe. TCP only proves something accepted a connection; `/health` proves the app
+booted and its routes are mounted, so a container that is up but broken gets
+restarted instead of quietly serving errors. Give it a **grace period of 120s** —
+a cold start on a 0.1 vCPU instance measured 97 seconds, and a shorter grace
+period will kill the container before it has finished importing pandas.
+
+Equivalent CLI:
+
+```sh
+koyeb app init dataforge \
+  --git github.com/patiakshay0-hue/DATAFORGE_AI \
+  --git-branch main \
+  --git-builder docker \
+  --git-workdir backend \
+  --git-docker-dockerfile Dockerfile \
+  --ports 8000:http \
+  --routes /:8000 \
+  --env PORT=8000 \
+  --env ANTHROPIC_API_KEY=@anthropic-api-key
+```
+
+(`@name` references a Koyeb secret. Create it first with
+`koyeb secret create anthropic-api-key`.)
+
+### After it is up
+
+Point the frontend at the new URL: set `VITE_API_URL` to
+`https://<service>-<org>.koyeb.app` in the Vercel project's environment
+variables and redeploy. The backend allows any origin by default, so no CORS
+change is needed; set `CORS_ORIGINS` if you want to lock it to the Vercel domain.
+
+### Free instance facts worth knowing
+
+512 MB RAM, 0.1 vCPU, 2 GB SSD. One per organisation, Frankfurt or Washington
+D.C. only, and **it scales to zero after an hour without traffic** — so the cold
+start above is a normal occurrence, not a fault. The frontend already pings
+`/health` on page load to absorb it; an uptime pinger every ~30 minutes avoids it
+entirely.
+
+### The image
+
+807 MB, from `python:3.11-slim` via a two-stage build so pip's cache and wheels
+never reach the runtime layer. It started at 1.98 GB — against a 2 GB disk — and
+two things accounted for the difference:
+
+- **`nvidia-nccl-cu12`, 400 MB.** A transitive dependency of the default
+  `xgboost` Linux wheel: CUDA libraries, on an instance with no GPU. The
+  requirements file now selects `xgboost-cpu` on Linux and plain `xgboost`
+  elsewhere, via an environment marker — both import as `xgboost`, and
+  `xgboost-cpu` publishes Linux wheels only, so a Windows or macOS dev machine
+  still resolves the normal package.
+- **`plotly`, 70 MB.** Listed as a dependency but imported nowhere in the
+  backend — charts are built as plain JSON series in `core/analyzer.py` and
+  drawn by recharts in the browser. Removed.
+
+The image also pins `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS`, `MKL_NUM_THREADS`
+and `NUMEXPR_NUM_THREADS` to 1. numpy, scipy, scikit-learn and xgboost size their
+thread pools from the *host's* core count, which on a shared node is dozens — so
+a container with a tenth of a CPU would otherwise spawn dozens of threads that do
+nothing but contend for it, each with its own stack and scratch buffers.
+
+`.env` is excluded by [`.dockerignore`](../backend/.dockerignore): it holds a
+real API key, and anything copied into an image is readable by anyone who can
+pull it — and survives in that layer even if a later step deletes it. Supply the
+key as a Koyeb secret instead. The container runs as a non-root user (uid 10001),
+which matters here because the app parses untrusted uploaded files.
+
+### Measured in the container
+
+Under `--memory=512m`, the full suite passes — every endpoint, on a 60,000-row
+CSV — with **peak RSS 314 MB of 512 MB**, no OOM kill, no restarts, health check
+green. uvicorn runs as PID 1 (via `exec`), so it receives SIGTERM directly and
+stops in 2.6s instead of being killed at the end of the grace period.
+
+At a hard **0.1 CPU** cap, the same workload:
+
+| | time |
+|---|---|
+| Cold start to first healthy response | 97s |
+| Upload + EDA, 60k rows | 8.6s |
+| `/train`, Random Forest + XGBoost | 92.8s |
+| `/deep/train` | 64.0s (time budget held) |
+| Deep Learning 2.0, full run | 173.3s |
+
+Deep Learning 2.0 is a background job you poll, so three minutes is fine. The one
+to watch is `/train`: it is a single synchronous request, and 93 seconds is close
+to the edge of what proxies tolerate. If you hit timeouts there, lower
+`TRAIN_MAX_ROWS` or select fewer models per run — Random Forest and SVM dominate
+that number.
+
+## Backend on Render
+
+Render builds from `requirements.txt` rather than the Dockerfile, with:
 
 ```
 uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
-**One worker. Not two.** Uploaded data and Deep Learning 2.0 runs live in the
-process's own memory, and workers do not share memory. With two of them, an
-upload lands in one process and the next request is routed to the other, which
-has never heard of it — so the app intermittently reports "No data uploaded" and
-loses training runs, only under load, with nothing in the logs. The backend logs
-a warning at startup if `WEB_CONCURRENCY` is set above 1.
+Everything below the "One worker" rule applies here too; what the Dockerfile
+sets as environment defaults, you set in Render's dashboard — in particular
+`OMP_NUM_THREADS=1` and its siblings, which Render will not set for you.
+
+## One worker, on any host
+
+Uploaded data and Deep Learning 2.0 runs live in the process's own memory, and
+workers do not share memory. With two of them, an upload lands in one process and
+the next request is routed to the other, which has never heard of it — so the app
+intermittently reports "No data uploaded" and loses training runs, only under
+load, with nothing in the logs. The backend logs a warning at startup if
+`WEB_CONCURRENCY` is set above 1; the Dockerfile pins it to 1.
 
 To confirm a deployment is running a single worker, call `/health` a few times:
 `boot_id` identifies the process, so a value that changes between calls means
@@ -107,6 +227,8 @@ results panel, and a shortened run says how many epochs it managed.
 | `DL1_MAX_TRAIN_ROWS` | 25,000 | Rows for the Deep Learning 2.0 autoencoder |
 | `SKLEARN_WORKING_MEMORY_MB` | 64 | scikit-learn chunked pairwise ops |
 | `CORS_ORIGINS` | `*` | Comma-separated origins, or `*` |
+| `WEB_CONCURRENCY` | 1 | Must stay 1 — see above |
+| `PORT` | 8000 | Port uvicorn binds (Koyeb requires it set explicitly) |
 
 Effect of the training limits on a 50,000-row dataset: `/deep/train` went from
 191s to 53s, `/train` with 4 models from 26.5s to 2.2s for the SVM alone.

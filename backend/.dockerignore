@@ -1,0 +1,39 @@
+# Secrets — .env holds a real ANTHROPIC_API_KEY. Anything copied into an image
+# is readable by anyone who can pull it, and it survives in the layer even if a
+# later step deletes it. Supply it as a Koyeb secret at runtime instead.
+.env
+.env.*
+!.env.example
+
+# Python build artefacts and local virtualenvs — rebuilt inside the image, and a
+# host .venv would shadow the container's with binaries built for the wrong OS.
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Test and tooling noise
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ML artefacts a local run may have left behind
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.log

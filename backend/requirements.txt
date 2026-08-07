@@ -27,11 +27,25 @@ scipy>=1.11,<2.0
 scikit-learn>=1.4,<1.9
 
 openpyxl>=3.1,<4.0
-xgboost>=2.0,<4.0
-plotly>=5.20,<7.0
+
+# xgboost-cpu on Linux, plain xgboost elsewhere. Both import as `xgboost`, so
+# core/trainer.py needs no knowledge of which one is installed.
+#
+# The default Linux wheel depends on nvidia-nccl-cu12 and carries a GPU-enabled
+# libxgboost.so — together 628 MB of the image, on an instance with no GPU and a
+# 2 GB disk. The CPU build is the same library without the CUDA half. The marker
+# is needed because xgboost-cpu publishes Linux wheels only, so a Windows or
+# macOS dev machine installing from this file must still get the normal package.
+xgboost-cpu>=2.1,<4.0; sys_platform == "linux"
+xgboost>=2.0,<4.0; sys_platform != "linux"
+
 reportlab>=4.0,<5.0
 python-dotenv>=1.0,<2.0
 anthropic>=0.40,<1.0
+
+# plotly was listed here but is imported nowhere in the backend — charts are
+# built as plain JSON series in core/analyzer.py and rendered by recharts in the
+# browser. Removed: 70 MB of image for a package that was never loaded.
 
 # Pillow enables image-metadata CSV export in the converter (lightweight, deploy-safe).
 Pillow>=10.0,<13.0
