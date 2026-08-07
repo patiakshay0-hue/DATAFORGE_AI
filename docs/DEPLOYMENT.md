@@ -268,7 +268,30 @@ every 1.5s, tolerates 8 consecutive failures (~12s) while showing a
 "Reconnecting" note, and distinguishes a 404 (the run is genuinely gone) from
 silence (worth retrying).
 
-### 4. Uploads
+### 4. Image-zip uploads killed the container
+
+A 290 MB image archive returned 502 and restarted the backend. `await
+file.read()` was the cause: Starlette has already written the request body to a
+`SpooledTemporaryFile` by the time a handler runs — on disk for anything over
+1 MB — so reading it does not fetch the upload, it copies it into RAM a second
+time. 290 MB resident before a single image had been decoded, then the decode on
+top of that.
+
+`/vision/upload` now hands the file object to `zipfile`, which seeks around it on
+disk. Two other paths had the same shape and are bounded through the shared
+`app/uploads.py`: `/convert/inspect` (which also keeps its bytes for the rest of
+the session) and `/vision/predict`.
+
+Decoded images are kept at 160px on the longest edge rather than 256px.
+Everything downstream shrinks them further — the CNN transform to 128, the
+scikit-learn descriptor to 32, thumbnails to 96 — so 256 was four times the
+pixels of the largest consumer, and 236 MB of resident images at the 1,200-image
+cap. Now 92 MB.
+
+Same 290 MB archive inside a 512 MB container after the fix: **succeeds twice in
+a row at peak process memory 235 MB**, no OOM kill.
+
+### 5. Uploads
 
 - Rejected before sending if the format or size is wrong, rather than after.
 - Size enforced server-side while reading, so an oversized file is refused at the
@@ -286,7 +309,9 @@ results panel, and a shortened run says how many epochs it managed.
 
 | Setting | Default | What it bounds |
 |---|---|---|
-| `MAX_UPLOAD_MB` | 50 | Upload size ceiling |
+| `MAX_UPLOAD_MB` | 50 | Tabular upload (parsed into a DataFrame held in memory) |
+| `MAX_ZIP_MB` | 300 | Image archives — larger, because they stream from disk |
+| `MAX_UNCOMPRESSED_MB` | 2048 | What an archive may expand to, read from the zip index |
 | `TRAIN_MAX_ROWS` | 20,000 | Rows for ML + supervised deep learning |
 | `TRAIN_TIME_BUDGET_SECONDS` | 60 | Wall clock in the epoch loop |
 | `SVM_MAX_ROWS` | 5,000 | Rows for kernel SVM alone (it scales quadratically) |
